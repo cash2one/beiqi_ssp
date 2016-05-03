@@ -1,0 +1,72 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 17378546236379425223 (0xf12cffb9fc18e9c7)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=cn, ST=FuJian, O=heat, OU=Game, CN=www.heat/emailAddress=zxw0819@gmail.com
+        Validity
+            Not Before: Sep  3 12:54:40 2014 GMT
+            Not After : Aug 31 12:54:40 2024 GMT
+        Subject: C=cn, ST=FuJian, O=heat, OU=Game, CN=www/emailAddress=zxw0819@gmail.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:b8:ab:8d:bf:82:a0:b1:99:e8:55:06:42:a4:9f:
+                    47:2e:d0:90:e3:e5:d5:ee:0d:f2:b3:01:b8:f1:b6:
+                    25:d1:22:4c:a3:bc:93:91:93:05:f4:27:5c:17:25:
+                    51:9d:da:8a:d7:69:3d:84:d2:fc:bc:df:e0:75:9c:
+                    71:5a:ff:2b:36:c5:11:e2:23:82:bb:63:d3:ff:40:
+                    ed:45:eb:97:83:6c:ea:10:ad:a1:41:97:f8:5a:20:
+                    f6:98:c8:2b:85:52:3a:8e:7e:09:7d:54:f8:52:3b:
+                    fe:7f:88:b4:53:a3:44:99:26:25:4f:c2:6f:a7:8f:
+                    24:ca:83:81:d8:f6:3b:cc:f0:d3:e5:d0:3e:3b:5a:
+                    e7:33:1e:7f:f4:60:c9:82:bd:9a:1e:2c:d4:e8:18:
+                    9c:78:c7:53:61:92:3f:8d:21:20:09:54:1f:cb:dd:
+                    cc:29:a1:ae:9b:08:c1:c3:53:9b:55:d8:fc:94:f2:
+                    c5:06:88:54:d3:bf:f6:e6:96:aa:37:8b:ee:92:91:
+                    85:f9:2d:42:55:d6:27:d5:dc:87:c0:fb:aa:5f:cb:
+                    84:c3:78:27:a9:d1:d4:47:d2:fa:3d:68:d2:bd:8e:
+                    45:79:78:6d:eb:57:70:2c:e2:4f:42:8b:39:89:6f:
+                    eb:6e:af:f6:3b:c3:26:fa:e4:d3:e5:08:2e:65:1c:
+                    54:77
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                E8:3D:8B:F2:7B:F9:49:AA:49:20:93:4C:95:DD:08:7F:35:49:17:82
+            X509v3 Authority Key Identifier: 
+                keyid:5D:E0:72:8B:0D:F7:25:82:60:CE:10:38:93:DC:4A:2A:AD:46:9A:45
+
+    Signature Algorithm: sha1WithRSAEncryption
+         76:c6:62:58:db:30:bd:94:df:b4:99:3f:99:4d:7e:ee:be:7d:
+         0c:d9:bb:11:a2:44:30:b0:8a:e7:85:a1:31:bc:2a:7d:90:f4:
+         3c:e1:27:c6:7a:3f:1e:cd:30:2e:96:41:80:37:b0:d3:95:90:
+         73:c7:a1:34:aa:41:41:0e:95:77:06:e5:67:9c:ff:d8:2f:af:
+         ed:aa:f6:79:65:b0:eb:17:62:1c:5d:cb:3c:42:d5:49:6e:0f:
+         3c:62:c7:27:d0:83:72:78:99:17:92:57:ab:27:41:a5:89:46:
+         e7:1b:cd:14:6e:80:dc:e3:70:d2:08:5f:5a:d4:e3:c4:bc:30:
+         9a:83
+-----BEGIN CERTIFICATE-----
+MIIDWjCCAsOgAwIBAgIJAPEs/7n8GOnHMA0GCSqGSIb3DQEBBQUAMHExCzAJBgNV
+BAYTAmNuMQ8wDQYDVQQIDAZGdUppYW4xDTALBgNVBAoMBGhlYXQxDTALBgNVBAsM
+BEdhbWUxETAPBgNVBAMMCHd3dy5oZWF0MSAwHgYJKoZIhvcNAQkBFhF6eHcwODE5
+QGdtYWlsLmNvbTAeFw0xNDA5MDMxMjU0NDBaFw0yNDA4MzExMjU0NDBaMGwxCzAJ
+BgNVBAYTAmNuMQ8wDQYDVQQIDAZGdUppYW4xDTALBgNVBAoMBGhlYXQxDTALBgNV
+BAsMBEdhbWUxDDAKBgNVBAMMA3d3dzEgMB4GCSqGSIb3DQEJARYRenh3MDgxOUBn
+bWFpbC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC4q42/gqCx
+mehVBkKkn0cu0JDj5dXuDfKzAbjxtiXRIkyjvJORkwX0J1wXJVGd2orXaT2E0vy8
+3+B1nHFa/ys2xRHiI4K7Y9P/QO1F65eDbOoQraFBl/haIPaYyCuFUjqOfgl9VPhS
+O/5/iLRTo0SZJiVPwm+njyTKg4HY9jvM8NPl0D47WuczHn/0YMmCvZoeLNToGJx4
+x1Nhkj+NISAJVB/L3cwpoa6bCMHDU5tV2PyU8sUGiFTTv/bmlqo3i+6SkYX5LUJV
+1ifV3IfA+6pfy4TDeCep0dRH0vo9aNK9jkV5eG3rV3As4k9CizmJb+tur/Y7wyb6
+5NPlCC5lHFR3AgMBAAGjezB5MAkGA1UdEwQCMAAwLAYJYIZIAYb4QgENBB8WHU9w
+ZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBToPYvye/lJqkkg
+k0yV3Qh/NUkXgjAfBgNVHSMEGDAWgBRd4HKLDfclgmDOEDiT3EoqrUaaRTANBgkq
+hkiG9w0BAQUFAAOBgQB2xmJY2zC9lN+0mT+ZTX7uvn0M2bsRokQwsIrnhaExvCp9
+kPQ84SfGej8ezTAulkGAN7DTlZBzx6E0qkFBDpV3BuVnnP/YL6/tqvZ5ZbDrF2Ic
+Xcs8QtVJbg88Yscn0INyeJkXklerJ0GliUbnG80UboDc43DSCF9a1OPEvDCagw==
+-----END CERTIFICATE-----

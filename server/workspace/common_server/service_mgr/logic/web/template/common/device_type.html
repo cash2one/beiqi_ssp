@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>配置</h3>
+<div>
+<table class="table" id="device_type_table" style="table-layout: fixed">
+    <tr bgcolor="#EFEFEF">
+        <td width="40px" data-name="Num"></td>
+        <td width="100px" data-name="code" data-EditType="TextBox">代码</td>
+        <td width="100px" data-name="name" data-EditType="TextBox">名称</td>
+        <td width="100px" data-name="des" data-EditType="TextBox">描述</td>
+        <td data-name="ctl_html" data-EditType="ModalBox">控制页面</td>
+        <td data-name="ctl_cmd" data-EditType="ModalBox">控制命令</td>
+    </tr>  
+    {% for device_type_dic in device_type_ls %}
+        <tr>
+            <td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+            <td>{{device_type_dic.code}}</td>
+            <td>{{device_type_dic.name}}</td>
+            <td>{{device_type_dic.des}}</td>
+            <td data-isModal="true"><div style="overflow: hidden;text-overflow: ellipsis;max-height: 20px">{{device_type_dic.ctl_html|lt_gt}}</div></td>
+            <td data-isModal = "true"><div style="overflow: hidden;text-overflow: ellipsis;max-height: 20px">{{device_type_dic.ctl_cmd}}</div></td>
+            <!--可以使用white-space:pre来代替<pre>标签 达到相同的效果，不用重复覆盖Bootstrap的pre 默认css属性-->
+        </tr>
+    {% endfor %}
+</table>
+    <div id="ModalBox" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">内容</h4>
+                </div>
+                <div class="modal-body" id="ModalBody" style="outline: 0;word-wrap: break-word ;white-space: pre;max-height: 500px;overflow: auto"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="edit">编辑</button>
+                    <button type="button" class="btn btn-default" id="reset">重置</button>
+                    <button type="button" class="btn btn-default" id="close" data-dismiss="modal">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button class="btn btn-success" onclick="AddRow(document.getElementById('device_type_table'),1)">新增</button>
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('device_type_table'),1)">删除 </button>
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('device_type_table'), '/save_device_type_data')">保存</button>
+
+<script language="javascript">
+    EditTables(document.getElementById("device_type_table"));
+    $("#edit").on('click',function(){
+        $("#ModalBody").attr('contenteditable',true).css('background-color','#eee');
+    });
+    $("#close").on('click', function (){
+        $('#ModalBody').attr('contenteditable',false).css('background-color','#fff');
+    })
+</script>  
+{% endblock %}

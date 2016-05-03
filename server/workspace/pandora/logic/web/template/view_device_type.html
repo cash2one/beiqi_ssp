@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block body %}
+<script language="javascript" src="/static/js/GridEdit.js"></script>
+<h1 style="text-align:center">设备类型</h1>
+<br>
+<table class="table" id="device_type_table">
+    <tr>
+        <td rowspan="1" colspan="1" bgcolor="#EFEFEF" name="code" EditType="TextBox" >代码</td>
+        <td rowspan="1" colspan="1" bgcolor="#EFEFEF" name="name" EditType="TextBox">名称</td>
+        <td rowspan="1" colspan="1" bgcolor="#EFEFEF" name="dec" EditType="TextBox">描述</td>
+    </tr>
+	{% for device_type_dic in device_type_ls %}
+		<tr>
+            <td>{{device_type_dic.code}}</td>
+			<td>{{device_type_dic.name}}</td>
+            <td>{{device_type_dic.des}}</td>
+		</tr>
+	{% endfor %}
+</table>
+</div>
+{% endblock %}

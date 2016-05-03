@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>主机配置</h3>  
+<div>
+<table class="table" id="machine_table" style="table-layout: fixed">
+    <tr bgcolor="#EFEFEF">
+        <td data-name ="Num" width="40px"></td>
+        <td  data-name="ip" data-EditType="TextBox">主机ip</td>
+        <td  data-name="os" data-EditType="DropDownList"
+            data-DataItems="{'text':'LINUX',value:'LINUX'},{'text':'WINDOWS',value:'WINDOWS'}">操作系统</td>
+        <td  data-name="create_time" data-EditType="TextBox">创建时间</td>
+    </tr>
+    {% for machine_dic in grant_machine_ls %}
+    <tr>
+        <td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+        <td>{{machine_dic.ip}}</td>
+        <td>{{machine_dic.os}}</td>
+        <td>{{machine_dic.create_time}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<button class="btn btn-success" onclick="AddRow(document.getElementById('machine_table'),1)">新增</button> 
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('machine_table'),1)">删除 </button> 
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('machine_table'), '/save_grant_machine_data')">保存</button>
+
+<script language="javascript">  
+    var tabProduct = document.getElementById("machine_table");
+    // 设置表格可编辑
+    // 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)
+    EditTables(tabProduct);
+</script>  
+{% endblock %}
+
+
+

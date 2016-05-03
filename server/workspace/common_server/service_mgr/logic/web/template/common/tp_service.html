@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>第三方服务配置</h3>
+<div>
+<table class="table" id="tp_service_table" style="table-layout: fixed">
+    <tr bgcolor="#EFEFEF">
+      	<td width="50px" data-name="Num"></td>
+	  	<td data-name="id" data-EditType="TextBox">ID</td>
+		<td data-name="state" data-EditType="TextBox">状态</td>
+		<td data-name="service_group" data-EditType="TextBox">服务器组</td>
+	  	<td data-name="ip" data-EditType="TextBox">IP</td>
+	  	<td data-name="port" data-EditType="TextBox">端口</td>
+	  	<td data-name="params" data-EditType="TextBox">参数</td>
+    </tr>  
+	{% for tp_service_dic in tp_service_data %}
+	<tr>
+		<td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+		<td>{{tp_service_dic.id}}</td>
+		<td>{{"连接" if tp_service_dic.state else "断开"}}</td>
+		<td>{{tp_service_dic.service_group}}</td>
+		<td>{{tp_service_dic.ip}}</td>
+		<td>{{tp_service_dic.port}}</td>
+		<td>{{tp_service_dic.params}}</td>
+	</tr>
+	{% endfor %}
+</table>  
+</div>
+<button class="btn btn-success" onclick="AddRow(document.getElementById('tp_service_table'),1)">新增</button>
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('tp_service_table'),1)">删除 </button>
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('tp_service_table'), '/save_tp_service_data')">保存</button>
+
+<script language="javascript">  
+	var tabProduct = document.getElementById("tp_service_table");
+	// 设置表格可编辑  
+	// 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
+	EditTables(tabProduct);  
+</script>  
+{% endblock %}
+
+
+

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block head_extend %}
+<style>
+    body{
+        background: -webkit-linear-gradient(left,rgb(0,162,233),rgb(153,217,234),rgb(0,162,233));
+        background: -moz-linear-gradient(left,rgb(0,162,233),rgb(153,217,234),rgb(0,162,233));
+        background: -o-linear-gradient(left,rgb(0,162,233),rgb(153,217,234),rgb(0,162,233));
+        background: linear-gradient(left,rgb(0,162,233),rgb(153,217,234),rgb(0,162,233));
+    }
+    .form-box{
+        display: block;
+        margin: 10% auto;
+        max-width: 360px;
+        padding: 15px 50px;
+        border: 1px solid #aaa;
+        background-color: rgb(255,255,255);
+        border-radius: 3px;
+    }
+    .form-box .item{
+        margin-bottom: 10px;
+    }
+    .form-heading{
+        font-size: 24px;
+        text-align: center;
+    }
+    .form-heading:after{
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        margin: 10px 0;
+        background: -webkit-linear-gradient(left, rgba(147, 184, 189, 0) 0%, rgba(147, 184, 189, 0.8) 20%,rgb(147, 184, 189) 53%,rgba(147, 184, 189, 0.8) 79%,rgba(147, 184, 189, 0) 100%);
+        background: -moz-linear-gradient(left, rgba(147,184,189,0) 0%, rgba(147,184,189,0.8) 20%, rgba(147,184,189,1) 53%, rgba(147,184,189,0.8) 79%, rgba(147,184,189,0) 100%);
+    }
+    .fix:after{
+        content: "";
+        display: block;  /*!!!important*/
+        clear:both;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+    <form  class="form-box" action="/" method="post" accept-charset="UTF-8">
+        <div class="form-heading">系统管理</div>
+        <div class="item">
+            <label>用户名</label>
+            <div><i class="fa fa-user fa-lg" style="margin: 10px;position: absolute"></i></div>
+            <input type="text" class="form-control" style="padding-left:30px " placeholder="用户名" required=""  name="username" />
+        </div>
+        <div class="item">
+            <label>密码</label>
+            <span style="float: right"><a href="#"><small>忘记密码</small></a></span>
+            <div><i class="fa fa-lock fa-lg" style="margin: 10px;position: absolute"></i></div>
+            <input type="password" class="form-control" style="padding-left: 30px" placeholder="密码" required="" name="password"/>
+        </div>
+        <div class="fix item">
+            <label style="display: block">验证码</label>
+            <input type="text" style="width: 50%;margin-right: 10px;float: left" class="form-control" placeholder="验证码" required=""  name="verify_code"/>
+            <img src="/verify_code" style="float: left;height: 34px;width: 45%" onclick="this.src=this.src+'?'+new Date().getSeconds()"/>
+        </div>
+        <input type="submit" class="btn btn-default btn-block" style="margin-top: 20px" value="登录" />
+    </form>
+</div>
+{% endblock %}
+
+
+

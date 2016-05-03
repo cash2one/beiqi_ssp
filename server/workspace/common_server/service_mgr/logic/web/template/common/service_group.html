@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>服务器组配置</h3>  
+<div>
+<table class="table" id="service_group_table" style="table-layout: fixed">
+    <tr bgcolor="#EFEFEF">
+        <td width="50px" data-name="Num"></td>
+        <td data-name="id" data-EditType="TextBox">服务器组id</td>
+        <td data-name="invisible" data-EditType="TextBox">不可见服务列表</td>
+    </tr>  
+    {% for _, group_info in service_group_data.items() %}
+    <tr>
+        <td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+        <td>{{group_info.id}}</td>
+        <td>{{group_info.invisible}}</td>
+    </tr>
+    {% endfor %}
+</table>  
+</div>
+<button class="btn btn-success" onclick="AddRow(document.getElementById('service_group_table'),1)">新增</button>
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('service_group_table'),1)">删除 </button>
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('service_group_table'), '/save_service_group_data')">保存</button>
+
+<script language="javascript">  
+	var tabProduct = document.getElementById("service_group_table");
+	// 设置表格可编辑  
+	// 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
+	EditTables(tabProduct);  
+</script>  
+{% endblock %}
+
+
+

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>配置</h3>
+<div>
+<table class="table" id="rosters_table" style="table-layout: fixed">
+    <tr bgcolor="#EFEFEF">
+        <td width="40px" data-name="Num"></td>
+        <td width="100px" data-name="username" data-EditType="TextBox">用户名</td>
+        <td width="100px" data-name="email" data-EditType="TextBox">邮件地址</td>
+        <td width="100px" data-name="phone" data-EditType="TextBox">手机号</td>
+        <td width="100px" data-name="error_m" data-EditType="DropDownList"
+            data-DataItems="{'text':'是',value:'1'},{'text':'否',value:'0'}">
+            普通错误邮件
+        </td>
+        <td width="100px" data-name="fatal_m" data-EditType="DropDownList"
+            data-DataItems="{'text':'是',value:'1'},{'text':'否',value:'0'}">
+            致命错误邮件
+        </td>
+        <td width="100px" data-name="error_s" data-EditType="DropDownList"
+            data-DataItems="{'text':'是',value:'1'},{'text':'否',value:'0'}">
+            普通错误短信
+        </td>
+        <td width="100px" data-name="fatal_s" data-EditType="DropDownList"
+            data-DataItems="{'text':'是',value:'1'},{'text':'否',value:'0'}">
+            致命错误短信
+        </td>
+    </tr>
+    {% for roster_dic in rosters %}
+        <tr>
+            <td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+            <td>{{roster_dic.username}}</td>
+            <td>{{roster_dic.email}}</td>
+            <td>{{roster_dic.phone}}</td>
+            <td data-value="{{roster_dic.error_m}}">
+                {% if roster_dic.error_m == "1" %}是{% else %}否{% endif %}
+            </td>
+            <td data-value="{{roster_dic.fatal_m}}">
+                {% if roster_dic.fatal_m == "1" %}是{% else %}否{% endif %}
+            </td>
+            <td data-value="{{roster_dic.error_s}}">
+                {% if roster_dic.error_s == "1" %}是{% else %}否{% endif %}
+            </td>
+            <td data-value="{{roster_dic.fatal_s}}">
+                {% if roster_dic.fatal_s == "1" %}是{% else %}否{% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>  
+</div>
+<button class="btn btn-success" onclick="AddRow(document.getElementById('rosters_table'),1)">新增</button>
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('rosters_table'),1)">删除 </button>
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('rosters_table'), '/save_rosters')">保存</button>
+
+<script language="javascript">
+    EditTables(document.getElementById("rosters_table"));
+    $("#rosters_table").on('keypress',function(event){
+        var ClassName = event.target.className;
+        if(ClassName == "TextBox_phone"){
+            if (event.keyCode>57||event<48||event.target.value.length>=11){
+                event.preventDefault();
+//              简单的符号过滤：1.过滤非数字；2.当字符串长度大于11时，过滤输出
+            }
+        }
+        else if(ClassName == "TextBox_email"){
+            if(event.target.value.length>=30){
+                event.preventDefault()
+            }
+        }
+    })
+</script>  
+{% endblock %}

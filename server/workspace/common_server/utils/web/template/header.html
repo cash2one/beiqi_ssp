@@ -1,0 +1,32 @@
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#target" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><small>Server Management</small></a>
+    </div>
+    <div class="collapse navbar-collapse"  id="target">
+        <ul class="nav navbar-nav navbar-right" style="margin-right: 200px">
+            <li class="dropdown" style="text-align: center;min-width: 160px;">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="font-size: 20px">
+                    <i class="fa fa-user" style="position: absolute;margin-left:-20px"></i>{{user_name}}
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/user_info" target="mainFrame">个人信息</a></li>
+                    <li><a href="/logout">注销登录</a></li>
+                </ul>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav">
+            {% for sub_frame in sub_frames %}
+            <li>
+                <a href="{{sub_frame.url}}" target="mainFrame">{{sub_frame.name}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+

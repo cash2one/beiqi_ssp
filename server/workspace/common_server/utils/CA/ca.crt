@@ -1,0 +1,58 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 17378546236379425221 (0xf12cffb9fc18e9c5)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=cn, ST=FuJian, O=heat, OU=Game, CN=www.heat/emailAddress=zxw0819@gmail.com
+        Validity
+            Not Before: Sep  3 12:53:46 2014 GMT
+            Not After : Sep  2 12:53:46 2017 GMT
+        Subject: C=cn, ST=FuJian, O=heat, OU=Game, CN=www.heat/emailAddress=zxw0819@gmail.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:aa:60:d6:b7:3c:b8:1f:ef:6c:98:82:e5:77:26:
+                    fe:77:01:0d:ba:8a:5b:63:80:48:4d:3d:24:9c:36:
+                    49:5e:ce:68:2e:5a:4a:a3:65:1f:65:a1:a7:ec:3d:
+                    b9:2d:fa:25:49:f0:5c:a0:35:31:ab:c3:51:aa:c3:
+                    6c:ee:f8:86:fc:87:dd:f8:0e:11:8f:dc:6b:57:6c:
+                    87:4b:ee:f8:22:74:81:6d:a5:84:b8:18:52:3a:47:
+                    67:bc:a2:08:be:c2:9a:2d:fb:33:3d:08:74:03:a2:
+                    fb:87:c5:0c:86:9a:4e:55:2d:3a:90:fd:7c:27:1e:
+                    8b:8e:16:01:ec:ee:40:dd:3d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                5D:E0:72:8B:0D:F7:25:82:60:CE:10:38:93:DC:4A:2A:AD:46:9A:45
+            X509v3 Authority Key Identifier: 
+                keyid:5D:E0:72:8B:0D:F7:25:82:60:CE:10:38:93:DC:4A:2A:AD:46:9A:45
+
+            X509v3 Basic Constraints: 
+                CA:TRUE
+    Signature Algorithm: sha1WithRSAEncryption
+         9d:16:a5:75:e2:78:8d:ae:bf:d4:33:07:55:00:3c:18:fc:b8:
+         17:94:a5:83:39:98:35:be:86:f7:94:a3:37:98:8c:71:ed:64:
+         a5:c0:0a:4d:8d:d1:00:9e:fe:d8:74:2e:dd:f4:92:db:d6:35:
+         9d:bb:ad:39:1f:98:49:83:fe:43:e1:79:ac:99:3d:d0:aa:63:
+         c1:65:f1:0b:71:3e:f4:94:20:76:56:53:0a:5d:f1:7b:e4:6f:
+         d9:02:e4:58:cc:cc:c2:b0:0a:eb:37:57:58:4e:7f:9f:cf:ac:
+         76:47:b5:85:6e:9a:28:4e:e8:24:9e:e2:78:14:69:8f:17:40:
+         41:3d
+-----BEGIN CERTIFICATE-----
+MIICsDCCAhmgAwIBAgIJAPEs/7n8GOnFMA0GCSqGSIb3DQEBBQUAMHExCzAJBgNV
+BAYTAmNuMQ8wDQYDVQQIDAZGdUppYW4xDTALBgNVBAoMBGhlYXQxDTALBgNVBAsM
+BEdhbWUxETAPBgNVBAMMCHd3dy5oZWF0MSAwHgYJKoZIhvcNAQkBFhF6eHcwODE5
+QGdtYWlsLmNvbTAeFw0xNDA5MDMxMjUzNDZaFw0xNzA5MDIxMjUzNDZaMHExCzAJ
+BgNVBAYTAmNuMQ8wDQYDVQQIDAZGdUppYW4xDTALBgNVBAoMBGhlYXQxDTALBgNV
+BAsMBEdhbWUxETAPBgNVBAMMCHd3dy5oZWF0MSAwHgYJKoZIhvcNAQkBFhF6eHcw
+ODE5QGdtYWlsLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAqmDWtzy4
+H+9smILldyb+dwENuopbY4BITT0knDZJXs5oLlpKo2UfZaGn7D25LfolSfBcoDUx
+q8NRqsNs7viG/Ifd+A4Rj9xrV2yHS+74InSBbaWEuBhSOkdnvKIIvsKaLfszPQh0
+A6L7h8UMhppOVS06kP18Jx6LjhYB7O5A3T0CAwEAAaNQME4wHQYDVR0OBBYEFF3g
+cosN9yWCYM4QOJPcSiqtRppFMB8GA1UdIwQYMBaAFF3gcosN9yWCYM4QOJPcSiqt
+RppFMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAnRaldeJ4ja6/1DMH
+VQA8GPy4F5SlgzmYNb6G95SjN5iMce1kpcAKTY3RAJ7+2HQu3fSS29Y1nbutOR+Y
+SYP+Q+F5rJk90KpjwWXxC3E+9JQgdlZTCl3xe+Rv2QLkWMzMwrAK6zdXWE5/n8+s
+dke1hW6aKE7oJJ7ieBRpjxdAQT0=
+-----END CERTIFICATE-----

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block body %}
+<h3>服务器运行情况</h3>  
+<div>
+{% for grp, service_ls in grp_service_dic.items() %}
+<h2 style="margin-bottom: 0; padding-bottom: 0;font-size:xx-large;">{{grp}}</h2>
+<i>{{grp_count_dic[grp]}} instances</i>
+<table class="table" id="service">
+    <tr bgcolor="#EFEFEF">
+      	<td width="50px" data-name="Num"></td>
+	  	<td data-name="id" data-EditType="TextBox">服务ID</td>
+		<td data-name="service_version" data-EditType="TextBox">版本</td>
+		<td data-name="state" data-EditType="TextBox">状态</td>
+		<td data-name="doc" data-EditType="TextBox">文档</td>
+		<td data-name="port" data-EditType="TextBox">端口</td>
+		<td data-name="params" data-EditType="TextBox">参数</td>
+		<td data-name="heartbeat_time" data-EditType="TextBox">心跳时间</td>
+		<td data-name="current_load" data-EditType="TextBox">负载</td>
+	  	<td data-name="ip" data-EditType="TextBox">IP</td>
+      	<td data-name="service_group" data-EditType="TextBox">服务器组ID</td>
+		<td data-name="start_time" data-EditType="TextBox">开始时间</td>
+		<td data-name="process_name" data-EditType="TextBox">进程路径</td>
+
+    </tr>  
+	{% for service_dic in service_ls %}
+		<tr>
+			<td align="center"><input type="checkbox" name="checkbox2" value="checkbox" /></td>
+			<td>{{service_dic.id}}</td>
+			<td>{{service_dic.service_version}}</td>
+			<td>{{"连接" if service_dic.state else "断开"}}</td>
+			<td><a href={{service_dic.href}} target="_blank">{{service_dic.href_doc}}</a> </td>
+			<td>{{service_dic.port}}</td>
+			<td>{{service_dic.params}}</td>
+			<td>{{service_dic.heartbeat_time}}</td>
+			<td>{{service_dic.current_load}}</td>
+			<td>{{service_dic.ip}}</td>
+	      	<td>{{service_dic.service_group}}</td>
+			<td>{{service_dic.start_time}}</td>
+			<td>{{service_dic.process_name}}</td>
+		</tr>
+	{% endfor %}
+</table>  
+</div>
+{% endfor %}
+<button class="btn btn-success" onclick="AddRow(document.getElementById('service'),1)">新增</button>
+<button class="btn btn-success" onclick="DeleteRow(document.getElementById('service'),1)">删除 </button>
+<button class="btn btn-success"  onclick="SaveTableToUrl(document.getElementById('service'), '/save_service_data?grp={{grp}}')">保存</button>
+
+<script language="javascript">  
+	var tabProduct = document.getElementById("service");
+	// 设置表格可编辑  
+	// 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
+	EditTables(tabProduct);  
+</script>  
+{% endblock %}
+
+
+

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block head_extend%}
+<link href="/static/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <style>
+        div .row.header{
+            background-color: #EFEFEF;
+            border: 1px solid #DDDDDD;
+        }
+        div .col-sm-2,div .col-sm-4{
+            padding: 8px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+<div class="container-fluid">
+{%if grp_service_dic %}
+    <h1 style="text-align:center">逻辑服务运行汇总</h1>
+{%endif%}
+{% for grp, service_ls in grp_service_dic.items() %}
+    <h2 style="margin-bottom: 0; padding-bottom: 0;font-size:xx-large;">{{grp}}</h2>
+    <i>{{grp_count_dic[grp]}} instances</i>
+    <div class="row header">
+        <div class="col-sm-2">版本</div>
+        <div class="col-sm-2">文档</div>
+        <div class="col-sm-2">负载</div>
+        <div class="col-sm-2">心跳时间</div>
+        <div class="col-sm-2">开始时间</div>
+    </div>
+    {% for service_dic in service_ls %}
+    <div class="row">
+        <div class="col-sm-2">{{service_dic.service_version}}</div>
+        <div class="col-sm-2"><a href={{service_dic.href}} target="_blank">{{service_dic.href_doc}}</a></div>
+        <div class="col-sm-2">{{service_dic.current_load}}</div>
+        <div class="col-sm-2">{{service_dic.heartbeat_time}}</div>
+        <div class="col-sm-2">{{service_dic.start_time}}</div>
+    </div>
+    {% endfor %}
+{% endfor %}
+
+    {%if tp_service_dic %}
+    <h1 style="text-align:center;margin-top: 10%">第三方服务运行汇总</h1>
+    {%endif%}
+
+    {% for tp, service_ls in tp_service_dic.items() %}
+    <h2 style="margin-bottom: 0; padding-bottom: 0;font-size:xx-large;">{{tp}}</h2>
+    <i>{{tp_count_dic[tp]}} instances</i>
+        <div class="row header">
+            <div class="col-sm-4">IP地址</div>
+            <div class="col-sm-4">端口号</div>
+            <div class="col-sm-4">参数</div>
+        </div>
+            {% for service_dic in service_ls %}
+            <div class="row">
+                <div class="col-sm-4">{{service_dic.ip}}</div>
+                <div class="col-sm-4">{{service_dic.port}}</div>
+                <div class="col-sm-4">{{service_dic.params}}</div>
+            </div>
+            {% endfor %}
+    {% endfor %}
+</div>
+
+<div style="text-align: right; font-size:smaller; font-style: italic;">Served by {{pandora_info.hostname}} at {{pandora_info.datetime}} on Pandora v{{pandora_info.version}}</div>
+
+{% endblock %}
+
+
+
