@@ -38,9 +38,6 @@ logger.init_log("unittest", "unittest")
 from utils.network.tcp import TcpRpcClient, TcpRpcServer,  TcpRpcHandler
 from utils.network.http import HttpRpcServer, HttpRpcHandler, HttpRpcClient
 from utils.network.udp import UdpServer, UdpClient
-from utils.network.xmpp import XMPPClient
-from utils.opcode import xmpp
-from utils.wapper.xmpp import xmpp_handler
 from utils.wapper.web import web_adaptor
 from utils.route import Route, route
 from utils.meta.singleton import Singleton

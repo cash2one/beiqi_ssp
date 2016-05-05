@@ -12,8 +12,16 @@ SSO_KEY = 'e90445b608d940f9a7d114fea3497a4153fdcc315dff41809ad9cb703b53502a'
 
 tbl_name = 'device_info'
 
-#获取token
-def gen_token(api_secret, username, expire_days, api_key=None):
+def gen_token(api_secret, username, expire_days, api_key=None, account_rds=None):
+    """
+    获取token
+    :param api_secret:
+    :param username:
+    :param expire_days:
+    :param api_key:
+    :param account_rds:
+    :return:
+    """
     expire = 'exp:{0}'.format(int(time.time() + 86400 * expire_days))
     secret = 'sec:{0}'.format(api_secret)
     account = 'acc:{0}'.format(username)
@@ -25,10 +33,24 @@ def gen_token(api_secret, username, expire_days, api_key=None):
 
     plain = '|'.join(l)
     gen_log.debug('gen token, plain: {0}, token: {1}'.format(plain, rc4_encrypt(plain, SSO_KEY)))
-    _account_cache.send_cmd(*set_login_expire(username, expire.split(':')[1]))
+
+    # _account_cache.send_cmd(*set_login_expire(username, expire.split(':')[1]))
+    if account_rds:
+        account_rds.execute([set_login_expire(username, expire.split(':')[1])])
 
     del l
     return rc4_encrypt(plain, SSO_KEY)
+
+
+def parser_token(token):
+    """
+    解析token
+    :param token: token
+    :return: api_secret, username, expire_days,
+    """
+    plain = rc4_decrypt(token, SSO_KEY)
+    expire, secret, account = [v.split(":")[1] for v in  plain.split("|")]
+    return secret, account, int(expire)
 
 
 def decrypt_username(username, key):
