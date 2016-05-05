@@ -49,8 +49,14 @@ def parser_token(token):
     :return: api_secret, username, expire_days,
     """
     plain = rc4_decrypt(token, SSO_KEY)
-    expire, secret, account = [v.split(":")[1] for v in  plain.split("|")]
-    return secret, account, int(expire)
+
+    plain_ls = [v.split(":")[1] for v in  plain.split("|")]
+    if len(plain_ls) == 4:
+        expire, secret, account, api_key = plain_ls
+    else:
+        expire, secret, account = plain_ls
+        api_key = ""
+    return int(expire), secret, account,  api_key
 
 
 def decrypt_username(username, key):

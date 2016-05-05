@@ -19,24 +19,27 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.letters import *
 from api_server.config import GDevRdsInts, GAccRdsInts, GMQDispRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
+from util.crypto.sign import beiqi_tk_sign_wapper
 
 
 @route(r'/delete_letter')
 class DelLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, letter_id):
-        GDevRdsInts.pipe_execute((del_letter_info(letter_id), del_letter_inbox(Username, letter_id)))
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, letter_id):
+        GDevRdsInts.pipe_execute((del_letter_info(letter_id), del_letter_inbox(user_name, letter_id)))
         return {'status': 0}
 
 
 @route(r'/receive_letter')
 class ReceiveLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, start=None, end=None):
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, start=None, end=None):
         if (start and end) is None:
             return {'status': 1}
 
-        letter_ids_list = GDevRdsInts.execute([get_letter_inbox(Username, start, end)])
+        letter_ids_list = GDevRdsInts.execute([get_letter_inbox(user_name, start, end)])
         if len(letter_ids_list) == 0:
             return {'status': 2}
 
@@ -50,12 +53,13 @@ class ReceiveLetterHandler(HttpRpcHandler):
 @route(r'/send_letter')
 class SendLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, receivers, duplicate_to, topic, text, type, files):
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, receivers, duplicate_to, topic, text, type, files):
         ts = float('%0.2f' % time.time())
-        letter_id = ':'.join(('letter', str(ts), Username, receivers))
+        letter_id = ':'.join(('letter', str(ts), user_name, receivers))
 
         GDevRdsInts.execute([save_letter_info(letter_id, ':'.join((topic, text, type, files)))])
-        GDevRdsInts.execute([add_letter_outbox(Username, letter_id, ts)])
+        GDevRdsInts.execute([add_letter_outbox(user_name, letter_id, ts)])
 
         receivers = ujson.loads(receivers)
         logger.debug('receivers={0}'.format(receivers))
@@ -66,7 +70,7 @@ class SendLetterHandler(HttpRpcHandler):
             account_exist = GAccRdsInts.execute([exist_account(acc)])
             if not account_exist:
                 # not in redis, check mysql
-                sql = 'select * from {0} where username=%s'.format('ssp_user_login')
+                sql = 'select * from {0} where user_name=%s'.format('ssp_user_login')
                 res = DBBeiqiSspInst.query(sql, acc)
                 if len(res) == 0:
                     # not in mysql, so we check if it's a sn
@@ -87,7 +91,7 @@ class SendLetterHandler(HttpRpcHandler):
                 [shortcut_mq(
                     'cloud_push',
                     # sourcer, cb, from, description
-                    push_pack(Username, 'letter', 2, ':'.join((letter_id, topic, text, type, files)), account=acc)
+                    push_pack(user_name, 'letter', 2, ':'.join((letter_id, topic, text, type, files)), account=acc)
                 )]
             )
 

@@ -14,6 +14,7 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.cloud_app import *
 from api_server.config import GDevRdsInts, GMQDispRdsInts
 from util.redis_cmds.user_info import *
+from util.crypto.sign import beiqi_tk_sign_wapper
 
 
 dev_tbl = 'device_info'
@@ -23,15 +24,16 @@ pidinfo_tbl_name = 'gid_info'
 @route(r'/app/set_app_data')
 class SetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, receiver, app, payload):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, receiver, app, payload):
         now = str(time.time())
-        payload = '$'.join((Username, payload))
+        payload = '$'.join((user_name, payload))
         result = GDevRdsInts.execute([set_app_data(receiver, app, now, payload)])
         logger.debug(u'result = %r', result)
 
         GMQDispRdsInts.execute([
             shortcut_mq('cloud_push',
-                        push_pack(Username, 'set_app_data', 2, payload, account=receiver))
+                        push_pack(user_name, 'set_app_data', 2, payload, account=receiver))
         ])
         return {'status': 0}
 
@@ -39,7 +41,8 @@ class SetAppDataHandler(HttpRpcHandler):
 @route(r'/app/get_app_data')
 class GetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, receiver, app, ts=''):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, receiver, app, ts=''):
         if ts:
             data = GDevRdsInts.execute([get_app_data_by_ts(receiver, app, ts)])
         else:
@@ -51,7 +54,8 @@ class GetAppDataHandler(HttpRpcHandler):
 @route(r'/app/del_app_data')
 class DelAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, receiver, app, ts):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, receiver, app, ts):
         result = GDevRdsInts.execute([del_app_data(receiver, app, ts)])
         logger.debug(u'result = %r', result)
         return {'status': 0}

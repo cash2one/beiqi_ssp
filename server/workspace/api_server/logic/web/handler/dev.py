@@ -22,6 +22,7 @@ from util.sso.moments import del_all_self_share
 from util.sso.account import exist_account, set_account_pwd
 from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
+from util.crypto.sign import beiqi_tk_sign_wapper
 
 
 dev_tbl = 'device_info'
@@ -31,7 +32,8 @@ pidinfo_tbl_name = 'gid_info'
 @route(r'/dev/check_dev_args', name='/dev/check_dev_args')
 class CheckDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, sn):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, sn):
         sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(dev_tbl)
         ret_list = DBBeiqiSspInst.query(sql, sn)
         if len(ret_list) == 0:
@@ -41,11 +43,11 @@ class CheckDevArgsHandler(HttpRpcHandler):
         if primary is None:
             return {'status': 1}
 
-        logger.debug('check dev args: pid: {0}, acc: {1}'.format(sn, Username))
+        logger.debug('check dev args: pid: {0}, acc: {1}'.format(sn, user_name))
 
         GMQDispRdsInts.execute([
             shortcut_mq('cloud_push',
-                        push_pack(Username, 'check_dev_args', 2, '', account=sn)
+                        push_pack(user_name, 'check_dev_args', 2, '', account=sn)
                         )]
         )
         return {'status': 0}
@@ -54,9 +56,10 @@ class CheckDevArgsHandler(HttpRpcHandler):
 @route(r'/dev/change_dev_args')
 class ChangeDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, sn, payload):
-        logger.debug('change dev args: sn: {0}, payload: {1}, acc: {2}'.format(sn, payload, Username))
-        if not Username or not sn or not payload:
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, sn, payload):
+        logger.debug('change dev args: sn: {0}, payload: {1}, acc: {2}'.format(sn, payload, user_name))
+        if not user_name or not sn or not payload:
             self.send_error(400)
             return
 
@@ -72,7 +75,7 @@ class ChangeDevArgsHandler(HttpRpcHandler):
         GMQDispRdsInts.execute([
             shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'change_dev_args', 2, payload, account=sn)
+                push_pack(user_name, 'change_dev_args', 2, payload, account=sn)
             )]
         )
         logger.debug('cloud_push doing')
@@ -83,16 +86,17 @@ class ChangeDevArgsHandler(HttpRpcHandler):
 @route(r'/dev/dev_ctrl')
 class DevCtrlHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, sn, action):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, sn, action):
         primary = GDevRdsInts.execute([get_dev_primary(sn)])
         if not primary:
             return {'state': 1}
 
-        logger.debug('dev ctrl sn: {0}, action: {1}, acc: {2}'.format(sn, action, Username))
+        logger.debug('dev ctrl sn: {0}, action: {1}, acc: {2}'.format(sn, action, user_name))
         GMQDispRdsInts.execute([
             shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'dev_ctrl', 2, action, account=sn)
+                push_pack(user_name, 'dev_ctrl', 2, action, account=sn)
             )]
         )
         return {'state': 0}
@@ -101,6 +105,7 @@ class DevCtrlHandler(HttpRpcHandler):
 @route(r'/dev/dispatch_conf')
 class DispatchConfHandler(HttpRpcHandler):
     @web_adaptor()
+    @beiqi_tk_sign_wapper()
     def get(self, sn, saved_time):
         primary = GDevRdsInts.execute([get_dev_primary(sn)])
         if not primary:
@@ -113,12 +118,13 @@ class DispatchConfHandler(HttpRpcHandler):
 @route(r'/follow_review')
 class FollowReviewHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, applicant, gid, allowed, msg=''):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, applicant, gid, allowed, msg=''):
         primary = GDevRdsInts.execute([get_group_primary(gid)])
         if not primary:
             return {'status': 1}
 
-        if primary != Username:
+        if primary != user_name:
             return {'status': 2}
 
         sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
@@ -143,7 +149,7 @@ class FollowReviewHandler(HttpRpcHandler):
                 logger.debug('wechat resp.code = %r, body = %r', resp.code, resp.body)
                 return {'status': 0}
 
-        payload = ujson.dumps({'reviewer': Username, 'allowed': allowed, 'msg': msg, 'gid': gid})
+        payload = ujson.dumps({'reviewer': user_name, 'allowed': allowed, 'msg': msg, 'gid': gid})
         logger.debug(u'follow review, applicant=%r, payload=%r' % (applicant, payload))
         # 把关注验证结果放到申请人的消息列表里
         GDevRdsInts.pipe_execute(set_user_group_msglist(applicant, gid, 'follow_review', payload))
@@ -151,7 +157,7 @@ class FollowReviewHandler(HttpRpcHandler):
         GMQDispRdsInts.execute(
             [shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'follow_review', 2, payload, account=applicant)
+                push_pack(user_name, 'follow_review', 2, payload, account=applicant)
             )]
         )
         return {'status': 0}
@@ -160,20 +166,21 @@ class FollowReviewHandler(HttpRpcHandler):
 @route(r'/add_device')
 class AddDeviceHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, code, msg='', file=''):
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, code, msg='', file=''):
         if len(code) == 6:
             primary = GDevRdsInts.execute([get_group_primary(code)])
             if not primary:
                 return {'status': 3}
 
-            if Username == primary:
+            if user_name == primary:
                 return {'status': 9}
 
-            following = GDevRdsInts.execute([test_user_follow_group(Username, code)])
+            following = GDevRdsInts.execute([test_user_follow_group(user_name, code)])
             if following:
                 return {'status': 8}
 
-            payload = ujson.dumps({'applicant': Username, 'pid': code, 'msg': msg, 'file': file, 'time': str(time.time())})
+            payload = ujson.dumps({'applicant': user_name, 'pid': code, 'msg': msg, 'file': file, 'time': str(time.time())})
 
             # put follow request into primary msglist
             GMQDispRdsInts.pipe_execute(set_user_group_msglist(primary, code, 'follow', payload))
@@ -181,9 +188,9 @@ class AddDeviceHandler(HttpRpcHandler):
             GMQDispRdsInts.execute(
                 [shortcut_mq(
                     'cloud_push',
-                    push_pack(Username, 'follow', 2, payload, account=primary))]
+                    push_pack(user_name, 'follow', 2, payload, account=primary))]
             )
-            logger.debug('follow, acc={0}, followee={1}, msg={2}, file={3}'.format(Username, code, msg, file))
+            logger.debug('follow, acc={0}, followee={1}, msg={2}, file={3}'.format(user_name, code, msg, file))
             return {'status': 1}
 
         elif len(code) == 9:
@@ -200,18 +207,18 @@ class AddDeviceHandler(HttpRpcHandler):
             if real_ic != code:
                 return {'status': 6}
 
-            mobile = Username.split('@')
+            mobile = user_name.split('@')
             mobile = mobile[0] if len(mobile) > 1 else ''
-            logger.debug('bind, acc={0}, sn={1}, code={2}'.format(Username, sn, code))
+            logger.debug('bind, acc={0}, sn={1}, code={2}'.format(user_name, sn, code))
 
             GMQDispRdsInts.pipe_execute(
                 # sourcer, cb, from, description
-                shortcut_mq('cloud_push', push_pack(Username, 'bind', 2, ':'.join((Username, sn)), account=sn)),
-                shortcut_mq('gen_mysql', mysql_pack(dev_tbl, {'primary': Username, 'status': 'binded', 'mobile': mobile}, action=2, ref_kvs={'sn': sn}))
+                shortcut_mq('cloud_push', push_pack(user_name, 'bind', 2, ':'.join((user_name, sn)), account=sn)),
+                shortcut_mq('gen_mysql', mysql_pack(dev_tbl, {'primary': user_name, 'status': 'binded', 'mobile': mobile}, action=2, ref_kvs={'sn': sn}))
             )
 
             logger.debug('bind push sent')
-            GDevRdsInts.pipe_execute(bind_group_primary(gid, sn, Username), del_ic_sn(code), del_sn_ic(sn))
+            GDevRdsInts.pipe_execute(bind_group_primary(gid, sn, user_name), del_ic_sn(code), del_sn_ic(sn))
             return {'status': 2}
 
         else:
@@ -221,7 +228,8 @@ class AddDeviceHandler(HttpRpcHandler):
 @route(r'/del_device')
 class DelDeviceHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, gid):
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, gid):
         primary = GDevRdsInts.execute([get_group_primary(gid)])
         if not primary:
             return {'status': 3}
@@ -229,15 +237,15 @@ class DelDeviceHandler(HttpRpcHandler):
         followers = GDevRdsInts.execute([get_group_followers(gid)])
         sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
 
-        if primary != Username and Username not in followers:
+        if primary != user_name and user_name not in followers:
             return {'status': 4}
 
         # 账号:增加设备和主账号,减少wx账号和操作者账号
         followers.add(primary)
         followers.add(sn)
-        followers = filter(lambda u: u[:3] != 'wx#' and u != Username, followers)
+        followers = filter(lambda u: u[:3] != 'wx#' and u != user_name, followers)
 
-        if primary == Username:
+        if primary == user_name:
             for follow in followers:
                 GDevRdsInts.pipe_execute(unfollow_group(gid, sn, follow))
 
@@ -249,7 +257,7 @@ class DelDeviceHandler(HttpRpcHandler):
                         [shortcut_mq(
                             'cloud_push',
                             # sourcer, cb, from, description
-                            push_pack(Username, 'del_device', 2, '', account=follow)
+                            push_pack(user_name, 'del_device', 2, '', account=follow)
                         )]
                     )
 
@@ -275,11 +283,11 @@ class DelDeviceHandler(HttpRpcHandler):
             logger.debug('sn={0}'.format(sn))
 
             return {'status': 1}
-        elif Username in followers:
-            GDevRdsInts.pipe_execute(unfollow_group(gid, sn, Username))
+        elif user_name in followers:
+            GDevRdsInts.pipe_execute(unfollow_group(gid, sn, user_name))
 
-            if Username[:3] == 'wx#':
-                GDevRdsInts.execute([hdel_wechat_gid(Username, gid)])
+            if user_name[:3] == 'wx#':
+                GDevRdsInts.execute([hdel_wechat_gid(user_name, gid)])
 
             logger.debug('send apns followers:%s'%followers)
             for user in followers:
@@ -287,7 +295,7 @@ class DelDeviceHandler(HttpRpcHandler):
                         [shortcut_mq(
                             'cloud_push',
                             # sourcer, cb, from, description
-                            push_pack(Username, 'unfollow', 2, ':'.join((Username, gid)), account=user)
+                            push_pack(user_name, 'unfollow', 2, ':'.join((user_name, gid)), account=user)
                         )]
                     )
             return {'status': 2}
@@ -296,14 +304,15 @@ class DelDeviceHandler(HttpRpcHandler):
 @route(r'/invite_follow')
 class InviteFollowHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, guest, gid, msg, file):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, guest, gid, msg, file):
         primary = GDevRdsInts.execute([get_group_primary(gid)])
-        if primary != Username:
+        if primary != user_name:
             return {'status': 1}
 
         account_exist = GAccRdsInts.execute([exist_account(guest)])
         if not account_exist:
-            sql = 'select * from {0} where username=%s'.format('ssp_user_login')
+            sql = 'select * from {0} where user_name=%s'.format('ssp_user_login')
             res = self.settings.get('mysql_db').query(sql, guest)
             if len(res) == 0:
                 return {'status': 2}
@@ -315,14 +324,14 @@ class InviteFollowHandler(HttpRpcHandler):
         sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
         GDevRdsInts.execute([follow_group(gid, sn, guest)])
 
-        payload = ujson.dumps({'master': Username, 'gid': gid, 'msg': msg, 'file': file, 'action': 'invite_follow'})
+        payload = ujson.dumps({'master': user_name, 'gid': gid, 'msg': msg, 'file': file, 'action': 'invite_follow'})
         GDevRdsInts.pipe_execute(set_user_group_msglist(guest, gid, 'invite_follow', payload))
         logger.debug('invite follow, guest={0}, gid={1}, payload={2}'.format(guest, gid, payload))
 
         GMQDispRdsInts.execute(
             [shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'invite_follow', 2, payload, account=guest)
+                push_pack(user_name, 'invite_follow', 2, payload, account=guest)
 
             )]
         )
@@ -332,20 +341,21 @@ class InviteFollowHandler(HttpRpcHandler):
 @route(r'/reply_follow_invite')
 class ReplyFollowInviteHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, master, gid, reply):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, master, gid, reply):
         primary = GDevRdsInts.execute([get_group_primary(gid)])
         if primary != master:
             return {'status': 1}
 
         if reply == 'Y':
             sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
-            GDevRdsInts.pipe_execute(follow_group(gid, sn, Username))
+            GDevRdsInts.pipe_execute(follow_group(gid, sn, user_name))
 
-        GDevRdsInts.execute([del_invite_follow(gid, master, Username)])
+        GDevRdsInts.execute([del_invite_follow(gid, master, user_name)])
         GMQDispRdsInts.execute(
             [shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'reply_invite_follow', 2, 'reply={0}'.format(reply), account=master)
+                push_pack(user_name, 'reply_invite_follow', 2, 'reply={0}'.format(reply), account=master)
             )]
         )
         return {'status': 0}
@@ -354,7 +364,8 @@ class ReplyFollowInviteHandler(HttpRpcHandler):
 @route(r'/list_followers')
 class ListFollowersHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username, gid):
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name, gid):
         primary = GDevRdsInts.execute([get_group_primary(gid)])
         if not primary:
             return {'status': 1}
@@ -370,7 +381,7 @@ class ListFollowersHandler(HttpRpcHandler):
         followers = list(followers)
 
         sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
-        if not (Username == primary or Username == sn or Username in followers):
+        if not (user_name == primary or user_name == sn or user_name in followers):
             return {'status': 2}
 
         followers_info = {}
@@ -385,8 +396,9 @@ class ListFollowersHandler(HttpRpcHandler):
 @route(r'/list_devs')
 class ListDevsHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, Username):
-        devs = GDevRdsInts.execute([get_user_devs(Username)])
+    @beiqi_tk_sign_wapper()
+    def post(self, user_name):
+        devs = GDevRdsInts.execute([get_user_devs(user_name)])
 
         if devs is None or len(devs) == 0:
             return {'status': 1}
@@ -402,25 +414,26 @@ class ListDevsHandler(HttpRpcHandler):
 @route(r'/set_geo_fence')
 class SetGeoFenceHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, sn, lon, lat, radius, name, action):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, sn, lon, lat, radius, name, action):
         primary = GDevRdsInts.execute([get_dev_primary(sn)])
-        if Username != primary:
+        if user_name != primary:
             return {'status': 1}
 
         gid = GDevRdsInts.execute([get_gid_of_sn(sn)])
-        payload = ujson.dumps({'lon': lon, 'lat': lat, 'rad': radius, 'name': name, 'creator': Username, 'action': action})
+        payload = ujson.dumps({'lon': lon, 'lat': lat, 'rad': radius, 'name': name, 'creator': user_name, 'action': action})
 
         GDevRdsInts.pipe_execute(set_user_group_msglist(sn, gid, 'geo_fence', payload))
 
         GMQDispRdsInts.execute(
             [shortcut_mq(
                 'cloud_push',
-                push_pack(Username, 'set_geo_fence', 2, payload, account=sn)
+                push_pack(user_name, 'set_geo_fence', 2, payload, account=sn)
             )]
         )
 
         if action == 'add':
-            GDevRdsInts.execute([save_geo_fence(sn, Username, lon, lat, radius, name)])
+            GDevRdsInts.execute([save_geo_fence(sn, user_name, lon, lat, radius, name)])
         elif action == 'del':
             GDevRdsInts.execute([del_geo_fence(sn, lon, lat, radius)])
         return {'status': 0}
@@ -429,9 +442,10 @@ class SetGeoFenceHandler(HttpRpcHandler):
 @route(r'/get_geo_fences')
 class GetGeoFencesHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, pid):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, pid):
         primary, followers = GDevRdsInts.pipe_execute((get_dev_primary(pid), get_dev_followers(pid)))
-        if Username != primary and Username not in followers:
+        if user_name != primary and user_name not in followers:
             return {'status': 1}
 
         fences = GDevRdsInts.execute([get_all_geo_fences(pid)])

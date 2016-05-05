@@ -31,6 +31,7 @@ class UtilSignTest(unittest.TestCase):
         _tk="bfa336d93571056d229c75c9ad292f9a8f245108c112a7e1b2b13d06548a555c0430db788703158ffaa3270a83504a43ff7270ffbd943f6bb63be60e053cd20cb8d862ffc07ecc57f12123d73969"
         _sign = "f7112cc8c50c9eecd156a715e3bd0e94"
 
-        secret, account, expire = parser_token(_tk)
+        expire, secret, account, api_key = parser_token(_tk)
+        print expire, secret, account, api_key
         my_sign = sign(http_method, url, params, secret)
         self.assertTrue(my_sign == _sign)

@@ -13,20 +13,22 @@ from util.redis_cmds.circles import *
 from util.convert import mongo2utf8
 from api_server.config import GDevRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
+from util.crypto.sign import beiqi_tk_sign_wapper
 
 
 @route(r'/get_loc')
 class GetLocHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, Username, sn):
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, sn):
         """
         """
-        expect_pa, sub_ok = GDevRdsInts.pipe_execute((get_dev_primary(sn), test_user_follow_group(Username, sn)))
+        expect_pa, sub_ok = GDevRdsInts.pipe_execute((get_dev_primary(sn), test_user_follow_group(user_name, sn)))
         if not expect_pa:
             logger.warn('{0} not bound'.format(sn))
             self.send_error(400)
             return
-        if not (expect_pa.split(':')[-1] == Username or sub_ok):
+        if not (expect_pa.split(':')[-1] == user_name or sub_ok):
             logger.warn('{0} not bound, not sa'.format(sn))
             self.send_error(400)
             return
