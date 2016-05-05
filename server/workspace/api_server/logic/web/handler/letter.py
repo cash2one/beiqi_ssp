@@ -19,7 +19,7 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.letters import *
 from api_server.config import GDevRdsInts, GAccRdsInts, GMQDispRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
 @route(r'/delete_letter')

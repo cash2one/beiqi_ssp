@@ -29,7 +29,7 @@ from util.redis_cmds.circles import get_dev_primary, get_group_primary, get_grou
 from util.sso.moments import add_share, save_share_info, add_self_share
 from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
 from util.sso.moments import del_one_comment
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
 device_tbl = 'device_info'

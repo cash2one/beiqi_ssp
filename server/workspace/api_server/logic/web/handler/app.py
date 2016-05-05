@@ -14,7 +14,7 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.cloud_app import *
 from api_server.config import GDevRdsInts, GMQDispRdsInts
 from util.redis_cmds.user_info import *
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
 dev_tbl = 'device_info'

@@ -13,7 +13,7 @@ from util.redis_cmds.circles import *
 from util.convert import mongo2utf8
 from api_server.config import GDevRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
 @route(r'/get_loc')

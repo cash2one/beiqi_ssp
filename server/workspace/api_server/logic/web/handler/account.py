@@ -18,7 +18,8 @@ from util.convert import bs2utf8
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.redis_cmds.mqtt import get_mqtt_status
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+
 
 user_tbl = 'user_info'
 

@@ -6,7 +6,7 @@ Created on 2016/5/5
 @author: Jay
 """
 from lib.common import *
-from util.crypto.sign import sign
+from utils.crypto.beiqi_sign import sign
 from util.sso_common.build_sso_token import parser_token
 
 

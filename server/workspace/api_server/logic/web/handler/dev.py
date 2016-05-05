@@ -22,7 +22,7 @@ from util.sso.moments import del_all_self_share
 from util.sso.account import exist_account, set_account_pwd
 from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 from api_server.db.db_oper import DBBeiqiSspInst
-from util.crypto.sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
 dev_tbl = 'device_info'
