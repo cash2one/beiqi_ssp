@@ -2,7 +2,7 @@
 
 
 import time
-from util.log_util import gen_log
+from utils import logger
 
 
 class SessionCache(object):
@@ -68,11 +68,11 @@ class SessionCache(object):
 
     def get_session_cache(self, sid):
         if self.is_sid_expired(sid):
-            gen_log.debug('sid: {0} expired'.format(sid))
+            logger.debug('sid: {0} expired'.format(sid))
             return None
 
         d = self.cache.get(sid)
         if d is None:
-            gen_log.debug('sid: {0} cache is None. cache {1}'.format(sid, self.cache))
+            logger.debug('sid: {0} cache is None. cache {1}'.format(sid, self.cache))
 
         return self.cache.get(sid)

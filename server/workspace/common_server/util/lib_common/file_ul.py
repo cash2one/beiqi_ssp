@@ -2,7 +2,7 @@
 import time
 import re
 from binascii import b2a_hex
-from util.log_util import gen_log
+from utils import logger
 from util.mq_packs.pt30_forward_pack import pack as forward_pack
 from util.mq_packs.uni_pack import shortcut_mq
 from util.sso.redis_cal import incre_unique_sn
@@ -45,22 +45,22 @@ def common_file_token(dev_filter, cur_account, fn, mode, ref):
     #     if primary_account:
     #         primary_account = primary_account.split(':')[-1]
     #         if not (primary_account == cur_account or is_sa):
-    #             gen_log.warn('{0} not pa even sa {1}'.format(pid, cur_account))
+    #             logger.warn('{0} not pa even sa {1}'.format(pid, cur_account))
     #             return
     #     else:
-    #         gen_log.warn('{0} not bound'.format(pid))
+    #         logger.warn('{0} not bound'.format(pid))
     #         return
 
     if not ul:
         #下载
         _ = extract_ref(ref)
         if not _:
-            gen_log.warn('downloading, ref extract fail: {0}'.format(ref))
+            logger.warn('downloading, ref extract fail: {0}'.format(ref))
             return
 
         ref_share, ref_by_app, ref_unique_key, ref_fn = _
         if ref_fn != fn:
-            gen_log.warn('downloading, fn {0} not match {1}'.format(ref_fn, fn))
+            logger.warn('downloading, fn {0} not match {1}'.format(ref_fn, fn))
             return
     else:
         ref_by_app = True
@@ -89,15 +89,15 @@ def ul_args_ok(redis_cal, tk, src, usage):
     """
     tk_params = extract_tk(tk, True)
     if not tk_params:
-        gen_log.warn('extract token fail')
+        logger.warn('extract token fail')
         return None
     file_type = bs2utf8(src)
     if not is_num(file_type):
-        gen_log.warn('src type invalid: {0}'.format(file_type))
+        logger.warn('src type invalid: {0}'.format(file_type))
         return None
     file_type = int(file_type)
     if file_type not in APP_VALID_SOURCE:
-        gen_log.warn('src unknown: {0}'.format(file_type))
+        logger.warn('src unknown: {0}'.format(file_type))
         return None
 
     share, by_app, pid, fn = tk_params

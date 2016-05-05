@@ -3,7 +3,7 @@
 
 from datetime import datetime
 from torndb import Connection
-from util.log_util import gen_log
+from utils import logger
 
 
 def _insert_one(tab_name, one):
@@ -11,7 +11,7 @@ def _insert_one(tab_name, one):
     key_order = one.keys()
     for k, v in one.iteritems():
         if not isinstance(v, (str, int, long, float, bool, datetime)):
-            gen_log.debug('unsupported sql type: %r, %r, %r in %r' % (k, v, type(v), tab_name))
+            logger.debug('unsupported sql type: %r, %r, %r in %r' % (k, v, type(v), tab_name))
             raise ValueError('unsupported sql type: {0}, {1}, {2} in {3}'.format(k, v, type(v), tab_name))
 
     return 'insert into {0} ({1}) values {2}'.format(

@@ -9,7 +9,7 @@ from convert import pad, unpad, bs2utf8
 from bit import span_bits
 from crypto_rc4 import encrypt as rc4_encrypt, decrypt as rc4_decrypt
 import random
-from log_util import gen_log
+from utils import logger
 
 
 MAX_FILENAME_LEN = 68
@@ -74,31 +74,31 @@ def gen_ref(share, by_app, acc, fn):
 
 
 def extract_ref(ref):
-    gen_log.debug('extract ref begin')
+    logger.debug('extract ref begin')
 
     if not ref or not isinstance(ref, str) or ref == '':
         return None
     ref = rc4_decrypt(ref, ref_pwd, a2b_hex)
-    gen_log.debug(u'ref = %r', ref)
+    logger.debug(u'ref = %r', ref)
     if len(ref) <= 3:
         #至少要求3字节
         return None
 
     head, acc_len, key_cipher_len = struct.unpack('>BBB', ref[:3])
-    gen_log.debug(u'head = %r, acc_len = %r, key_cipher_len = %r', head, acc_len, key_cipher_len)
+    logger.debug(u'head = %r, acc_len = %r, key_cipher_len = %r', head, acc_len, key_cipher_len)
     if len(ref) != 3 + acc_len + key_cipher_len + MAX_FILENAME_LEN:
         return None
 
     acc = ref[3:acc_len + 3]
     key_cipher = ref[acc_len + 3:acc_len + 3 + key_cipher_len]
-    gen_log.debug(u'acc = %r, key_cipher = %r', acc, key_cipher)
-    gen_log.debug(u'rc4 decrypt result = %r', rc4_decrypt(key_cipher, ref_pwd, None))
+    logger.debug(u'acc = %r, key_cipher = %r', acc, key_cipher)
+    logger.debug(u'rc4 decrypt result = %r', rc4_decrypt(key_cipher, ref_pwd, None))
     if acc != rc4_decrypt(key_cipher, ref_pwd, None):
         return None
 
     share, by_app = span_bits(head, 7, 6, 0)
 
-    gen_log.debug('extract ref end')
+    logger.debug('extract ref end')
 
     return share, by_app, acc, unpad(ref[-MAX_FILENAME_LEN:])
 
@@ -107,47 +107,47 @@ def extract_tk(tk, ul):
     """
     :param ul: 上传
     """
-    gen_log.debug('extract tk begin')
+    logger.debug('extract tk begin')
     if not tk or not isinstance(tk, str) or len(tk) <= 2:
-        gen_log.info('tk too short')
+        logger.info('tk too short')
         return None
     tk = rc4_decrypt(tk, tk_pwd, a2b_hex)
-    gen_log.debug(u'tk = %r', tk)
+    logger.debug(u'tk = %r', tk)
     rnd, val = tk[-2:]
     val = rc4_decrypt(val, tk_pwd, None)
-    gen_log.debug('rnd = %r, val = %r', rnd, val)
+    logger.debug('rnd = %r, val = %r', rnd, val)
     rnd = struct.unpack('>B', rnd)[0]
     val = struct.unpack('>B', val)[0]
-    gen_log.debug('rnd = %r, val = %r', rnd, val)
+    logger.debug('rnd = %r, val = %r', rnd, val)
 
     if rnd + 1 != val:
-        gen_log.warn('rnd={0} & val={1} unmatch'.format(rnd, val))
+        logger.warn('rnd={0} & val={1} unmatch'.format(rnd, val))
         return None
 
     head, acc_len = struct.unpack('>BB', tk[:2])
-    gen_log.debug('head = %r, acc_len = %r', head, acc_len)
+    logger.debug('head = %r, acc_len = %r', head, acc_len)
     if len(tk) != 2 + acc_len + 4 + MAX_FILENAME_LEN + 2:
-        gen_log.warn('tk len not ok')
+        logger.warn('tk len not ok')
         return None
 
     #10分钟有效
     ts_offset = 2 + acc_len
     t = struct.unpack('>I', tk[ts_offset:ts_offset+4])[0]
     now = time.time()
-    gen_log.debug('now = %r, t = %r', now, t)
+    logger.debug('now = %r, t = %r', now, t)
 
     if now - struct.unpack('>I', tk[ts_offset:ts_offset+4])[0] >= 600:
-        gen_log.warn('tk timeout')
-        gen_log.debug('now = %r, t = %r', now, t)
+        logger.warn('tk timeout')
+        logger.debug('now = %r, t = %r', now, t)
         return None
 
     share, by_app, is_ul = span_bits(head, 7, 5, 0)
-    gen_log.debug('share = %r, by_app = %r, is_ul = %r', share, by_app, is_ul)
+    logger.debug('share = %r, by_app = %r, is_ul = %r', share, by_app, is_ul)
     if is_ul != ul:
-        gen_log.warn('ul param invalid')
+        logger.warn('ul param invalid')
         return None
 
-    gen_log.debug('extract tk end')
+    logger.debug('extract tk end')
 
     return share, by_app, tk[2: acc_len+2], unpad(tk[ts_offset+4: ts_offset+4+MAX_FILENAME_LEN])
 
@@ -163,7 +163,7 @@ def check_tk_ref(tk, ul, ref):
     if not ref:
         return None
 
-    gen_log.debug('check_tk_ref tk={0}, ref={1}'.format(tk, ref))
+    logger.debug('check_tk_ref tk={0}, ref={1}'.format(tk, ref))
     if len(tk) != len(ref):
         return None
     #api/file_tk返回的unique_token为pid

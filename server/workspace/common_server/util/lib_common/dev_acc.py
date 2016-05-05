@@ -6,7 +6,7 @@ from util.convert import combine_redis_cmds, bs2utf8
 from util.sso.dev_active import list_dev_subaccounts, test_primary_bound,\
     test_dev_exist, get_all_alias, is_dev_subaccounted, set_alias
 from util.sso.account import get_mb_key, get_mobile
-from util.log_util import gen_log
+from utils import logger
 from util.oem_account_key import oem_accounts
 from itertools import izip
 from util.redis.async_redis.redis_resp import decode_resp_ondemand
@@ -121,7 +121,7 @@ def find_all_contacts(dev_filter, account_cache, pid):
     if isinstance(mobiles, str):
         mobiles = (mobiles,)
     if len(mobiles) != len(sub_accounts):
-        gen_log.warn('mobile neq sub_accs: {0}, {1}'.format(mobiles, sub_accounts))
+        logger.warn('mobile neq sub_accs: {0}, {1}'.format(mobiles, sub_accounts))
         return
     for x in izip(mobiles, sub_accounts):
         yield x

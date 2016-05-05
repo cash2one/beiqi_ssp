@@ -6,8 +6,8 @@ import struct
 from tornado.tcpserver import TCPServer
 from tornado import stack_context
 from tornado.util import bytes_type
-from log_util import gen_log
 from redis.async_redis.redis_resp import decode_resp_ondemand
+from utils import logger
 
 
 class _BadRequestException(Exception):
@@ -70,7 +70,7 @@ class ProxyCon(object):
 
     def close(self):
         if self.__log:
-            gen_log.debug('CLOSED: {0}'.format(self.address))
+            logger.debug('CLOSED: {0}'.format(self.address))
 
         self.stream.close()
         self._header_callback = None
@@ -101,16 +101,16 @@ class ProxyCon(object):
             self.stream.read_bytes(6, self._header_callback)
             self.stream.set_nodelay(False)
         except IOError, ex:
-            gen_log.error('io err: {0}'.format(ex))
+            logger.error('io err: {0}'.format(ex))
             self.close()
 
     def _on_index(self, data):
         if self.__log:
-            gen_log.debug('>> INDEX: %r' % data)
+            logger.debug('>> INDEX: %r' % data)
 
         if not data.startswith('*1'):
             #判定版本
-            gen_log.warn('index malformat: %r' % data)
+            logger.warn('index malformat: %r' % data)
             self.close()
             return
 
@@ -122,11 +122,11 @@ class ProxyCon(object):
 
     def _on_request_body(self, data):
         if self.__log:
-            gen_log.debug('>> PAYLOAD: %r' % data)
+            logger.debug('>> PAYLOAD: %r' % data)
         ok, parsed, remain = decode_resp_ondemand(data, 0, False, 1)
         if not ok or remain or not parsed:
             #命令字，序号
-            gen_log.warn('invalid body: %r' % data)
+            logger.warn('invalid body: %r' % data)
             self.close()
             return
 

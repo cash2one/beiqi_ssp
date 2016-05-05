@@ -6,7 +6,7 @@ from internal_forward.conf_encode import encode
 from configx import conf_file, conf_stream
 from convert import parse_ip_port
 from redis.async_redis.redis_resp import decode_resp_ondemand
-from log_util import gen_log
+from log_util import logger
 from itertools import izip
 from os import path
 
@@ -36,7 +36,7 @@ def _send_recv(sock, out_buf):
         #正常退出
         yield ''
     except socket.error, ex:
-        gen_log.error('conf err: %s' % ex.strerror)
+        logger.error('conf err: %s' % ex.strerror)
         yield ''
 
 

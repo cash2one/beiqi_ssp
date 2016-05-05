@@ -7,7 +7,7 @@ from pwd_ensure import lost_parse
 from util.torn_resp import json
 from util.sso.account import get_pwd, get_mb_key, cipher_pwd, set_account_pwd, get_mobile, gen_lostpwd_val
 from util.oem_conv import fix_account_postfix
-from util.log_util import gen_log
+from utils import logger
 from mq_packs.uni_pack import shortcut_mq
 from mq_packs.normal_sms_pack import pack as sms_notify_pack
 import random
@@ -37,17 +37,17 @@ def lost_stepbystep(api_key, auth_cipher, sign, ver=1):
 
     if not redis_old_pwd:
         #帐号不存在
-        gen_log.warn('{0} not exist'.format(account))
+        logger.warn('{0} not exist'.format(account))
         return {'state': 3}
 
     if is_oem and not mb_apikey:
-        gen_log.warn('oem {0}, {1} not exist'.format(account, api_key))
+        logger.warn('oem {0}, {1} not exist'.format(account, api_key))
         return {'state': 3}
 
     if mb_apikey:
         _, redis_api_key = mb_apikey.split(':')
         if redis_api_key != api_key:
-            gen_log.warn('api_key not match: {0}, {1}'.format(redis_api_key, api_key))
+            logger.warn('api_key not match: {0}, {1}'.format(redis_api_key, api_key))
             return {'state': 3}
 
     redis_mb = get_mobile(_account_cache, api_key, account)
@@ -64,7 +64,7 @@ def lost_stepbystep(api_key, auth_cipher, sign, ver=1):
         return {'state': 2}
 
     if redis_old_pwd != cipher_pwd(old_pwd):
-        gen_log.debug('old pwd not match')
+        logger.debug('old pwd not match')
         return {'state': 4}
     if len(new_pwd) < 6:
         return {'state': 5}

@@ -3,7 +3,7 @@
 
 from util.oem_account_key import oem_accounts, beiqi_keys
 from util.oem_conv import parse_oem_options
-from util.log_util import gen_log
+from utils import logger
 from common.decode_3rd import check_cipher
 
 
@@ -12,7 +12,7 @@ def _select_lt_oem(api_key):
     _1 = oem_accounts.get(api_key)
 
     if not _0 and not _1:
-        gen_log.warn('{0} not found'.format(api_key))
+        logger.warn('{0} not found'.format(api_key))
         return None
 
     if _0:
@@ -36,7 +36,7 @@ def lost_parse(api_key, auth_cipher, sign, ver=1):
 
     if not need_sms_code:
         if not (old_pwd and new_pwd and old_pwd != new_pwd):
-            gen_log.warn('old/new pwd missing, or eq: {0}, {1}'.format(old_pwd, new_pwd))
+            logger.warn('old/new pwd missing, or eq: {0}, {1}'.format(old_pwd, new_pwd))
             return 3
         return 0, account, old_pwd, new_pwd, is_oem
     return 2, account, None, None, is_oem
@@ -51,7 +51,7 @@ def new_parse(api_key, auth_cipher, sign, ver=1):
     need_sms_code, api_ob, is_oem = need_sms_code
     if not need_sms_code:
         #不需要验证码
-        gen_log.warn('{0} not need sms_pwd_new'.format(api_key))
+        logger.warn('{0} not need sms_pwd_new'.format(api_key))
         return 1
 
     plain = check_cipher(auth_cipher, api_ob.get('s'), sign)

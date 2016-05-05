@@ -3,7 +3,7 @@
 
 from util.convert import is_mobile, combine_redis_cmds
 from util.sso.account import gen_newacc_reg_val
-from util.log_util import gen_log
+from utils import logger
 from mq_packs.uni_pack import shortcut_mq
 from mq_packs.normal_sms_pack import pack as sms_notify_pack, SmsType
 from random import randint
@@ -21,7 +21,7 @@ def reg_via_mobile(account, api_key):
         return
 
     val_code = ''.join((str(randint(0, 9)) for _ in xrange(6)))
-    gen_log.debug('val_code %s sent' % val_code)
+    logger.debug('val_code %s sent' % val_code)
     #该接口需兼容oem，故填入空api_key
     _account_cache.send_multi_cmd(*combine_redis_cmds(gen_newacc_reg_val(mobile, val_code, api_key or '')))
     mq_hub.send_cmd(
@@ -37,6 +37,6 @@ def reg_via_mobile(account, api_key):
        )
     )
 
-    gen_log.debug('account %s val_code %s sent' % (account, val_code))
+    logger.debug('account %s val_code %s sent' % (account, val_code))
 
     return True

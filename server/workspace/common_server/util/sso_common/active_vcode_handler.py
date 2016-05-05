@@ -2,7 +2,7 @@
 
 
 from tornado.web import RequestHandler
-from util.log_util import gen_log
+from utils import logger
 from util.convert import bs2utf8
 from util.torn_resp import json
 from util.oem_conv import map_account_mobile_oem_key
@@ -30,24 +30,24 @@ class ActiveRegCodeHandler(RequestHandler):
         mobile = account.split('@')[0]
         val_code = _account_cache.send_cmd(*get_newacc_reg_val(mobile))
         if not val_code:
-            gen_log.warn('no redis entry for {0}'.format(mobile))
+            logger.warn('no redis entry for {0}'.format(mobile))
             self.finish(json.dumps({'state': 2}))
             return
 
         val_code, expect_api_key = val_code.split(':')
         if val_code != code:
-            gen_log.warn('code not match')
+            logger.warn('code not match')
             self.finish(json.dumps({'state': 2}))
             return
 
         if not expect_api_key:
             if api_key not in beiqi_keys:
-                gen_log.warn('expect key empty, key not lt: {0}'.format(api_key))
+                logger.warn('expect key empty, key not lt: {0}'.format(api_key))
                 self.finish(json.dumps({'state': 5}))
                 return
         else:
             if expect_api_key != api_key:
-                gen_log.warn('api_key not match: {0} != {1}'.format(expect_api_key, api_key))
+                logger.warn('api_key not match: {0} != {1}'.format(expect_api_key, api_key))
                 self.finish(json.dumps({'state': 5}))
                 return
 

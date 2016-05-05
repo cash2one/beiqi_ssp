@@ -2,7 +2,7 @@
 
 import numbers
 from cal import cal_aprx, conv_raw
-from util.log_util import gen_log
+from utils import logger
 from util.convert import redis_encode_batch
 
 
@@ -20,22 +20,22 @@ def resolve_gps_table(typ, sn):
 
 
 def save_memcache(pid, lg, la, ts, from_, radius, addr, token, cmd, battery=0):
-    gen_log.debug('mc gps: {0}, {1}, {2}, {3}, {4}'.format(pid, lg, la, ts, from_))
+    logger.debug('mc gps: {0}, {1}, {2}, {3}, {4}'.format(pid, lg, la, ts, from_))
     if lg is None:
         return
     if not isinstance(lg, numbers.Real) and not isinstance(la, numbers.Real):
         return
     if not isinstance(ts, int):
-        gen_log.warn('ts invalid: {0}'.format(ts))
+        logger.warn('ts invalid: {0}'.format(ts))
         return
     if not isinstance(from_, int):
-        gen_log.warn('from_ invalid: {0}'.format(from_))
+        logger.warn('from_ invalid: {0}'.format(from_))
         return
     if not isinstance(radius, int):
-        gen_log.warn('radius invalid: {0}'.format(radius))
+        logger.warn('radius invalid: {0}'.format(radius))
         return
     if not (isinstance(addr, str) and isinstance(token, (int, long)) and isinstance(cmd, str)):
-        gen_log.warn('args invalid: {0}, {1}'.format(token, cmd))
+        logger.warn('args invalid: {0}, {1}'.format(token, cmd))
         return
 
     lg = conv_raw(lg)

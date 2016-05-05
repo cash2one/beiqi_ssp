@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import time
-# from util.log_util import gen_log
+# from utils import logger
 
 TIMELINE_INBOX = 'moments:inbox'
 COMMENT_GROUP = 'comment_group'
@@ -118,7 +118,7 @@ def get_comment(share_id):
     now = round(time.time(), 2)
     key = ':'.join((COMMENT_GROUP, share_id))
 
-    # gen_log.debug('get comment, share_id={0}, start={1}, now={2}, key={3}'.format(share_id, start, now, key))
+    # logger.debug('get comment, share_id={0}, start={1}, now={2}, key={3}'.format(share_id, start, now, key))
 
     return 'zrangebyscore', key, start, now
 

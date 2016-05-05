@@ -25,4 +25,4 @@ def init_logger(log_path):
     return log
 
 
-gen_log = init_logger('./logs/css.log')
+logger = init_logger('./logs/css.log')

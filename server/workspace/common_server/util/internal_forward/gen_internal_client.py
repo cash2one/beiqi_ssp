@@ -8,7 +8,7 @@ from tornado.stack_context import NullContext
 import socket
 from collections import deque
 from util.redis.async_redis.redis_resp import decode_resp_ondemand
-from util.log_util import gen_log
+from utils import logger
 
 
 _RESP_FUTURE = 'future'
