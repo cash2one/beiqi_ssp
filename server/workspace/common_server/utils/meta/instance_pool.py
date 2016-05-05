@@ -14,7 +14,7 @@ class InstancePool(type):
         super(InstancePool, cls).__init__(name, bases, dict_value)
 
     def instance(cls, *args, **kwargs):
-        key = ujson.dumps([arg.__name__ if isinstance(arg, type) else arg for arg in args ]) if args else ""
+        key = ujson.dumps([str(arg) for arg in args ]) if args else ""
         key += ujson.dumps(kwargs) if kwargs else ""
         ins = cls.instances.get(key, None)
         if not ins:

@@ -278,6 +278,9 @@ class DBInstance(object):
         self.user_db_ins = None
         self.schema_db_ins = None
 
+    def __str__(self):
+        return "%s:%s" % (self.db_kwargs['db_host'],self.db_kwargs['db_port'])
+
     def init(self):
         self.user_db_ins = DbConnection(**self.db_kwargs)
         self.db_kwargs.update({"db_name": "information_schema"})

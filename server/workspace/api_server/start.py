@@ -16,7 +16,6 @@ from api_server import setting
 from utils.service_control.controller import MainService
 
 
-
 class Service(MainService):
     """
     服务类
@@ -24,17 +23,7 @@ class Service(MainService):
     def __init__(self):
         MainService.__init__(self, setting.SERVICE_TYPE,
                              setting.VERSION,
-                             db_update_dir_path=os.path.join(os.path.dirname(__file__), "db_update"),
                              use_mysqldb=True)
-
-    def init(self, args):
-        """
-        初始化接口
-        :param args: 参数变量
-        :return:
-        """
-        from utils.openfire.user_service import UserService
-        UserService(args.openfire_ip, args.openfire_port)
 
     def add_cmd_opts(self, arg_parser):
         # db

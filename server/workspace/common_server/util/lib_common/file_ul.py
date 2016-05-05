@@ -1,19 +1,15 @@
 #coding:utf-8
-
-
-from util.log_util import gen_log
-from mq_packs.pt30_forward_pack import pack as forward_pack
-from mq_packs.uni_pack import shortcut_mq
+import time
+import re
 from binascii import b2a_hex
+from util.log_util import gen_log
+from util.mq_packs.pt30_forward_pack import pack as forward_pack
+from util.mq_packs.uni_pack import shortcut_mq
 from util.sso.redis_cal import incre_unique_sn
 from util.filetoken import extract_tk
-import time
 from util.convert import bs2utf8, is_num, combine_redis_cmds, is_email
-from util.sso.dev_active import test_primary_bound, is_dev_subaccounted
-from binascii import a2b_hex
 from util.filetoken import extract_ref, gen_file_tk
 from util.crypto_rc4 import encrypt as rc4_encrypt, decrypt as rc4_decrypt
-import re
 
 
 APP_VALID_SOURCE = (1, 2, 3)
