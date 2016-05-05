@@ -8,7 +8,7 @@ from util.log_util import gen_log
 from util.sso.account import set_login_expire
 
 # SSO_KEY = 'd15d67922dd241cdbfc355d19544d6757dc759e60b3c4b74b868704c8a37b897'
-SSO_KEY = 'e90445b608d940f9a7d114fea3497a4153fdcc315dff41809ad9cb703b53502a'
+SSO_KEY = 'e91647cf091a11e69e11408d5c5a48caf4393b8f091a11e6bb44408d5c5a48ca'
 
 tbl_name = 'device_info'
 
