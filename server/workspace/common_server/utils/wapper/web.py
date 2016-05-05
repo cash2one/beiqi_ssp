@@ -11,6 +11,11 @@ import ujson
 from utils import logger
 from utils.comm_func import strip_dic_list
 from utils.service_control.parser import ArgumentParser
+from utils.wapper.stackless import gevent_adaptor
+
+
+def enc_utf8(v):
+    return v.encode('utf-8') if isinstance(v, unicode) else v
 
 
 def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_parser_fun=None):
@@ -24,7 +29,7 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
         return use_json_dumps
 
     def param_process(self, args, kwargs):
-        kwargs.update(dict((k.strip(), value[-1].strip()) for k, value in self.request.arguments.items()))
+        kwargs.update(dict((enc_utf8(k.strip()), enc_utf8(value[-1].strip())) for k, value in self.request.arguments.items()))
 
         if body_parser_fun:
             body_parser_fun(args, kwargs, self.request.body)
@@ -88,6 +93,7 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
         self.finish()
 
     def web_func_adaptor(fun):
+        @gevent_adaptor(True)
         def web_param_adaptor(self, *args, **kwargs):
             try:
                 before_access_process(self, args, kwargs)

@@ -12,6 +12,7 @@ from DBUtils.PooledDB import PooledDB
 from MySQLdb.cursors import DictCursor, Cursor
 from utils.comm_func import strip_dic_list
 from utils.scheduler import Jobs
+from utils.meta.instance_pool import InstancePool
 
 
 class NoPool(object):
@@ -317,6 +318,8 @@ def is_db_string(data_type):
     return data_type in ['text', 'varchar', 'char', 'date', 'datetime', 'tinytext', 'longtext']
 
 class SchemaTable(object):
+    __metaclass__ = InstancePool
+
     def __init__(self, db_instance, table_schema, table_name):
         assert isinstance(db_instance, DBInstance)
         self.db_instance = db_instance

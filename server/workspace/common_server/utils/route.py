@@ -15,7 +15,7 @@ class Route(object):
     def __init__(self, pattern, kwargs=None, name=None, host='.*$'):
         self.pattern = pattern
         self.kwargs = kwargs if kwargs else {}
-        self.name = name
+        self.name = name if name else pattern
         self.host = host
 
     def __call__(self, handler_class):
