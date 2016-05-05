@@ -10,8 +10,8 @@ import sys
 import os
 import platform
 
-DefaultLinuxLogDir = '/var/log/home_internet'
-DefaultWindowsLogDir = 'C:\\home_internet'
+DefaultLinuxLogDir = '/var/log/beiqi'
+DefaultWindowsLogDir = 'C:\\beiqi'
 
 
 def get_log_path(server_name=None):

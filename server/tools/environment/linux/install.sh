@@ -14,9 +14,6 @@ apt-get install --yes libfreetype6-dev
 
 pip install setuptools==18.0.1
 
-https://pypi.python.org/packages/2.7/p/pyxmpp2/pyxmpp2-2.0.0-py2.7.egg#md5=deb473e9747746629ade17c5114e85f8
-easy_install pyxmpp2-2.0.0-py2.7.egg
-
 
 cd ../../linux
 pip install -r requirements.txt
