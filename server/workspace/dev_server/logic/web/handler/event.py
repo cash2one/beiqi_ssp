@@ -15,7 +15,7 @@ from util.convert import bs2unicode
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.user_info import get_geo_fence
-from dev_server.config import GMQDispRdsInts, GDevRdsInts
+from config import GMQDispRdsInts, GDevRdsInts
 
 
 @route(r'/event_report')

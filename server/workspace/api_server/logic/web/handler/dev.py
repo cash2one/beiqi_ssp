@@ -10,19 +10,19 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.network.http import HttpRpcClient
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.circles import *
 from util.redis_cmds.user_info import *
 from util.redis_cmds.wechat import *
 from util.redis_cmds.letters import *
-from utils.network.http import HttpRpcClient
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.sso.moments import del_all_self_share
 from util.sso.account import exist_account, set_account_pwd
-from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
-from api_server.db.db_oper import DBBeiqiSspInst
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
+from db.db_oper import DBBeiqiSspInst
 
 
 dev_tbl = 'device_info'

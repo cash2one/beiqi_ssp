@@ -14,6 +14,7 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.convert import bs2utf8
 from util.sso.moments import add_comment, save_comment_info
 from util.filetoken import gen_file_tk
@@ -27,10 +28,9 @@ from util.sso.moments import add_like, cancel_like
 from util.sso.moments import get_share_by_time, get_share_by_quantity, get_like, get_comment, retrieve_share_info, retrieve_comment_info
 from util.redis_cmds.circles import get_dev_primary, get_group_primary, get_group_followers, get_sn_of_gid
 from util.sso.moments import add_share, save_share_info, add_self_share
-from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
 from util.sso.moments import del_one_comment
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
-from api_server.setting import ssp_down_file_url, wechat_comment_page_url
+from setting import ssp_down_file_url, wechat_comment_page_url
+from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
 
 
 device_tbl = 'device_info'

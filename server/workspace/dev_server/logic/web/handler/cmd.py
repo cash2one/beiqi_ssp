@@ -13,8 +13,8 @@ from utils.wapper.web import web_adaptor
 from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
-from dev_server.common import FEEDBACK_PATTERN, REPORT_KEYS, errno_map
-from dev_server.config import GMQDispRdsInts, GDevRdsInts
+from common import FEEDBACK_PATTERN, REPORT_KEYS, errno_map
+from config import GMQDispRdsInts, GDevRdsInts
 
 
 @route(r'/cmd_report')

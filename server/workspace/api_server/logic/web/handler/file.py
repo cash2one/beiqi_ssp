@@ -9,9 +9,9 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from api_server.config import GDevRdsInts
 from util.lib_common.file_ul import common_file_token
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from config import GDevRdsInts
 
 
 @route(r'/res/file_tk', name='/res/file_tk')

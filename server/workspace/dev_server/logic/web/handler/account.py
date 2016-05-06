@@ -14,8 +14,8 @@ from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
-from dev_server.db.db_oper import DBBeiqiSspInst
-from dev_server.config import GMQDispRdsInts, GDevRdsInts
+from db.db_oper import DBBeiqiSspInst
+from config import GMQDispRdsInts, GDevRdsInts
 
 
 devinfo_tbl_name = 'device_info'

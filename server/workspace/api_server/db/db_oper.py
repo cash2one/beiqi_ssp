@@ -5,11 +5,10 @@ Created on 2016/5/3
 
 @author: Jay
 """
-
 from utils.data.db.mysql_manual import SchemaTable
 from utils.service_control.cacher import ParamCacher
 from utils.service_control.parser import ArgumentParser
-from api_server.setting import DB_NAME
+from setting import DB_NAME
 
 
 DBBeiqiSspInst = SchemaTable.instance(ParamCacher().db_instance, ArgumentParser().args.db_name, DB_NAME)

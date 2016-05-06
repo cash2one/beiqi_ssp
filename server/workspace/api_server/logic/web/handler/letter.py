@@ -11,15 +11,15 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.sso.account import exist_account, set_account_pwd
 from util.convert import bs2utf8, is_email
 from util.redis_cmds.circles import get_dev_primary
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.letters import *
-from api_server.config import GDevRdsInts, GAccRdsInts, GMQDispRdsInts
-from api_server.db.db_oper import DBBeiqiSspInst
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from config import GDevRdsInts, GAccRdsInts, GMQDispRdsInts
+from db.db_oper import DBBeiqiSspInst
 
 
 @route(r'/delete_letter')

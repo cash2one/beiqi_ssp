@@ -10,7 +10,6 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from api_server.config import GAccRdsInts, GCalcRdsInts, GDevRdsInts, GMQDispRdsInts
 from util.sso.account import get_mobile
 from util.redis_cmds.user_info import *
 from util.redis_cmds.circles import *
@@ -19,7 +18,7 @@ from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.redis_cmds.mqtt import get_mqtt_status
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
-
+from config import GAccRdsInts, GCalcRdsInts, GDevRdsInts, GMQDispRdsInts
 
 user_tbl = 'user_info'
 

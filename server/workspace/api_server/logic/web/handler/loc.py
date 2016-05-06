@@ -9,11 +9,11 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
+from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.redis_cmds.circles import *
 from util.convert import mongo2utf8
-from api_server.config import GDevRdsInts
-from api_server.db.db_oper import DBBeiqiSspInst
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from config import GDevRdsInts
+from db.db_oper import DBBeiqiSspInst
 
 
 @route(r'/get_loc')

@@ -12,7 +12,7 @@ from utils.wapper.web import web_adaptor
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.cloud_app import *
-from api_server.config import GDevRdsInts, GMQDispRdsInts
+from config import GDevRdsInts, GMQDispRdsInts
 from util.redis_cmds.user_info import *
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 

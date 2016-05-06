@@ -12,8 +12,8 @@ from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.convert import bs2utf8
-from dev_server.config import GMQDispRdsInts
-from dev_server.common.mq import build_mq_package
+from config import GMQDispRdsInts
+from common.mq import build_mq_package
 
 
 @route(r'/loc_v1')
