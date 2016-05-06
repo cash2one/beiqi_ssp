@@ -3,8 +3,8 @@
 
 from base64 import standard_b64encode
 import hashlib
-from util.oem_conv import get_mb_key, parse_oem_options, OEM_KEY_PATTERN
-from util.convert import combine_redis_cmds, is_mobile
+from util.oem_conv import get_mb_key, parse_oem_options
+from util.convert import is_mobile, combine_redis_cmds
 from util.oem_account_key import beiqi_keys
 from itertools import izip
 
@@ -188,7 +188,7 @@ def get_mobile(sync_account_redis, api_key, accounts):
             return None
         return (None, ) * len(accounts)
 
-    redis_result = sync_account_redis.pip_execute(_build_redis_cmd(accounts))
+    redis_result = sync_account_redis.send_multi_cmd(*combine_redis_cmds(_build_redis_cmd(accounts)))
     ll = tuple(
         _yield_multi(
             (redis_result,) if (isinstance(redis_result, str) or not redis_result) else redis_result,

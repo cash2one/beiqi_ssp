@@ -10,7 +10,6 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.convert import is_mobile, is_reg_val_code
@@ -29,10 +28,9 @@ user_info_tbl = 'user_info'
 fmt = '%Y-%m-%d %H:%M:%S'
 
 
-@route(r'/valid_acc_new')
+@route(r'/check_reg_val_code')
 class CheckRegValCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
     def post(self, user_name ,pwd):
         """
         检查注册验证码
@@ -51,7 +49,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
         if not is_reg_val_code(val):
             return {'status': 3}
 
-        expect_code = GAccRdsInts.execute([get_newacc_reg_val(mobile)])
+        expect_code = GAccRdsInts.send_cmd(*get_newacc_reg_val(mobile))
         if not expect_code:
             return {'status': 4}
         expect_code = expect_code.split(':')[0]
@@ -59,12 +57,12 @@ class CheckRegValCodeHandler(HttpRpcHandler):
             return {'status': 4}
 
         pwd_mask = cipher_pwd(pwd)
-        ok = GAccRdsInts.execute([set_account_pwd(user_name, pwd_mask)])
+        ok = GAccRdsInts.send_cmd(*set_account_pwd(user_name, pwd_mask))
         if not ok:
             return {'status': 5}
 
         reg_ts = time.strftime(fmt, time.gmtime())
-        GMQDispRdsInts.pipe_execute((
+        GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
             shortcut_mq(
                 'gen_mysql',
                 mysql_pack(
@@ -97,7 +95,6 @@ class CheckRegValCodeHandler(HttpRpcHandler):
 @route(r'/req_reg_val_code')
 class GenRegCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
     def post(self):
         """
     请求发送注册验证短信
@@ -109,21 +106,21 @@ class GenRegCodeHandler(HttpRpcHandler):
 
         mobile = account.split('@')[0]
 
-        sms_speed = GDevRdsInts.execute([get_sms_speed()])
+        sms_speed = GDevRdsInts.send_cmd(*get_sms_speed())
         if sms_speed is None:
-            GDevRdsInts.pipe_execute(*combine_redis_cmds(init_sms_speed()))
+            GDevRdsInts.send_multi_cmd(*combine_redis_cmds(*combine_redis_cmds(init_sms_speed())))
         elif sms_speed >= SMS_SPEED_MAX:
             logger.debug('sms speed max, mobile={0}, {1}'.format(mobile, datetime.now().isoformat()))
             return {'status': 3}
         else:
-            GDevRdsInts.execute([incr_sms_speed()])
+            GDevRdsInts.send_cmd(*incr_sms_speed())
 
-        ts = GDevRdsInts.execute([get_user_veri_sms_time(mobile)])
+        ts = GDevRdsInts.send_cmd(*get_user_veri_sms_time(mobile))
         if ts is not None:
             logger.debug('veri sms, ts={0}'.format(ts))
             return {'status': 4}
         else:
-            GDevRdsInts.pipe_execute((set_user_veri_sms_time(mobile, time.time())))
+            GDevRdsInts.send_multi_cmd(*combine_redis_cmds(set_user_veri_sms_time(mobile, time.time())))
 
         if not reg_via_mobile(account, None):
             return {'status': 2}

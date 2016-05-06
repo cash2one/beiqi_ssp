@@ -88,9 +88,10 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
         if not use_http_render:
             return
 
-        self.flush()
-        # STOP asynchronous wait
-        self.finish()
+        if self.result:
+            self.flush()
+            # STOP asynchronous wait
+            self.finish()
 
     def web_func_adaptor(fun):
         @gevent_adaptor(True)

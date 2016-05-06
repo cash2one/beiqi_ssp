@@ -11,7 +11,7 @@ from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
-from util.convert import bs2utf8
+from util.convert import bs2utf8, combine_redis_cmds
 from config import GMQDispRdsInts
 from common.mq import build_mq_package
 
@@ -28,7 +28,7 @@ class LocationV1Handler(HttpRpcHandler):
             k = bs2utf8(k)
             v = bs2utf8(v)
 
-        GMQDispRdsInts.pipe_execute(*build_mq_package(user_name, sn, dev_type, payload))
+        GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(*build_mq_package(user_name, sn, dev_type, payload)))
 
         sample_freq = 600
         next_latency = 3600

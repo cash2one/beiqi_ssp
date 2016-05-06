@@ -6,7 +6,7 @@ Created on 2015-6-2
 @author: Jay
 """
 import argparse
-from utils.logger import INFO
+from utils.logger import DEBUG
 from utils.meta.singleton import Singleton
 from finder import get_cur_ip
 
@@ -28,7 +28,7 @@ class ArgumentParser(object):
         self.argparser.add_argument('--is_extranet', default=False, type=parser_boolean, help="The network type used: intranet or extranet")
         self.argparser.add_argument('--sm_ip', default=get_cur_ip(), type=str,  help="The ip of the service mgr service")
         self.argparser.add_argument('--is_https', default=True, type=parser_boolean,  help="Is use http ssl connection")
-        self.argparser.add_argument('--logger_level', default=INFO, type=str,  help="Default logger level")
+        self.argparser.add_argument('--logger_level', default=DEBUG, type=str,  help="Default logger level")
 
     def get_argparser(self):
         return self.argparser

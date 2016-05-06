@@ -6,15 +6,21 @@ from convert import _cn_mobile_pat
 
 COMMON_PATTERN = re.compile(r'^[_a-z\d]{6,16}$')
 
+APP_KEY = 'aea8b32e091a11e681ee408d5c5a48ca'
+APP_SECRET = 'b97326b0091a11e697ea408d5c5a48ca'
+DEV_KEY = 'c289a8a1091a11e6a1a0408d5c5a48ca'
+DEV_RC4 = 'db20ac11091a11e6ab0c408d5c5a48ca'
+DEV_SECRET = 'cf1e06b0091a11e6ade7408d5c5a48ca'
+
 beiqi_keys = {
     # 贝启
-    '7a1d64b4b13548638ea9e20a2ebd5467': {
-        's': '12047d9abfee4f5f987fd57b38c70f20',
+    APP_KEY: {
+        's': APP_SECRET,
     },
     # 设备
-    '58a0c1d064a54dc2904773e7ef404073': {
-        'rc4_key': '708ff663110047fa9ae11b608ac0f7f2',
-        's': 'd046bfc19b88473fb00688ead394c88f'
+    DEV_KEY: {
+        'rc4_key': DEV_RC4,
+        's': DEV_SECRET
     }
 }
 
@@ -32,7 +38,7 @@ beiqi_keys = {
 
 oem_accounts = {
     # 贝启
-    '7a1d64b4b13548638ea9e20a2ebd5467': {
-        's': '12047d9abfee4f5f987fd57b38c70f20',
+    APP_KEY: {
+        's': APP_SECRET,
     },
 }

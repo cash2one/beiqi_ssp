@@ -7,7 +7,6 @@ from util.crypto_rc4 import decrypt as rc4_decrypt
 from utils import logger
 from util.sso.account import set_login_expire
 
-# SSO_KEY = 'd15d67922dd241cdbfc355d19544d6757dc759e60b3c4b74b868704c8a37b897'
 SSO_KEY = 'e91647cf091a11e69e11408d5c5a48caf4393b8f091a11e6bb44408d5c5a48ca'
 
 tbl_name = 'device_info'
@@ -36,7 +35,7 @@ def gen_token(api_secret, username, expire_days, api_key=None, account_rds=None)
 
     # _account_cache.send_cmd(*set_login_expire(username, expire.split(':')[1]))
     if account_rds:
-        account_rds.execute([set_login_expire(username, expire.split(':')[1])])
+        account_rds.send_cmd(*set_login_expire(username, expire.split(':')[1]))
 
     del l
     return rc4_encrypt(plain, SSO_KEY)

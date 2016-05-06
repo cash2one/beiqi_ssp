@@ -14,6 +14,7 @@ from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
+from util.convert import combine_redis_cmds
 from db.db_oper import DBBeiqiSspInst
 from config import GMQDispRdsInts, GDevRdsInts
 
@@ -32,8 +33,8 @@ class SignInHandler(HttpRpcHandler):
         if len(ret_list) == 0:
             return {'status': 1}
 
-        gid = GDevRdsInts.execute([get_gid_of_sn(sn)])
-        primary = GDevRdsInts.execute([get_group_primary(gid)]) if gid is not None else None
+        gid = GDevRdsInts.send_cmd(*get_gid_of_sn(sn))
+        primary = GDevRdsInts.send_cmd(*get_group_primary(gid)) if gid is not None else None
         if primary is None:
             # unbound
             if gid is None:
@@ -42,7 +43,7 @@ class SignInHandler(HttpRpcHandler):
                     tmp_gid = str(randint(1,9))
                     tmp_gid = tmp_gid + ''.join([str(randint(0, 9)) for i in xrange(5)])
 
-                    sn_of_gid = GDevRdsInts.execute([get_sn_of_gid(tmp_gid)])
+                    sn_of_gid = GDevRdsInts.send_cmd(*get_sn_of_gid(tmp_gid))
                     if sn_of_gid is None:
                         # tmp_pid is not used.
                         sql = 'select * from {0} WHERE gid = %s'.format(gidinfo_tbl_name)
@@ -51,24 +52,24 @@ class SignInHandler(HttpRpcHandler):
                             # tmp_pid is a nice number
                             continue
                         gid = tmp_gid
-                        GDevRdsInts.pipe_execute((set_gid_of_sn(sn, tmp_gid), set_sn_of_gid(tmp_gid, sn)))
+                        GDevRdsInts.send_multi_cmd(*combine_redis_cmds(set_gid_of_sn(sn, tmp_gid), set_sn_of_gid(tmp_gid, sn)))
                         break
                 #update mysql data
-                GMQDispRdsInts.pipe_execute((
+                GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
                     shortcut_mq('gen_mysql', mysql_pack(devinfo_tbl_name, {'gid': gid}, action=2, ref_kvs={'sn': sn})),
                     shortcut_mq('gen_mysql', mysql_pack(gidinfo_tbl_name, {'sn': sn, 'status': 'used'}, action=2, ref_kvs={'gid': gid}))
                 ))
 
-            ic = GDevRdsInts.execute([get_sn_ic(sn)])
+            ic = GDevRdsInts.send_cmd(*get_sn_ic(sn))
             if not ic:
                 # no ic in storage.
                 while True:
                     ic = ''.join([str(randint(0, 9)) for i in xrange(9)])
-                    ic_exist = GDevRdsInts.execute([get_ic_sn(ic)])
+                    ic_exist = GDevRdsInts.send_cmd(*get_ic_sn(ic))
                     if not ic_exist:
                         break
             logger.debug('sign in, gid={0}, ic={1}'.format(gid, ic))
-            GDevRdsInts.pipe_execute((set_sn_ic(sn, ic), set_ic_sn(ic, sn)))
+            GDevRdsInts.send_multi_cmd(*combine_redis_cmds(set_sn_ic(sn, ic), set_ic_sn(ic, sn)))
 
             return {'binding': 0, 'ic': ic, 'gid': gid, 'status': 0}
         else:

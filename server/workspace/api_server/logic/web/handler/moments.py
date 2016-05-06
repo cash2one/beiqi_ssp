@@ -15,7 +15,7 @@ from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
-from util.convert import bs2utf8
+from util.convert import bs2utf8, combine_redis_cmds
 from util.sso.moments import add_comment, save_comment_info
 from util.filetoken import gen_file_tk
 from util.redis_cmds.wechat import get_wechat_access_token
@@ -41,11 +41,11 @@ class CommentHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def post(self, user_name, share_id, reply_to='', comment_id='', text='', type='', file=''):
-        share_info = GDevRdsInts.execute([retrieve_share_info(share_id)])
+        share_info = GDevRdsInts.send_cmd(*retrieve_share_info(share_id))
         if share_info is None:
             return {'status': 1}
 
-        comment_id_list = GDevRdsInts.execute([get_comment(share_id)])
+        comment_id_list = GDevRdsInts.send_cmd(*get_comment(share_id))
         if comment_id != '' and comment_id not in comment_id_list:
             logger.debug('comment, comment_id={0}'.format(comment_id))
             return {'status': 2}
@@ -53,11 +53,11 @@ class CommentHandler(HttpRpcHandler):
         now = str(time.time())
         new_comment_id = ':'.join(('comment', now, user_name))
 
-        GDevRdsInts.pipe_execute((add_comment(share_id, new_comment_id), save_comment_info(share_id, new_comment_id, reply_to, comment_id, text, type, file)))
+        GDevRdsInts.send_multi_cmd(*combine_redis_cmds(add_comment(share_id, new_comment_id), save_comment_info(share_id, new_comment_id, reply_to, comment_id, text, type, file)))
 
         accounts = [reply_to] if reply_to is not None else []
         accounts += [share_id.split(':')[-1]]
-        like_list = GDevRdsInts.execute([get_like(share_id)])
+        like_list = GDevRdsInts.send_cmd(*get_like(share_id))
 
         accounts += like_list
 
@@ -77,9 +77,9 @@ class CommentHandler(HttpRpcHandler):
                 if not file:
                     url = wechat_comment_page_url + urllib.urlencode({'text': text})
 
-                token = GAccRdsInts.execute([get_wechat_access_token()])
+                token = GAccRdsInts.send_cmd(*get_wechat_access_token())
                 customerServiceUrl = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=' + token
-                nickname = GDevRdsInts.execute([get_user_nickname(user_name)])
+                nickname = GDevRdsInts.send_cmd(*get_user_nickname(user_name))
                 payload = {
                     "touser": acc[3:],
                     "msgtype": "news",
@@ -99,12 +99,12 @@ class CommentHandler(HttpRpcHandler):
                 logger.debug('custom service send. resp = %r, payload = %r', resp.body, payload)
 
             else:
-                GMQDispRdsInts.execute(
-                        [shortcut_mq(
+                GMQDispRdsInts.send_cmd(
+                        *shortcut_mq(
                             'cloud_push',
                             # sourcer, cb, from, description
                             push_pack(user_name, 'comment', 2, ':'.join((user_name, share_id, reply_to, comment_id, text, type, file)), account=acc)
-                        )]
+                        )
                     )
 
         return {'comment_id': new_comment_id}
@@ -119,11 +119,11 @@ class DeleteCommentHandler(HttpRpcHandler):
             logger.debug('delete comment, acc=%r, share_id=%r, comment_id=%r' % (user_name, share_id, comment_id))
             return {'status': 1}
 
-        fn = GDevRdsInts.execute([get_comment_file(share_id, comment_id)])
+        fn = GDevRdsInts.send_cmd(*get_comment_file(share_id, comment_id))
         if fn is not None:
             GLevelDBClient.forward(level_encode('delete', 0, fn))
 
-        GDevRdsInts.pipe_execute((del_one_comment(share_id, comment_id), del_comment_info(share_id, comment_id)))
+        GDevRdsInts.send_multi_cmd(*combine_redis_cmds(del_one_comment(share_id, comment_id), del_comment_info(share_id, comment_id)))
         return {'status': 0}
 
 
@@ -145,7 +145,7 @@ class DeleteShareHandler(HttpRpcHandler):
         if not self.can_delete(gid, author, user_name):
             return {'status': 1}
 
-        share_info = GDevRdsInts.execute([retrieve_share_info(share_id)])
+        share_info = GDevRdsInts.send_cmd(*retrieve_share_info(share_id))
         if share_info is None:
             return {'status': 2}
 
@@ -156,20 +156,20 @@ class DeleteShareHandler(HttpRpcHandler):
             for k, v in fns.items():
                 GLevelDBClient.forward(level_encode('delete', 0, bs2utf8(v)))
 
-        comment_id_list = GDevRdsInts.execute([get_comment(share_id)])
+        comment_id_list = GDevRdsInts.send_cmd(*get_comment(share_id))
         if comment_id_list is not None:
             for comment_id in comment_id_list:
-                fn = GDevRdsInts.execute([get_comment_file(share_id, comment_id)])
+                fn = GDevRdsInts.send_cmd(*get_comment_file(share_id, comment_id))
                 GLevelDBClient.forward(level_encode('delete', 0, fn))
-                GDevRdsInts.execute([del_comment_info(share_id, comment_id)])
+                GDevRdsInts.send_cmd(*del_comment_info(share_id, comment_id))
 
-        GDevRdsInts.pipe_execute((del_share(user_name, share_id), del_comment(share_id), del_share_info(share_id)))
+        GDevRdsInts.send_multi_cmd(*combine_redis_cmds(del_share(user_name, share_id), del_comment(share_id), del_share_info(share_id)))
 
         if gid:
-            sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
+            sn = GDevRdsInts.send_cmd(*get_sn_of_gid(gid))
 
-            accounts = GDevRdsInts.execute([get_group_followers(gid)])
-            primary_account = GDevRdsInts.execute([get_group_primary(gid)])
+            accounts = GDevRdsInts.send_cmd(*get_group_followers(gid))
+            primary_account = GDevRdsInts.send_cmd(*get_group_primary(gid))
             accounts.add(primary_account)
             accounts.add(sn)
 
@@ -177,19 +177,19 @@ class DeleteShareHandler(HttpRpcHandler):
             for user in accounts:
                 if user_name == user:
                     continue
-                GDevRdsInts.execute([del_share(user, share_id)])
-                GMQDispRdsInts.execute(
-                    [shortcut_mq(
+                GDevRdsInts.send_cmd(*del_share(user, share_id))
+                GMQDispRdsInts.send_cmd(
+                    *shortcut_mq(
                         'cloud_push',
                         push_pack(user_name, 'delete_share', 2, share_id, account=user)
-                    )]
+                    )
                 )
 
         return {'status': 0}
 
     def get_dev_primary_by_sn(self, dev_sn):
         logger.debug(u'DeleteShareHandler::get_dev_primary_by_gid, dev_sn={0}'.format(dev_sn))
-        dev_primary = GDevRdsInts.execute([get_dev_primary(dev_sn)])
+        dev_primary = GDevRdsInts.send_cmd(*get_dev_primary(dev_sn))
         if not dev_primary:
             sql = 'SELECT * FROM {0} WHERE sn = %s limit 1'.format(device_tbl)
             dev_ls = self.settings.get('mysql_db').query(sql, dev_sn)
@@ -206,7 +206,7 @@ class DeleteShareHandler(HttpRpcHandler):
             return True
 
         # device
-        dev_sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
+        dev_sn = GDevRdsInts.send_cmd(*get_sn_of_gid(gid))
         if self.is_device(del_acc):
             logger.debug(u'DeleteShareHandler::can_delete, is_device={0}'.format(del_acc))
             return del_acc == dev_sn
@@ -220,9 +220,9 @@ class LikeHandler(HttpRpcHandler):
     @beiqi_tk_sign_wapper()
     def post(self, user_name, share_id, action):
         if action == 'add':
-            GDevRdsInts.execute([add_like(share_id, user_name)])
+            GDevRdsInts.send_cmd(*add_like(share_id, user_name))
         elif action == 'cancel':
-            GDevRdsInts.execute([cancel_like(share_id, user_name)])
+            GDevRdsInts.send_cmd(*cancel_like(share_id, user_name))
         else:
             return {'status': 1}
         return {'status': 0}
@@ -242,7 +242,7 @@ class RefreshMomentsHandler(HttpRpcHandler):
             if quantity < 0:
                 return {'status': 3}
 
-            share_id_list = GDevRdsInts.execute([get_share_by_quantity(user_name, quantity)])
+            share_id_list = GDevRdsInts.send_cmd(*get_share_by_quantity(user_name, quantity))
         else:
             start = float(start)
             if end is None:
@@ -250,7 +250,7 @@ class RefreshMomentsHandler(HttpRpcHandler):
             else:
                 end = float(end)
 
-            share_id_list = GDevRdsInts.execute([get_share_by_time(user_name, start, end)])
+            share_id_list = GDevRdsInts.send_cmd(*get_share_by_time(user_name, start, end))
 
         if share_id_list is None or len(share_id_list) == 0:
             return {'status': 1}
@@ -270,12 +270,12 @@ class RefreshMomentsHandler(HttpRpcHandler):
                 if gid and gid not in gids:
                     continue
 
-            share_info = GDevRdsInts.execute([retrieve_share_info(share_id)])
-            comment_id_list = GDevRdsInts.execute([get_comment(share_id)])
-            like_list = GDevRdsInts.execute([get_like(share_id)])
+            share_info = GDevRdsInts.send_cmd(*retrieve_share_info(share_id))
+            comment_id_list = GDevRdsInts.send_cmd(*get_comment(share_id))
+            like_list = GDevRdsInts.send_cmd(*get_like(share_id))
             comment_info_list = {}
             for comment_id in comment_id_list:
-                comment_info = GDevRdsInts.execute([retrieve_comment_info(share_id, comment_id)])
+                comment_info = GDevRdsInts.send_cmd(*retrieve_comment_info(share_id, comment_id))
                 comment_info_list[comment_id] = comment_info
             share_info['like_list'] = like_list
             share_info['comment_info_list'] = comment_info_list
@@ -288,35 +288,35 @@ class RefreshMomentsHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def post(self, user_name, gid, share_to, location, text, type, files):
-        primary_account = GDevRdsInts.execute([get_group_primary(gid)])
+        primary_account = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary_account is None:
             return {'status': 1}
 
         ts = float('%0.2f' % time.time())
         share_id = ':'.join(('share', str(ts), gid, user_name))
-        GDevRdsInts.execute([add_self_share(user_name, ts, share_id)])
-        GDevRdsInts.execute([save_share_info(share_id, user_name, gid, share_to, location, text, type, files)])
+        GDevRdsInts.send_cmd(*add_self_share(user_name, ts, share_id))
+        GDevRdsInts.send_cmd(*save_share_info(share_id, user_name, gid, share_to, location, text, type, files))
 
-        accounts = GDevRdsInts.execute([get_group_followers(gid)])
+        accounts = GDevRdsInts.send_cmd(*get_group_followers(gid))
         logger.debug('share, accounts={0}'.format(accounts))
         # accounts is set object
         accounts.add(primary_account)
-        sn = GDevRdsInts.execute([get_sn_of_gid(gid)])
+        sn = GDevRdsInts.send_cmd(*get_sn_of_gid(gid))
         accounts.add(sn)
 
         logger.debug('share, accounts={0}'.format(accounts))
 
         for acc in accounts:
-            GDevRdsInts.execute([add_share(acc, share_id, ts)])
+            GDevRdsInts.send_cmd(*add_share(acc, share_id, ts))
             if acc == user_name:
                 continue
             elif acc[:3] == 'wx#':
                 continue
-            GMQDispRdsInts.execute(
-                    [shortcut_mq(
+            GMQDispRdsInts.send_cmd(
+                    *shortcut_mq(
                         'cloud_push',
                         push_pack(user_name, 'share', 2, ':'.join((share_id, text, type, files)), account=acc)
-                    )]
+                    )
                 )
         return {'share_id': share_id}
 

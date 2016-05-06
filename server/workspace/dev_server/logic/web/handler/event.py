@@ -11,7 +11,7 @@ from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
-from util.convert import bs2unicode
+from util.convert import bs2unicode, combine_redis_cmds
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.user_info import get_geo_fence
@@ -33,15 +33,15 @@ class EventReportHandler(HttpRpcHandler):
             latitude = attr.get('lat')
             radius = attr.get('rad')
 
-            _ = GDevRdsInts.execute([get_geo_fence(user_name, longitude, latitude, radius)])
+            _ = GDevRdsInts.send_cmd(*get_geo_fence(user_name, longitude, latitude, radius))
             creator, name = _.split(':')
 
-            GMQDispRdsInts.pipe_execute(
+            GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
                 [shortcut_mq(
                     'cloud_push',
                     push_pack(user_name, 'geo_fence_alertqqq', 2, payload, account=creator)
                 )]
-            )
+            ))
         sample_freq = 600
         next_latency = 3600
         return {'state': 0, 'next_latency': next_latency, 'sample_freq': sample_freq}

@@ -11,7 +11,7 @@ from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.redis_cmds.circles import *
-from util.convert import mongo2utf8
+from util.convert import mongo2utf8, combine_redis_cmds
 from config import GDevRdsInts
 from db.db_oper import DBBeiqiSspInst
 
@@ -23,7 +23,7 @@ class GetLocHandler(HttpRpcHandler):
     def get(self, user_name, sn):
         """
         """
-        expect_pa, sub_ok = GDevRdsInts.pipe_execute((get_dev_primary(sn), test_user_follow_group(user_name, sn)))
+        expect_pa, sub_ok = GDevRdsInts.send_multi_cmd(*combine_redis_cmds(get_dev_primary(sn), test_user_follow_group(user_name, sn)))
         if not expect_pa:
             logger.warn('{0} not bound'.format(sn))
             self.send_error(400)

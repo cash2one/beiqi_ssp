@@ -8,7 +8,6 @@ Created on 2016/5/6
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.sso.account import set_account_pwd
 from util.convert import bs2utf8, is_email
 from util.sso.account import exist_account
@@ -25,7 +24,6 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/valid_acc_new')
 class AccountStateHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
     def post(self):
         """
     帐号状态，是否已存在
@@ -35,7 +33,7 @@ class AccountStateHandler(HttpRpcHandler):
             return {'status': 1}
 
         #帐号存在并已激活
-        account_exist = GAccRdsInts.execute([exist_account(account)])
+        account_exist = GAccRdsInts.send_cmd(*exist_account(account))
         if account_exist:
             return {'status': 2}
 
@@ -44,7 +42,7 @@ class AccountStateHandler(HttpRpcHandler):
         if len(res) != 0:
             # exist in mysql, so we cache it
             pwd = res[0].get('password').encode('utf8')
-            GAccRdsInts.execute([set_account_pwd(account, pwd)])
+            GAccRdsInts.send_cmd(*set_account_pwd(account, pwd))
             return {'status': 2}
 
         return {'status': 0}

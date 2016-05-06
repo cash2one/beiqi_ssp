@@ -28,13 +28,13 @@ class SetAppDataHandler(HttpRpcHandler):
     def get(self, user_name, receiver, app, payload):
         now = str(time.time())
         payload = '$'.join((user_name, payload))
-        result = GDevRdsInts.execute([set_app_data(receiver, app, now, payload)])
+        result = GDevRdsInts.send_cmd(*set_app_data(receiver, app, now, payload))
         logger.debug(u'result = %r', result)
 
-        GMQDispRdsInts.execute([
+        GMQDispRdsInts.send_cmd(*
             shortcut_mq('cloud_push',
                         push_pack(user_name, 'set_app_data', 2, payload, account=receiver))
-        ])
+        )
         return {'status': 0}
 
 
@@ -44,9 +44,9 @@ class GetAppDataHandler(HttpRpcHandler):
     @beiqi_tk_sign_wapper()
     def get(self, user_name, receiver, app, ts=''):
         if ts:
-            data = GDevRdsInts.execute([get_app_data_by_ts(receiver, app, ts)])
+            data = GDevRdsInts.send_cmd(*get_app_data_by_ts(receiver, app, ts))
         else:
-            data = GDevRdsInts.execute([get_app_data(receiver, app)])
+            data = GDevRdsInts.send_cmd(*get_app_data(receiver, app))
         logger.debug(u'data = %r', data)
         return data
 
@@ -56,6 +56,6 @@ class DelAppDataHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def get(self, user_name, receiver, app, ts):
-        result = GDevRdsInts.execute([del_app_data(receiver, app, ts)])
+        result = GDevRdsInts.send_cmd(*del_app_data(receiver, app, ts))
         logger.debug(u'result = %r', result)
         return {'status': 0}

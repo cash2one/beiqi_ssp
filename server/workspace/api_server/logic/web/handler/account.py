@@ -62,7 +62,7 @@ class AccountBindPushHandler(HttpRpcHandler):
         _ = [os, ver]
         _.extend(args)
 
-        GAccRdsInts.execute(['set', 'account:{0}'.format(account), ':'.join(_)])
+        GAccRdsInts.send_cmd('set', 'account:{0}'.format(account), ':'.join(_))
 
 
 @route(r'/account/unbind_push')
@@ -70,7 +70,7 @@ class AccountUnbindPushHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def get(self, account):
-        GCalcRdsInts.execute(['delete', 'account:{0}'.format(account)])
+        GCalcRdsInts.send_cmd('delete', 'account:{0}'.format(account))
 
 
 @route(r'/get_user_info')
@@ -93,25 +93,25 @@ class GetUserInfoHandler(HttpRpcHandler):
         nickname = bs2utf8(ujson.loads(payload).get('nickname'))
 
         if gid != '':
-            primary = GDevRdsInts.execute([get_group_primary(gid)])
+            primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
             if user_name != primary:
                 return {'status': 2}
 
-            GDevRdsInts.execute([set_user_info(gid, payload)])
-            GDevRdsInts.execute([set_user_nickname(gid, nickname)])
+            GDevRdsInts.send_cmd(*set_user_info(gid, payload))
+            GDevRdsInts.send_cmd(*set_user_nickname(gid, nickname))
             return {'status': 0}
 
         if sn != '':
-            primary = GDevRdsInts.execute([get_dev_primary(sn)])
+            primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
             if user_name != primary:
                 return {'status': 3}
 
-            GDevRdsInts.execute([set_user_info(sn, payload)])
-            GDevRdsInts.execute([set_user_nickname(sn, nickname)])
+            GDevRdsInts.send_cmd(*set_user_info(sn, payload))
+            GDevRdsInts.send_cmd(*set_user_nickname(sn, nickname))
             return {'status': 0}
 
-        GDevRdsInts.execute([set_user_info(user_name, payload)])
-        GDevRdsInts.execute([set_user_nickname(user_name, nickname)])
+        GDevRdsInts.send_cmd(*set_user_info(user_name, payload))
+        GDevRdsInts.send_cmd(*set_user_nickname(user_name, nickname))
 
         GMQDispRdsInts.send_cmd(
             *shortcut_mq('gen_mysql',
@@ -131,18 +131,18 @@ class GetMsglistHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def post(self, user_name):
-        sns = GDevRdsInts.execute([get_user_devs(user_name)])
+        sns = GDevRdsInts.send_cmd(*get_user_devs(user_name))
         if sns is None:
             return {'status': 1}
 
         msg_list = {}
         for sn in sns:
-            gid = GDevRdsInts.execute([get_gid_of_sn(sn)])
+            gid = GDevRdsInts.send_cmd(*get_gid_of_sn(sn))
             if gid:
-                msgs = GDevRdsInts.execute([get_user_group_msglist(user_name, gid)])
+                msgs = GDevRdsInts.send_cmd(*get_user_group_msglist(user_name, gid))
                 msg_list[gid] = msgs
 
-        system_msg = GDevRdsInts.execute([get_user_system_msglist(user_name)])
+        system_msg = GDevRdsInts.send_cmd(*get_user_system_msglist(user_name))
 
         msg_list['system'] = system_msg
 
@@ -160,6 +160,6 @@ class GetStatusHandler(HttpRpcHandler):
         ret = {}
         for user in user_list:
             user = bs2utf8(user)
-            status = GDevRdsInts.execute([get_mqtt_status(user)])
+            status = GDevRdsInts.send_cmd(*get_mqtt_status(user))
             ret[user] = status
         return ret
