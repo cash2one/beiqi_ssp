@@ -23,3 +23,7 @@ MQ_DISP_RDS_URI = "redis://192.168.2.192:6379/3?pwd=123456"
 
 # LEVEL_DB 设置
 LEVEL_DB_HOST = "127.0.0.1:25698"
+
+
+ssp_down_file_url = 'http://localhost:8106/down?'
+wechat_comment_page_url = "http://localhost:8108/wechat/pages/comment?"

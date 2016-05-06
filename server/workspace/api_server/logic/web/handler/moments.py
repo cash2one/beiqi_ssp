@@ -30,11 +30,11 @@ from util.sso.moments import add_share, save_share_info, add_self_share
 from api_server.config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
 from util.sso.moments import del_one_comment
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from api_server.setting import ssp_down_file_url, wechat_comment_page_url
 
 
 device_tbl = 'device_info'
-ssp_down_file_url = 'http://api.beiqicloud.com:8106/down?'
-wechat_comment_page_url = "http://api.beiqicloud.com:8108/wechat/pages/comment?"
+
 
 @route(r'/comment')
 class CommentHandler(HttpRpcHandler):
