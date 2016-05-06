@@ -188,7 +188,7 @@ def get_mobile(sync_account_redis, api_key, accounts):
             return None
         return (None, ) * len(accounts)
 
-    redis_result = sync_account_redis.send_multi_cmd(*combine_redis_cmds(_build_redis_cmd(accounts)))
+    redis_result = sync_account_redis.pip_execute(_build_redis_cmd(accounts))
     ll = tuple(
         _yield_multi(
             (redis_result,) if (isinstance(redis_result, str) or not redis_result) else redis_result,
