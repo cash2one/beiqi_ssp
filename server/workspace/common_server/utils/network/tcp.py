@@ -145,4 +145,4 @@ class LevelDBRpcClient(TcpRpcClient):
         :param args: 参数
         :return:
         """
-        return self.fetch_sync("forward", *args)
+        return self.fetch_async("forward", *args)
