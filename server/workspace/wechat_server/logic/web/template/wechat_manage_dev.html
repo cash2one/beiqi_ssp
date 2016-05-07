@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+        <title>设备更改</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/weui.min.css">
+        <link rel="stylesheet" type="text/css" href="/static/css/weix.css">
+        <script type="text/javascript" src="/static/js/jquery.js"></script>
+        <script type="text/javascript" src="/static/js/weix.js"></script>
+    </head>
+    <body ontouchstart>
+    <section>
+        <ul class="wei_ul">
+            <!-- 用户绑定设备 -->
+            
+            {% for dev in dev_list %}
+            <li>
+                <dl>
+                    <dt><img src="{{ static_url("images/title.jpg") }}"></dt>
+                    {% if dev.get('nickname') %}
+                        <dd class="title">{{ dev.get('nickname') }}</dd>
+                    {% end %}
+                    <dd class="nameid">{{ dev.get('gid') }}</dd>
+                </dl>
+                <div class="select">
+                    <a href="javascript:;" class="weui_modify"><img src="/static/images/xiugai.jpg"></a>
+                    <a href="javascript:;" class="weui_jiebang"><img src="/static/images/jiechu.jpg"></a>
+                </div>
+            </li>
+            {% end %}
+            
+        </ul>
+        <P class="data_all" style="display:none">{{ username }}</P>
+
+        <!--<P class="data_all" style="word-wrap: break-word;word-break:break-all;">{u'province': u'\u798f\u5efa', u'openid': u'oCMvsvp6SIkF_nLGUoIQn5_VeYV8', u'headimgurl': u'http://wx.qlogo.cn/mmopen/PibrXhBSBicsgxxJW4cvdU6xP0tEW2gCibk1sVwPSugDd6mk0VicSwxpyVG08PR5Ux6mYKctI9eNjrgXUIiaTJhl41BbTlIdOeYj5/0', u'language': u'zh_CN', u'city': u'\u8386\u7530', u'country': u'\u4e2d\u56fd', u'sex': 1, u'privilege': [], u'nickname': u'\u4fa0'}</P>-->
+        <!-- 修改昵称 star-->
+        <div class="weui_dialog_confirm" id="dialog1" style="display:none">
+            <div class="weui_mask"></div>
+            <div class="weui_dialog">
+                <div class="weui_dialog_hd"><span class="weui_dialog_title">修改昵称</span></div>
+                <div class="weui_dialog_bd">
+                    &nbsp;&nbsp;可以给亲情平板设置个昵称,比如“爸妈的家”<br>
+                    <input type="text" class="new_name">
+                </div>
+                <div class="weui_dialog_ft">
+                    <a href="javascript:;" class="weui_btn_dialog default cancel_x">取消</a>
+                    <a href="javascript:;" class="weui_btn_dialog primary confirm_x">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 修改昵称 end-->
+        <!-- 解绑 star-->
+        <div class="weui_dialog_jiebang" style="display:none">
+            <div class="weui_mask"></div>
+            <div class="weui_dialog">
+                <div  class="weui_dia"><strong>您确定要解除绑定？</strong></div>
+                <div class="weui_dialog_ft">
+                    <a href="javascript:;" class="weui_btn_dialog default cancel">取消</a>
+                    <a href="javascript:;" class="weui_btn_dialog primary confirm">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 解绑 end-->
+    </section>
+    </body>
+</html>

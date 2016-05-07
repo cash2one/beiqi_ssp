@@ -1,0 +1,120 @@
+.out_body{
+    background:#efefef;
+    height:100%;
+}
+.wei_ul li{
+    border-bottom:1px solid #C9C9C9;
+    overflow:hidden;
+    list-style:none;
+    background-color:#fff;
+}
+.wei_ul li dl{
+    height:92px;
+    background: url('../images/dow.jpg') no-repeat right;
+    background-size:50px;
+}
+.wei_ul li dt{
+    float:left;
+    padding:15px 20px 10px 20px;
+}
+.wei_ul li dt img{
+    width:60px;
+}
+.wei_ul li dd.title{
+    height:25px;
+    padding:15px 0 5px 0;
+    color:#020202;
+    font-weight:bold;
+    font-size:18px;
+    /*字符太长不换行 省略号代替*/
+    width: 179px;
+    word-break: keep-all;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.wei_ul li dd.nameid{
+    color:#ccc;
+}
+.select{
+    border-top:#e3e3e3 1px solid;
+    display:none;
+}
+.select a{
+    float:left;
+    display:block;
+    width:50%; 
+    background-color:#e8e8e8;
+    padding:30px 0;
+}
+.select img{
+    display:block;
+    margin:0 auto;
+    width:80px;
+}
+/*弹出框*/
+.weui_dialog{
+    padding:4px;
+}
+.weui_dialog_title{
+    font-weight: 600;
+    width:100%;
+    display:block;
+    text-align:left;
+    text-indent:10px;
+}
+.weui_dialog_hd{
+    display:block;
+    color:#f39079;
+    font-weight:bold;
+    border-bottom:#f39079 1px solid;
+}
+.weui_dialog_bd,.weui_dialog_hd{
+    padding-left:5px !important;
+    padding-right:5px !important;
+}
+.weui_dialog_bd{
+    font-size:12px;
+    margin-top:10px;
+}
+.new_name{
+    padding:4px 5px 8px 5px;
+    width:90%;
+    margin:10px auto;
+    display:block;
+    margin-top:20px;
+    border-bottom:#f39079 1px solid !important;
+    height: 24px;
+    font-size:22px;
+    border:none;
+    color:#383838;
+}
+*:focus {outline: none;}
+.weui_dia{
+    padding:20px 0 10px 0;
+}
+.weui_dialog_ft a::after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    border-left: 1px solid #D5D5D6;
+    color: #D5D5D6;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleX(0.5);
+    transform: scaleX(0.5);
+}
+.weui_dialog_jiebang .weui_dialog_ft a {
+    position: relative;
+}
+.weui_dialog_bd {
+    text-align: center !important;
+    letter-spacing:1px;
+}
+/*隐藏*/
+.weui_dialog_jiebang,#dialog1{
+    display:none;
+}
