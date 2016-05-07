@@ -57,6 +57,7 @@ def watch_dispatch():
 
 
 if __name__ == '__main__':
+    logger.init_log('mqd_job', 'mqd_job')
     fork_processes(10)
     setproctitle('mqd_job')
     watch_dispatch()

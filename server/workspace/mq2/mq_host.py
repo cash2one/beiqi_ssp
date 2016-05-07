@@ -76,6 +76,9 @@ def run_process(redis_url, process_ratio, run_or_not):
     :param run_or_not: 是否启动该进程
     :return:
     """
+    host, port, db, pwd, channel = resolve_redis_url(redis_url, True)
+    logger.init_log(channel, channel)
+
     if not (redis_url and isinstance(redis_url, str) and '|' not in redis_url):
         logger.fatal('redis_url invalid: %s' % redis_url)
         return
@@ -89,7 +92,6 @@ def run_process(redis_url, process_ratio, run_or_not):
     if not run_or_not:
         logger.debug('not run {0} via config'.format(redis_url))
         return
-    host, port, db, pwd, channel = resolve_redis_url(redis_url, True)
     setproctitle('mq:host:{0}'.format(channel))
 
     fork_processes(process_ratio)
