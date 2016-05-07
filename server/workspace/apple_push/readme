@@ -1,0 +1,37 @@
+苹果推送客户端
+
+* 注意看水果开发者news博客，尼玛apns有更新都不带发封邮件的
+* https://developer.apple.com/news/?id=10222014a （2014/10/29停用ssl_v3认证，统一升级为tls_v1）
+* 因此ssl部分必须也统一使用tls_v1协议
+
+* 苹果使用Entrust根证书校验身份，因此必须同时包含该根证书
+* 开发环境地址： gateway.sandbox.push.apple.com, 2195
+* 生产环境：gateway.push.apple.com, 2195
+
+* 连接
+## 客户端采用多个连接，保证性能
+## 采用长连接，频繁断开重连会被苹果服务器视为ddos攻击
+## 长连接如果长时间不用，可关闭
+## 收包：如果正常，啥都不返回；否则返回错误包，并且apns主动关闭连接 --> 使用同一连接的推送包全部丢弃，重发
+
+* feedback service
+## 以app为单位维护一个失败推送列表，使用对应的证书
+## 每天访问feedback service 获取投递失败的设备id（重试后还是失败）
+## app已卸载时，feedback服务添加设备token到名单中
+## 读取之后苹果服务器就删除了对应信息
+
+feedback.push.apple.com:2196
+feedback.sandbox.push.apple.com:2196
+
+
+app端的注意要点(获取device_token)
+
+* 每次app启动时均需调用
+* iOS调用 UIApplication:registerForRemoteNotificationTypes
+* OS X调用 NSApplication:registerForRemoteNotificationTypes
+* 手机用户可以随时更改通知类型，app为确保通知正常，需要查询UIApplication:enabledRemoteNotificationTypes属性（涉及到badge icons、alert messages或者播放声音）
+
+* 注册成功，APNs则返回device_token给设备，iOS通过application:didRegisterForRemoteNotificationsWithDeviceToken方法传入
+* 注册失败，则回调 application:didFailToRegisterForRemoteNotificationsWithError 方法（NSError对象描述了具体错误）
+
+* 如果数据/wifi网络都不可用，则成功/失败方法均不会调用；对于wifi网络来说，当手机连接APNs 5223端口失败时就有可能这样
