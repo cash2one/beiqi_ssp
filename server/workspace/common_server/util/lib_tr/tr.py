@@ -1,9 +1,8 @@
 #coding:utf-8
-
+from utils import logger
 from datetime import datetime
 from langs import date_langs, _mcc_map, time_langs, DEFAULT_LANG
 from util.oem_account_key import beiqi_keys, oem_accounts
-from util.log_util import gen_log
 from util.redis.redis_client import Redis
 from util.stream_config_client import load as conf_load
 from util.sso.dev_active import get_dev_imeiimsi_etc
@@ -31,7 +30,7 @@ def resolve_lang(mcc=None, api_key=None, pid=None):
         d = oem_accounts.get(api_key)
         if d is not None:
             return d.get('tr') or DEFAULT_LANG
-        gen_log.warn('tr key {0} not found'.format(api_key))
+        logger.warn('tr key {0} not found'.format(api_key))
         return DEFAULT_LANG
     if pid is not None:
         etc = dev_filter.send_cmd(*get_dev_imeiimsi_etc(pid))

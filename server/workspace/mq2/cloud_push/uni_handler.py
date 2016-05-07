@@ -1,29 +1,20 @@
 #coding:utf8
-
-import json
-from tornado.gen import coroutine
-
 from utils import logger
 from util.sso.dev_active import *
 from util.redis.redis_client import Redis
 from util.stream_config_client import load as conf_load
-from util.convert import combine_redis_cmds, parse_ip_port
+from util.convert import combine_redis_cmds
 from util.bit import span_bits
-from util.internal_forward.gen_internal_client import GeneralInternalClient
-from util.internal_forward.batch_push_encode import encode as batch_push_encode
 from . import find_push
-from util.oem_conv import get_mb_key, parse_oem_options, oem_accounts
 from copy import deepcopy
 
 
-group = dict(conf_load('redis.ini', 'push_svr.ini'))
+group = dict(conf_load('redis.ini'))
 redis_conf = group.get('redis.ini')
-batch_push_conf = group.get('push_svr.ini')
 
 redis_cal = Redis(redis_conf.get('calculation', 'url'))
 dev_filter = Redis(redis_conf.get('dev_filter', 'url'))
 account_cache = Redis(redis_conf.get('oauth', 'url'))
-batch_push_client = GeneralInternalClient(parse_ip_port(batch_push_conf.get('default', 'mq_host')))
 
 
 def handle_pid_account(account):
@@ -31,62 +22,6 @@ def handle_pid_account(account):
         # pid
         return account + '@jiashu.com'
     return account
-
-@coroutine
-def forward_batch(push_body, key_acc, rel_accounts):
-    """
-    转发批量推送
-    :param push_body:
-    :param key_acc: 相关帐号，用于查询akey，一个就够
-    :param rel_accounts: 所有帐号列表
-    :return:
-    """
-    #通过用户帐号查找api_key
-    _ = account_cache.send_cmd(*get_mb_key(key_acc))
-    if not _:
-        #不存在key
-        return
-    mobile, api_key = _.split(':')
-    oem_ob = oem_accounts.get(api_key)
-    if not oem_ob:
-        #非oem帐号
-        return
-    _ = parse_oem_options(oem_ob.get('opt_mask') or api_key)
-    if not _:
-        return
-    if not _[1]:
-        #不批量推送
-        return
-
-    token = push_body.get('cb')
-    if token:
-        token = token.split(':')[-1]
-        src_account = dev_filter.send_cmd(*get_dev_sms_src(token))
-    else:
-        src_account = None
-
-    #需要批量发送
-    push_body.update(
-        {
-            'accs': [x.split('@')[0] for x in rel_accounts if x]
-            if rel_accounts else (key_acc.split('@')[0],),
-            'src_acc': src_account.split('@')[0] if src_account else '',
-        }
-    )
-    pid = push_body.get('id')
-    imsi = dev_filter.send_cmd(*get_dev_imeiimsi_etc(pid))
-    imsi = imsi.split(':')[-2] if imsi else ''
-    push_body.update({'imsi': imsi})
-
-    result = yield batch_push_client.forward(
-        batch_push_encode(
-            api_key,
-            pid,
-            json.dumps(push_body, separators=(',', ':'))
-        )
-    )
-    logger.debug('batch push: %s' % result)
-
 
 def app_1push(push_body, account):
     """
@@ -140,7 +75,7 @@ def handle_msg(packet):
 
     if single_account is not None:
         if p_batch:
-            forward_batch(deepcopy(push_body), single_account, None)
+            logger.warn('cloud_push handle_msg:: not support batch push!!!')
         #单用户，意味着仅一种推送通道，dict对象键值不会受干扰
         #没有必要deepcopy
         if p_app:
@@ -159,6 +94,6 @@ def handle_msg(packet):
     sub_accounts.add(primary_account)
     logger.debug('cloud handle_msg sub_accounts: {0}, primary_account: {1}, pid: {2}'.format(sub_accounts, primary_account, pid))
     if p_batch:
-        forward_batch(deepcopy(push_body), primary_account, sub_accounts)
+        logger.warn('cloud_push handle_msg:: not support batch push!!!')
     if p_app:
         [app_1push(deepcopy(push_body), x) for x in sub_accounts]
