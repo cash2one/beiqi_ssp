@@ -7,24 +7,26 @@ Created on 2016/5/5
 """
 import time
 import urllib
+import urlparse
 from hashlib import md5
 from utils import logger
 from util.sso_common.build_sso_token import parser_token
 
-def sign(http_method, url, params, secret_key):
+def sign(http_method, url, params, api_secret):
     """
     签名
     :param http_method:  http访问方法
     :param url:  http访问url
     :param params:  去除_tk和_sign之后的所有参数
-    :param secret_key: secret_key
+    :param api_secret: api_secret
     :return:
     """
     params_keys = params.keys()
     params_keys.sort()
     params_str = "".join(["%s=%s" % (urllib.unquote(str(key)), urllib.unquote(str(params[key]))) for key in params_keys])
-    base_str = http_method + url + params_str + secret_key
+    base_str = http_method + url + params_str + api_secret
     base_urlenc_str = urllib.quote(base_str, safe='')
+    print "base_urlenc_str,",base_urlenc_str
     md5_inst = md5()
     md5_inst.update(base_urlenc_str)
     return md5_inst.hexdigest()
@@ -46,13 +48,13 @@ def beiqi_tk_sign_wapper():
                 self.set_status(401)
                 return
 
-            expire, secret_key, account, apikey_head4 = parser_token(auth_token)
+            expire, api_key, account, apikey_head4 = parser_token(auth_token)
             if expire <= time.time():
                 logger.error("%s expire:%s invalid"%(fun.__name__, expire))
                 self.set_status(401)
                 return
 
-            cal_sign = sign(method, url, params, secret_key)
+            cal_sign = sign(method, url, params, api_key)
             if cal_sign != expect_sign:
                 logger.error("%s cal_sign:%s != expect_sign:%s"%(fun.__name__, cal_sign, expect_sign))
                 self.set_status(401)
@@ -62,3 +64,48 @@ def beiqi_tk_sign_wapper():
             return fun(self, *args, **kwargs)
         return beiqi_tk_sign_param_wapper
     return beiqi_tk_sign_fun_wapper
+
+
+def gen_url_sign(url, api_secret, method='GET'):
+    """
+    根据url和api_key获取对应的签名
+    :param url:  访问的url
+    :param api_secret: api_secret
+    :param method: 访问方法
+    :return:  签名
+    """
+    up = urlparse.urlparse(url)
+    url = "http://{host}{path}".format(host=up.netloc, path=up.path)
+    params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
+    return sign(method, url, params, api_secret)
+
+def append_url_sign(url, api_secret, method='GET'):
+    """
+    往url后面添加sign
+    :param url:  访问的url
+    :param api_secret: api_secret
+    :param method: 访问方法
+    :return:  签名
+    """
+    _sign = gen_url_sign(url, api_secret, method)
+    splitor = "&" if "?" in url else "?"
+    return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
+
+def append_url_tk(url, tk):
+    """
+    往url后面添加tk
+    :param url:  访问的url
+    :param tk: token
+    """
+    splitor = "&" if "?" in url else "?"
+    return url + "{splitor}_tk={tk}".format(splitor=splitor, tk=tk)
+
+def append_url_sign_tk(url, tk, api_secret, method='GET'):
+    """
+    往url后面添加tk
+    :param url:  访问的url
+    :param tk: token
+    :param api_key:api_secret
+    """
+    url = append_url_sign(url, api_secret, method)
+    return append_url_tk(url, tk)

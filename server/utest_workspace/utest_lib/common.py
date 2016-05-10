@@ -49,7 +49,7 @@ from utils.service_control.setting import RT_HASH_RING, RT_CPU_USAGE_RDM
 from utils.setting import enum
 
 
-from lib.common_fun import random_str
+from utest_lib.common_fun import random_str
 from common_fun import unittest_adaptor
 
 from pandora.setting import SERVICE_TYPE as ST_PANDORA
