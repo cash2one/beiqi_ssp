@@ -10,7 +10,6 @@ from gevent import monkey; monkey.patch_all()
 import setting
 from utils.service_control.controller import MainService
 
-
 class Service(MainService):
     """
     服务类

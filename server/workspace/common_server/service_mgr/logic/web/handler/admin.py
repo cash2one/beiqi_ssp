@@ -19,7 +19,7 @@ class LoginHandle(HttpRpcHandler):
         self.render('login.html')
     
     @web_adaptor(use_http_render=False)
-    def post(self, user_name, password, verify_code):
+    def post(self, username, password, verify_code):
         if not cookie.check_cookie(self, "service_mgr_verify_code", verify_code):
             self.reponse_msg("验证码错误!!!")
             return
