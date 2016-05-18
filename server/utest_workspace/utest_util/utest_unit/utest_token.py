@@ -5,7 +5,7 @@ Created on 2016/5/5
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.comm_func import make_unique_id
 from util.sso_common.build_sso_token import gen_token, parser_token
 
