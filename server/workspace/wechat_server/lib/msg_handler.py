@@ -2,12 +2,15 @@
 import json
 import re
 import time
+import urllib2
 from utils import logger
 from util.convert import bs2utf8
-from lib.add_device import add_device, wechat_reply_template
-from lib.wechat_2_device import wechat_2_device
-from lib.wechat_share import wechat_share
 from save_wechat_file import save_wechat_file
+from add_device import add_device, wechat_reply_template
+from mq_packs.uni_pack import shortcut_mq
+from mq_packs.cloud_push_pack import pack as push_pack
+from config import GMQDispRdsInts
+
 
 txt_return_template = '<xml>\
 <ToUserName><![CDATA[{0}]]></ToUserName>\
@@ -32,10 +35,17 @@ def get_wechat_user(ele_tree):
     return 'wx#' + ele_tree.find('FromUserName').text
 
 
-def mk_share_file(fn, ref, thumb_fn, thumb_ref):
-    file_dic = {fn: ref} if not thumb_fn else {fn: ref, thumb_fn: thumb_ref}
-    file_u8 = dict([(bs2utf8(k), bs2utf8(v)) for k, v in file_dic.items()])
-    return json.dumps(file_u8)
+def wechat_msg_bcast(author, file_type, fn, ref, thumb_fn="", thumb_ref="", text=""):
+    logger.debug('wechat_msg_bcast author={0}, type={1}, fn={2}, ref={3}, thumb_fn={4}, thumb_ref={5}, text={6}'.format(author, file_type, fn, ref, thumb_fn, thumb_ref, text))
+
+    des = bs2utf8(':'.join([urllib2.quote(bs2utf8(v)) for v in (author,  file_type, fn, ref, thumb_fn, thumb_ref, text)]))
+
+    GMQDispRdsInts.send_cmd(
+        *shortcut_mq(
+            'chat_msg',
+            push_pack(author, 'msg', 2, des)
+        )
+    )
 
 
 def wechat_handler_warp(func):
@@ -60,11 +70,7 @@ def wechat_handler_warp(func):
             thumb_fn = wechat_ret.get('thumb_fn', '')
             thumb_ref = wechat_ret.get('thumb_ref', '')
 
-            resp = wechat_share(username, file_type, mk_share_file(fn, ref, thumb_fn, thumb_ref))
-            logger.debug(u'%s. resp = %s', func.__name__, resp)
-
-            wechat_2_device(username, file_type, fn, ref, thumb_fn, thumb_ref)
-
+            wechat_msg_bcast(username, file_type, fn, ref, thumb_fn, thumb_ref)
         req_handler.finish(reply)
     return wrapper
 

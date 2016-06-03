@@ -20,10 +20,8 @@ from util.redis_cmds.circles import get_tk_time, set_tk_time, get_sn_of_gid
 from util.sso_common.build_sso_token import gen_token, decrypt_username
 from db.db_oper import DBBeiqiSspInst
 from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
+from setting import DB_TBL_DEVICE_INFO, DB_TBL_USER_INFO
 
-
-tbl_name = 'device_info'
-user_info_tbl = 'user_info'
 fmt = '%Y-%m-%d %H:%M:%S'
 
 
@@ -55,7 +53,7 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 self.send_error(400)
 
             sn, ts = decrypt_username(username, rc4_key)
-            sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(tbl_name)
+            sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
             ret_list = DBBeiqiSspInst.query(sql, sn)
             if len(ret_list) == 0:
                 logger.debug('ret_list={0}, sn={1}'.format(ret_list, sn))
@@ -73,11 +71,11 @@ class BeiqiSSOHandler(HttpRpcHandler):
             login_ts = time.strftime(fmt, time.gmtime())
             GMQDispRdsInts.send_cmd(
                 *shortcut_mq('gen_mysql',
-                    mysql_pack(user_info_tbl,
+                    mysql_pack(DB_TBL_USER_INFO,
                                {'last_login_ts': login_ts, 'last_login_ip': remote_ip, 'last_login_agent': user_agent},
-                                action=2,
-                                ref_kvs={'username': sn}
-                    )
+                               action=2,
+                               ref_kvs={'username': sn}
+                               )
                 )
             )
             return gen_token(api_ob.get('s'), sn, 1, account_rds=GAccRdsInts)
@@ -93,11 +91,11 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 login_ts = time.strftime(fmt, time.gmtime())
                 GMQDispRdsInts.send_cmd(
                     *shortcut_mq('gen_mysql',
-                        mysql_pack(user_info_tbl,
+                        mysql_pack(DB_TBL_USER_INFO,
                                    {'last_login_ts': login_ts, 'last_login_ip': remote_ip, 'last_login_agent': user_agent},
-                                    action=2,
-                                    ref_kvs={'username': username}
-                        )
+                                   action=2,
+                                   ref_kvs={'username': username}
+                                   )
                     )
                 )
                 return gen_token(api_ob.get('s'), username, 1, account_rds=GAccRdsInts)
@@ -135,11 +133,11 @@ class BeiqiSSOHandler(HttpRpcHandler):
         login_ts = time.strftime(fmt, time.gmtime())
         GMQDispRdsInts.send_cmd(
             *shortcut_mq('gen_mysql',
-                mysql_pack(user_info_tbl,
+                mysql_pack(DB_TBL_USER_INFO,
                            {'last_login_ts': login_ts, 'last_login_ip': remote_ip, 'last_login_agent': user_agent},
-                            action=2,
-                            ref_kvs={'username': username}
-                )
+                           action=2,
+                           ref_kvs={'username': username}
+                           )
             )
         )
         return gen_token(api_ob.get('s'), username, 1, account_rds=GAccRdsInts)

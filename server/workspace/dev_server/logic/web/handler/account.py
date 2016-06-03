@@ -17,10 +17,7 @@ from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.convert import combine_redis_cmds
 from db.db_oper import DBBeiqiSspInst
 from config import GMQDispRdsInts, GDevRdsInts
-
-
-devinfo_tbl_name = 'device_info'
-gidinfo_tbl_name = 'gid_info'
+from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 
 
 @route(r'/sign_in')
@@ -28,7 +25,7 @@ class SignInHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def get(self, sn):
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(devinfo_tbl_name)
+        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
         ret_list = DBBeiqiSspInst.query(sql, sn)
         if len(ret_list) == 0:
             return {'status': 1}
@@ -46,7 +43,7 @@ class SignInHandler(HttpRpcHandler):
                     sn_of_gid = GDevRdsInts.send_cmd(*get_sn_of_gid(tmp_gid))
                     if sn_of_gid is None:
                         # tmp_pid is not used.
-                        sql = 'select * from {0} WHERE gid = %s'.format(gidinfo_tbl_name)
+                        sql = 'select * from {0} WHERE gid = %s'.format(DB_TBL_GID_INFO)
                         query_result = DBBeiqiSspInst.query(sql, tmp_gid)
                         if query_result[0].get('gid_kind') == 1:
                             # tmp_pid is a nice number
@@ -56,8 +53,8 @@ class SignInHandler(HttpRpcHandler):
                         break
                 #update mysql data
                 GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
-                    shortcut_mq('gen_mysql', mysql_pack(devinfo_tbl_name, {'gid': gid}, action=2, ref_kvs={'sn': sn})),
-                    shortcut_mq('gen_mysql', mysql_pack(gidinfo_tbl_name, {'sn': sn, 'status': 'used'}, action=2, ref_kvs={'gid': gid}))
+                    shortcut_mq('gen_mysql', mysql_pack(DB_TBL_DEVICE_INFO, {'gid': gid}, action=2, ref_kvs={'sn': sn})),
+                    shortcut_mq('gen_mysql', mysql_pack(DB_TBL_GID_INFO, {'sn': sn, 'status': 'used'}, action=2, ref_kvs={'gid': gid}))
                 ))
 
             ic = GDevRdsInts.send_cmd(*get_sn_ic(sn))

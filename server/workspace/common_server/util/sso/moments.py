@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import time
-# from utils import logger
 
 TIMELINE_INBOX = 'moments:inbox'
 COMMENT_GROUP = 'comment_group'

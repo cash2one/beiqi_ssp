@@ -10,6 +10,8 @@ from utils import logger
 from util.convert import bs2utf8
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
+from setting import DB_TBL_LOCATION, DB_TBL_DEV_STATE
+
 
 def build_mq_package(acc, sn, dev_type, payload):
     """
@@ -36,14 +38,14 @@ def build_mq_package(acc, sn, dev_type, payload):
     soft_ver = bs2utf8(payload.get('soft_version'))
 
     yield shortcut_mq('gen_mysql', mysql_pack(
-        'location',
+        DB_TBL_LOCATION,
         loc,
         0,
         None,
         'src_ts'))
 
     yield shortcut_mq('gen_mysql', mysql_pack(
-        'dev_state',
+        DB_TBL_DEV_STATE,
         {'src_ts': ts, 'sn': sn, 'battery': battery, 'charge': charge, 'soft_ver': soft_ver, 'dev_type': dev_type},
         0,
         None,

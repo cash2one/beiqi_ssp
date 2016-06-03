@@ -1,6 +1,4 @@
 #coding:utf-8
-
-
 from datetime import datetime
 from torndb import Connection
 from utils import logger

@@ -15,6 +15,18 @@ DB_NAME = "beiqi_ssp"
 DB_USER = "system"
 DB_PWD = "System"
 
+# MYSQL 表格
+DB_TBL_USER_INFO = 'user_info'
+DB_TBL_DEVICE_INFO = 'device_info'
+DB_TBL_ETICKET = "eticket"
+DB_TBL_RES_CLS = "res_cls"
+DB_TBL_RES_ALBUM = "res_album"
+DB_TBL_RESOURCE = "resource"
+
+
+# 每页显示的数量
+PAGE_COUNT = 500
+
 # REDIS配置
 ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
 CALC_RDS_URI = "redis://192.168.2.192:6379/1?pwd=123456"

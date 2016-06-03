@@ -17,10 +17,6 @@ from util.redis_cmds.user_info import *
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 
 
-dev_tbl = 'device_info'
-pidinfo_tbl_name = 'gid_info'
-
-
 @route(r'/app/set_app_data')
 class SetAppDataHandler(HttpRpcHandler):
     @web_adaptor()

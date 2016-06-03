@@ -1,17 +1,19 @@
 #coding:utf8
-import ujson
+import json
 import urllib2
 import StringIO
-from utils import logger
 from poster.encode import multipart_encode, MultipartParam
 from poster.streaminghttp import register_openers
-from utils.network.http import HttpRpcClient
-from util.redis_cmds.circles import get_wechat_gids, get_user_groups, get_group_followers, get_gid_of_sn
+from tornado.httpclient import HTTPClient
+from tornado.httpclient import HTTPRequest
+from utils import logger
+from util.redis_cmds.circles import get_group_followers
 from util.redis_cmds.wechat import get_wechat_access_token
 from util.filetoken import gen_file_tk
+from util.user import get_user_gids
 from setting import *
-from config import GDevRdsInts, GAccRdsInts
 
+http_client = HTTPClient()
 
 SELECTED_SOURCES = (0, 16)
 
@@ -20,18 +22,6 @@ file_type_2_msg_type_dic = {
     "2": "video",
     "3": "voice",
 }
-
-def wechat_2_client_msg(mqtt_client, wc_user, msg):
-    """
-    微信用户消息广播到客户端
-    :param mqtt_client:mqtt客户端
-    :param wc_user: 微信用户
-    :param msg: 需要发送的消息
-    :return:
-    """
-    gid_list = GDevRdsInts.send_cmd(*get_wechat_gids(wc_user))
-    logger.debug('wechat_2_client: gid_list=%r, author=%r, payload:%r', gid_list, wc_user, msg)
-    [mqtt_client.publish(PUB_BEIQI_MSG_BCAST.format(gid), msg) for gid in gid_list]
 
 
 def wechat_file_upload(access_token, src_file_url, filename="image.jpg", filetype="image/jpg"):
@@ -55,7 +45,7 @@ def wechat_file_upload(access_token, src_file_url, filename="image.jpg", filetyp
     datagen, headers = multipart_encode({"media": param})
     request = urllib2.Request(wechat_upload_url, datagen, headers)
     logger.debug('wechat_file_upload: wechat_upload_url=%s', wechat_upload_url)
-    upload_result = ujson.loads(urllib2.urlopen(request).read())
+    upload_result = json.loads(urllib2.urlopen(request).read())
     logger.debug('wechat_file_upload: wechat_upload_url=%s, upload_result = %r', wechat_upload_url, upload_result)
     return upload_result
 
@@ -68,8 +58,9 @@ def wechat_customer_response(access_token, payload):
     :return:
     """
     customer_url = WECHAT_CUSTOMER_SERVICE_URL % access_token
-    resp = HttpRpcClient().fetch_async(url=customer_url, body=ujson.dumps(payload, ensure_ascii=False))
+    resp = http_client.fetch(HTTPRequest(customer_url, method='POST', body=json.dumps(payload, ensure_ascii=False)))
     logger.debug('send_wechat_file::customer resp customer_url=%s, payload=%s, code = %r, body = %r', customer_url, payload,  resp.code, resp.body)
+
 
 def wechat_image_sender(wc_openid, file_url):
     """
@@ -79,14 +70,14 @@ def wechat_image_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+    access_token = account_cache.send_cmd(*get_wechat_access_token())
 
     upload_result = wechat_file_upload(access_token, file_url, "image.jpg", "image/jpg")
 
     payload = {
         "touser": wc_openid,
         "msgtype": "image",
-        "voice": {
+        "image": {
             "media_id": upload_result.get('media_id')
         }
     }
@@ -101,7 +92,7 @@ def wechat_video_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+    access_token = account_cache.send_cmd(*get_wechat_access_token())
 
     upload_result = wechat_file_upload(access_token, file_url, "video.amr", "video/amr")
 
@@ -126,7 +117,7 @@ def wechat_voice_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+    access_token = account_cache.send_cmd(*get_wechat_access_token())
 
     upload_result = wechat_file_upload(access_token, file_url, "voice.amr", "voice/amr")
 
@@ -148,10 +139,7 @@ msg_type_2_wechat_msg_sender = {
 }
 
 
-def is_device(acc):
-    return "@" not in acc and "wx#" not in acc
-
-def client_2_wechat_msg(cli_user, file_type, fn, ref, thumb_fn, thumb_ref, text):
+def msg_2_wechat(cli_user, file_type, fn, ref, thumb_fn, thumb_ref, text):
     """
     客户端发送消息给微信用户
     :param cli_user: 客户端用户
@@ -164,33 +152,31 @@ def client_2_wechat_msg(cli_user, file_type, fn, ref, thumb_fn, thumb_ref, text)
     :return: None
     """
     # 查找微信用户
-    groups = [GDevRdsInts.send_cmd(*get_gid_of_sn(cli_user))] \
-        if is_device(cli_user) \
-        else GDevRdsInts.send_cmd(*get_user_groups(cli_user))
-
-    logger.debug('client_2_wechat_msg:cli_user=%s, groups=%r', cli_user, groups)
+    groups = get_user_gids(cli_user)
+    logger.error('msg_2_wechat:cli_user=%s, groups=%r', cli_user, groups)
 
     followers = set([])
-    [followers.update(GDevRdsInts.send_cmd(*get_group_followers(gid))) for gid in groups]
+    [followers.update(dev_filter.send_cmd(*get_group_followers(gid))) for gid in groups]
 
     wechat_followers = filter(lambda user: user[:3] == 'wx#' and user != cli_user, followers)
-    logger.debug('client_2_wechat_msg:cli_user=%s, ref=%r, wechat_followers= %r', cli_user, ref, wechat_followers)
+    logger.error('msg_2_wechat:cli_user=%s, ref=%r, wechat_followers= %r', cli_user, ref, wechat_followers)
 
     if not wechat_followers:
         return
 
     msg_type = file_type_2_msg_type_dic.get(file_type, "")
     if not msg_type:
-        logger.debug('client_2_wechat_msg not msg_type, file_type=%s', file_type)
+        logger.error('msg_2_wechat not msg_type, file_type=%s', file_type)
         return
 
     sender = msg_type_2_wechat_msg_sender.get(msg_type)
     if not sender:
-        logger.debug('client_2_wechat_msg not sender：msg_type=%s', msg_type)
+        logger.debug('msg_2_wechat not sender：msg_type=%s', msg_type)
         return
 
-    logger.debug('client_2_wechat_msg sender：sender=%r', sender)
+    logger.debug('msg_2_wechat sender：sender=%s', sender.__name__)
 
     tk = gen_file_tk(cli_user, fn, 0, 0)
     file_url = SSP_DOWNLOAD_FILE_URL % (tk, ref)
     [sender(wc_user.split("#")[1], file_url) for wc_user in wechat_followers]
+

@@ -41,3 +41,9 @@ class UtilFileTokenTest(unittest.TestCase):
         print "stk,",stk
         print "extract_s_tk,",extract_tk(stk, True)
         print "check_s_tk_ref,",check_tk_ref(stk, True, sref)
+    @unittest_adaptor()
+    def test_file_tk1(self):
+        tk = "4BBQMDgxMTAxNTM1MDAwMDEzV0+uA1JFQzAwODYuV0FW"
+        print extract_tk(tk, True)
+
+        print "1"

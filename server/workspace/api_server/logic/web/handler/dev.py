@@ -24,10 +24,7 @@ from util.sso.account import exist_account, set_account_pwd
 from util.convert import combine_redis_cmds
 from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 from db.db_oper import DBBeiqiSspInst
-
-
-dev_tbl = 'device_info'
-pidinfo_tbl_name = 'gid_info'
+from setting import DB_TBL_DEVICE_INFO
 
 
 @route(r'/dev/check_dev_args', name='/dev/check_dev_args')
@@ -35,7 +32,7 @@ class CheckDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def get(self, user_name, sn):
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(dev_tbl)
+        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
         ret_list = DBBeiqiSspInst.query(sql, sn)
         if len(ret_list) == 0:
             return {'status': 1}
@@ -64,7 +61,7 @@ class ChangeDevArgsHandler(HttpRpcHandler):
             self.send_error(400)
             return
 
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(dev_tbl)
+        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
         ret_list = DBBeiqiSspInst.query(sql, sn)
         if len(ret_list) == 0:
             return {'status': 1}
@@ -215,7 +212,7 @@ class AddDeviceHandler(HttpRpcHandler):
             GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
                 # sourcer, cb, from, description
                 shortcut_mq('cloud_push', push_pack(user_name, 'bind', 2, ':'.join((user_name, sn)), account=sn)),
-                shortcut_mq('gen_mysql', mysql_pack(dev_tbl, {'primary': user_name, 'status': 'binded', 'mobile': mobile}, action=2, ref_kvs={'sn': sn}))
+                shortcut_mq('gen_mysql', mysql_pack(DB_TBL_DEVICE_INFO, {'primary': user_name, 'status': 'binded', 'mobile': mobile}, action=2, ref_kvs={'sn': sn}))
             ))
 
             logger.debug('bind push sent')
@@ -270,11 +267,11 @@ class DelDeviceHandler(HttpRpcHandler):
                 logger.debug('gid={0}, old_gid={1}'.format(gid, old_gid))
                 # gid belonged to nice_gid, keep binding with sn
                 GMQDispRdsInts.send_cmd(*
-                    shortcut_mq('gen_mysql', mysql_pack(dev_tbl, {'primary': '', 'status': 'unbound', 'mobile': ''}, action=2, ref_kvs={'sn': sn}))
+                    shortcut_mq('gen_mysql', mysql_pack(DB_TBL_DEVICE_INFO, {'primary': '', 'status': 'unbound', 'mobile': ''}, action=2, ref_kvs={'sn': sn}))
                 )
             else:
                 GMQDispRdsInts.send_cmd(*
-                    shortcut_mq('gen_mysql', mysql_pack(dev_tbl, {'primary': '', 'status': 'unbound', 'mobile': ''}, action=2, ref_kvs={'sn': sn}))
+                    shortcut_mq('gen_mysql', mysql_pack(DB_TBL_DEVICE_INFO, {'primary': '', 'status': 'unbound', 'mobile': ''}, action=2, ref_kvs={'sn': sn}))
                 )
             GDevRdsInts.send_cmd(*del_all_self_share(sn))
             all_letters_in = GDevRdsInts.send_cmd(*get_letter_inbox(sn, 0, -1))

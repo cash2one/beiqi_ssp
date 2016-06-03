@@ -8,10 +8,7 @@ from util.redis_cmds.circles import get_sn_of_gid, set_sn_of_gid, set_gid_of_sn,
     set_group_primary, del_group_primary, del_sn_of_gid, get_group_followers, follow_group, get_user_nickname, set_user_nickname
 from util.redis_cmds.user_info import set_nice_gid, get_user_info, set_user_info, set_old_gid, get_old_gid
 from config import GDevRdsInts, GMQDispRdsInts
-
-
-dev_info_tbl = 'device_info'
-gid_info_tbl = 'gid_info'
+from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 
 
 @route(r'/map_nice_gid')
@@ -50,8 +47,7 @@ class MapNiceGidHandler(HttpRpcHandler):
             GDevRdsInts.send_cmd(*set_user_nickname(nice_gid, nickname))
 
         GMQDispRdsInts.send_multi_cmd(*combine_redis_cmds(
-                shortcut_mq('gen_mysql', mysql_pack(gid_info_tbl, {'sn': sn, 'status': 'used'}, action=2, ref_kvs={'gid': nice_gid})),
-                shortcut_mq('gen_mysql', mysql_pack(dev_info_tbl, {'nice_gid': nice_gid}, action=2, ref_kvs={'sn': sn}))
+                shortcut_mq('gen_mysql', mysql_pack(DB_TBL_GID_INFO, {'sn': sn, 'status': 'used'}, action=2, ref_kvs={'gid': nice_gid})),
+                shortcut_mq('gen_mysql', mysql_pack(DB_TBL_DEVICE_INFO, {'nice_gid': nice_gid}, action=2, ref_kvs={'sn': sn}))
             ))
-
         return {'status': 0}

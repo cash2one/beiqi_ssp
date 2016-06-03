@@ -6,6 +6,8 @@ Created on 2016/5/6
 @author: Jay
 """
 import urllib
+import time
+from datetime import datetime
 from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
@@ -17,9 +19,8 @@ from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
 from util.sso.account import get_newacc_reg_val, set_account_pwd, cipher_pwd
 from util.convert import bs2utf8, is_email, combine_redis_cmds
 from util.sso.account import get_sms_speed, incr_sms_speed, init_sms_speed, get_user_veri_sms_time, set_user_veri_sms_time
-import time
-from datetime import datetime
 from common.reg import reg_via_mobile
+from setting import DB_TBL_SSP_USR_LOGIN
 
 
 SMS_SPEED_MAX = 20
@@ -66,7 +67,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
             shortcut_mq(
                 'gen_mysql',
                 mysql_pack(
-                    'ssp_user_login',
+                    DB_TBL_SSP_USR_LOGIN,
                     {
                         'username': user_name,
                         'password': pwd_mask,
@@ -78,7 +79,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
             shortcut_mq(
                 'gen_mysql',
                 mysql_pack(
-                    'user_info',
+                    DB_TBL_SSP_USR_LOGIN,
                     {
                         'username': user_name,
                         'reg_agent': user_agent,

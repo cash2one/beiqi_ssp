@@ -12,10 +12,7 @@ from util.redis_cmds.user_info import set_user_group_msglist, set_user_info
 from util.redis_cmds.circles import set_user_nickname
 from util.redis_cmds.wechat import get_wechat_access_token
 from config import GDevRdsInts, GMQDispRdsInts
-from setting import wechat_userinfo_url
-
-
-user_info_tbl = 'user_info'
+from setting import wechat_userinfo_url, DB_TBL_USER_INFO
 
 
 wechat_reply_template = \
@@ -65,11 +62,11 @@ def add_device(username, code, user_info=None):
 
     GMQDispRdsInts.send_cmd(
         *shortcut_mq('gen_mysql',
-            mysql_pack(user_info_tbl,
+            mysql_pack(DB_TBL_USER_INFO,
                        {'nickname': nickname},
-                        action=2,
-                        ref_kvs={'username': username}
-            )
+                       action=2,
+                       ref_kvs={'username': username}
+                       )
         )
     )
     logger.debug('set user info, username={0}, user_info={1}'.format(username, user_info))

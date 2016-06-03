@@ -29,11 +29,8 @@ from util.sso.moments import get_share_by_time, get_share_by_quantity, get_like,
 from util.redis_cmds.circles import get_dev_primary, get_group_primary, get_group_followers, get_sn_of_gid
 from util.sso.moments import add_share, save_share_info, add_self_share
 from util.sso.moments import del_one_comment
-from setting import ssp_down_file_url, wechat_comment_page_url
+from setting import ssp_down_file_url, wechat_comment_page_url, DB_TBL_DEVICE_INFO
 from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
-
-
-device_tbl = 'device_info'
 
 
 @route(r'/comment')
@@ -191,7 +188,7 @@ class DeleteShareHandler(HttpRpcHandler):
         logger.debug(u'DeleteShareHandler::get_dev_primary_by_gid, dev_sn={0}'.format(dev_sn))
         dev_primary = GDevRdsInts.send_cmd(*get_dev_primary(dev_sn))
         if not dev_primary:
-            sql = 'SELECT * FROM {0} WHERE sn = %s limit 1'.format(device_tbl)
+            sql = 'SELECT * FROM {0} WHERE sn = %s limit 1'.format(DB_TBL_DEVICE_INFO)
             dev_ls = self.settings.get('mysql_db').query(sql, dev_sn)
             dev_primary = dev_ls[0].get('primary')
         logger.debug(u'DeleteShareHandler::get_dev_primary_by_gid, dev_primary={0}'.format(dev_primary))

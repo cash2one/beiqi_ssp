@@ -15,6 +15,12 @@ DB_NAME = "beiqi_ssp"
 DB_USER = "system"
 DB_PWD = "System"
 
+# MYSQL 表格
+DB_TBL_DEVICE_INFO = 'device_info'
+DB_TBL_GID_INFO = 'gid_info'
+DB_TBL_LOCATION = 'location'
+DB_TBL_DEV_STATE = 'dev_state'
+
 # REDIS配置
 ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
 CALC_RDS_URI = "redis://192.168.2.192:6379/1?pwd=123456"

@@ -19,8 +19,7 @@ from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.redis_cmds.mqtt import get_mqtt_status
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from config import GAccRdsInts, GCalcRdsInts, GDevRdsInts, GMQDispRdsInts
-
-user_tbl = 'user_info'
+from setting import DB_TBL_USER_INFO
 
 
 @route(r'/account/token')
@@ -115,11 +114,11 @@ class GetUserInfoHandler(HttpRpcHandler):
 
         GMQDispRdsInts.send_cmd(
             *shortcut_mq('gen_mysql',
-                mysql_pack(user_tbl,
+                mysql_pack(DB_TBL_USER_INFO,
                            {'nickname': nickname},
-                            action=2,
-                            ref_kvs={'user_name': user_name}
-                )
+                           action=2,
+                           ref_kvs={'user_name': user_name}
+                           )
             )
         )
 

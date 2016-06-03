@@ -13,11 +13,11 @@ from util.convert import bs2utf8, is_email
 from util.sso.account import exist_account
 from db.db_oper import DBBeiqiSspInst
 from config import GAccRdsInts
+from setting import DB_TBL_SSP_USR_LOGIN
+
 
 
 SMS_SPEED_MAX = 20
-
-user_info_tbl = 'user_info'
 fmt = '%Y-%m-%d %H:%M:%S'
 
 
@@ -37,7 +37,7 @@ class AccountStateHandler(HttpRpcHandler):
         if account_exist:
             return {'status': 2}
 
-        sql = 'select * from {0} where username=%s'.format('ssp_user_login')
+        sql = 'select * from {0} where username=%s'.format(DB_TBL_SSP_USR_LOGIN)
         res = DBBeiqiSspInst.query(sql, account)
         if len(res) != 0:
             # exist in mysql, so we cache it

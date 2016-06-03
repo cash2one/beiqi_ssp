@@ -14,11 +14,11 @@ from utils.wapper.web import web_adaptor
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.mq_packs.normal_sms_pack import pack as sms_notify_pack
-from util.convert import bs2utf8, combine_redis_cmds
 from util.sso.account import *
 from util.oem_conv import fix_account_postfix
 from db.db_oper import DBBeiqiSspInst
 from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
+from setting import DB_TBL_SSP_USR_LOGIN
 
 SMS_SPEED_MAX = 20
 
@@ -45,7 +45,7 @@ class NewPwdHandler(HttpRpcHandler):
             [shortcut_mq(
                 'gen_mysql',
                 mysql_pack(
-                    'ssp_user_login',
+                    DB_TBL_SSP_USR_LOGIN,
                     {
                         'username': cur_account,
                         'password': cipher_pwd(pwd),
@@ -62,7 +62,7 @@ class NewPwdHandler(HttpRpcHandler):
 @route(r'/pwd_lost')
 class LostPwdHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, account, *args, **kwargs):
+    def post(self, account, api_key, *args, **kwargs):
         """
         密码丢失
         :param account:
@@ -72,12 +72,11 @@ class LostPwdHandler(HttpRpcHandler):
         """
         cur_account = fix_account_postfix(account)
         if not GAccRdsInts.send_cmd(*exist_account(cur_account)):
-            sql = 'select password from {0} where username=%s'.format('ssp_user_login')
+            sql = 'select password from {0} where username=%s'.format(DB_TBL_SSP_USR_LOGIN)
             expect_pwd = DBBeiqiSspInst.query(sql, cur_account)
             if len(expect_pwd) == 0:
                 return {'status': 1}
 
-        api_key = bs2utf8(self.get_argument('api_key', None))
         mobile = get_mobile(GAccRdsInts, api_key, cur_account)
         if not mobile:
             return {'status': 2}
