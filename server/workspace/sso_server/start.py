@@ -18,7 +18,8 @@ class Service(MainService):
     def __init__(self):
         MainService.__init__(self, setting.SERVICE_TYPE,
                              setting.VERSION,
-                             use_mysqldb=True)
+                             use_mysqldb=True,
+                             db_update_dir_path=os.path.join(os.path.dirname(__file__), "db_update"))
 
     def add_cmd_opts(self, arg_parser):
         # db
@@ -27,6 +28,8 @@ class Service(MainService):
         arg_parser.add_argument('--db_user', default=setting.DB_USER, type=str,  help="db user")
         arg_parser.add_argument('--db_password', default=setting.DB_PWD, type=str,  help="db password")
         arg_parser.add_argument('--db_name', default=setting.DB_NAME, type=str,  help="db name")
+
+        arg_parser.add_argument('--http_port', default=8104, type=int,  help="The port of the http app listen")
 
 
 if __name__ == "__main__":
