@@ -1,0 +1,22 @@
+gcc -shared -fPIC kdxf_voice.c  -I ../../include/ -L ../../libs/x64/ -lmsc -lrt -o libkdxf_voice.so
+
+gcc -shared -fPIC kdxf_voice.c  -I ../../include/ -L ../../libs/x64/ -lmsc -Wl,--no-as-needed -lrt -ldl -lpthread -o libkdxf_voice.so
+
+gcc -shared -fPIC kdxf_voice.c  -g -Wall  -I ../../include/ -L ../../libs/x64/ -Wl,--as-needed -lmsc -Wl,--no-as-needed -lrt -ldl -lpthread -o libkdxf_voice.so
+
+
+gcc -shared -fPIC kdxf_text2voice.c -I ../../include/ -L ../../libs/x64/ -l msc -o libkdxf_text2voice.so
+
+gcc -shared -fPIC kdxf_voice2text.c -I ../../include/ -L ../../libs/x64/ -l msc -o libkdxf_voice2text.so
+
+将/usr/lib/ 拷贝到/usr/lib
+
+
+查看so库函数
+nm -D /usr/lib/libmsc.so
+
+查看链接关系
+ldd /usr/lib/libmsc.so 
+
+
+nm --demangle /usr/lib/libmsc.so
