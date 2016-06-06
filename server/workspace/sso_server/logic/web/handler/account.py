@@ -24,11 +24,10 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/valid_acc_new')
 class AccountStateHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self):
+    def post(self, account):
         """
     帐号状态，是否已存在
         """
-        account = bs2utf8(self.get_argument('account'))
         if not is_email(account):
             return {'status': 1}
 

@@ -1,0 +1,4 @@
+sudo killall s_api_server s_dev_server s_sso_server s_file_server s_wechat_server mqd_host mqd_job lvl:core apns:agent mclient s_voice_server s_loc_server s_get_access_token
+ps ax | grep "mq:host" | awk '{print $5}' | xargs sudo killall
+ps ax | grep "mq:" | awk '{print $1}' | xargs sudo kill
+
