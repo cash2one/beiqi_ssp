@@ -28,7 +28,7 @@ class Service(MainService):
         arg_parser.add_argument('--db_password', default=setting.DB_PWD, type=str,  help="db password")
         arg_parser.add_argument('--db_name', default=setting.DB_NAME, type=str,  help="db name")
 
-        arg_parser.add_argument('--http_port', default=8100, type=int,  help="The port of the http app listen")
+        arg_parser.add_argument('--http_port', default=8300, type=int,  help="The port of the http app listen")
 
 
 if __name__ == "__main__":

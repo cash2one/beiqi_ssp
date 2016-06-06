@@ -4,8 +4,8 @@
 from util.convert import is_mobile, combine_redis_cmds
 from util.sso.account import gen_newacc_reg_val
 from utils import logger
-from mq_packs.uni_pack import shortcut_mq
-from mq_packs.normal_sms_pack import pack as sms_notify_pack, SmsType
+from util.mq_packs.uni_pack import shortcut_mq
+from util.mq_packs.normal_sms_pack import pack as sms_notify_pack, SmsType
 from random import randint
 
 

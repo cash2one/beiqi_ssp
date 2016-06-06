@@ -8,8 +8,8 @@ from util.torn_resp import json
 from util.sso.account import get_pwd, get_mb_key, cipher_pwd, set_account_pwd, get_mobile, gen_lostpwd_val
 from util.oem_conv import fix_account_postfix
 from utils import logger
-from mq_packs.uni_pack import shortcut_mq
-from mq_packs.normal_sms_pack import pack as sms_notify_pack
+from util.mq_packs.uni_pack import shortcut_mq
+from util.mq_packs.normal_sms_pack import pack as sms_notify_pack
 import random
 
 

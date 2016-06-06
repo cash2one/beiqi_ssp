@@ -7,8 +7,8 @@ from utils import logger
 from util.convert import bs2utf8
 from save_wechat_file import save_wechat_file
 from add_device import add_device, wechat_reply_template
-from mq_packs.uni_pack import shortcut_mq
-from mq_packs.cloud_push_pack import pack as push_pack
+from util.mq_packs.uni_pack import shortcut_mq
+from util.mq_packs.cloud_push_pack import pack as push_pack
 from config import GMQDispRdsInts
 
 

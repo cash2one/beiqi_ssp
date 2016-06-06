@@ -10,8 +10,8 @@ import json
 from util.redis_cmds.circles import get_group_primary, get_sn_of_gid, get_gid_of_sn, get_user_groups, get_group_followers
 from util.sso.moments import add_share, save_share_info, add_self_share
 from utils import logger
-from mq_packs.uni_pack import shortcut_mq
-from mq_packs.cloud_push_pack import pack as push_pack
+from util.mq_packs.uni_pack import shortcut_mq
+from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.user import get_user_gids, is_app_user
 
 
