@@ -1,13 +1,13 @@
 #coding:utf-8
-
-
+import os
+import sys
 import socket
 from configx import conf_file
 from utils import logger
 from os import path
 
-
-CONF_ROOT = './configs'
+# configs文件位于启动脚本的configs同级目录下
+CONF_ROOT = os.path.join(os.path.dirname(sys.argv[0]), "configs")
 
 
 def _create_sock(host):
