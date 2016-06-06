@@ -9,19 +9,22 @@ import os
 import json
 import urllib2
 import time
+import platform
 from ctypes import *
 from util.catch import except_adaptor
 from voice_server.setting import *
 
-
-libkdxf_voice = cdll.LoadLibrary('libkdxf_voice.so')
-libkdxf_voice.voice_2_text.restype = c_char_p
-libkdxf_voice.voice_2_text.argtypes=[c_char_p, c_long, c_int]
-libkdxf_voice.text_2_voice.restype = c_int
-libkdxf_voice.text_2_voice.argtypes=[c_char_p, c_char_p]
-libkdxf_voice.msp_login.restype = c_int
-ret = libkdxf_voice.msp_login(KDXF_MSC_APP_ID)
-assert ret == 0
+if platform.system() == 'Linux':
+    libkdxf_voice = cdll.LoadLibrary('libkdxf_voice.so')
+    libkdxf_voice.voice_2_text.restype = c_char_p
+    libkdxf_voice.voice_2_text.argtypes=[c_char_p, c_long, c_int]
+    libkdxf_voice.text_2_voice.restype = c_int
+    libkdxf_voice.text_2_voice.argtypes=[c_char_p, c_char_p]
+    libkdxf_voice.msp_login.restype = c_int
+    ret = libkdxf_voice.msp_login(KDXF_MSC_APP_ID)
+    assert ret == 0
+else:
+    assert 0, "暂时不支持windows!!!"
 
 
 @except_adaptor(is_raise=False)

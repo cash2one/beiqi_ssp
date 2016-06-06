@@ -9,8 +9,6 @@ from util.sso.account import set_login_expire
 
 SSO_KEY = 'e91647cf091a11e69e11408d5c5a48caf4393b8f091a11e6bb44408d5c5a48ca'
 
-tbl_name = 'device_info'
-
 def gen_token(api_secret, username, expire_days, api_key=None, account_rds=None):
     """
     获取token

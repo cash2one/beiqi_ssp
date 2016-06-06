@@ -19,10 +19,6 @@ from config import GDevRdsInts, GAccRdsInts
 from setting import WECHAT_SERACH_DEVICE, APPID, APPSECRET
 
 
-dev_info_tbl = 'device_info'
-user_info_tbl = 'user_info'
-
-
 @route(r'/wechat/pages/add_device')
 class AddDeviceHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)

@@ -12,7 +12,7 @@ site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__
 from gevent import monkey
 monkey.patch_all()
 from utils.service_control.controller import MainService
-from setting import *
+import setting
 
 
 class Service(MainService):
@@ -20,7 +20,10 @@ class Service(MainService):
     服务类
     """
     def __init__(self):
-        MainService.__init__(self, SERVICE_TYPE, VERSION)
+        MainService.__init__(self, setting.SERVICE_TYPE, setting.VERSION)
+
+    def add_cmd_opts(self, arg_parser):
+        arg_parser.add_argument('--http_port', default=8200, type=int,  help="The port of the http app listen")
 
 if __name__ == "__main__":
     import sys

@@ -24,8 +24,6 @@ from setting import DB_TBL_SSP_USR_LOGIN
 
 
 SMS_SPEED_MAX = 20
-
-user_info_tbl = 'user_info'
 fmt = '%Y-%m-%d %H:%M:%S'
 
 
