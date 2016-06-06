@@ -22,9 +22,6 @@ class Service(MainService):
     def __init__(self):
         MainService.__init__(self, setting.SERVICE_TYPE, setting.VERSION)
 
-    def add_cmd_opts(self, arg_parser):
-        arg_parser.add_argument('--http_port', default=8200, type=int,  help="The port of the http app listen")
-
 if __name__ == "__main__":
     import sys
     reload(sys)
