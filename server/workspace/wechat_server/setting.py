@@ -22,11 +22,12 @@ APPSECRET = '6d2f605d568f6a66f2acd6736befa8e3'
 
 TOKEN = 'beiqiwechattoken'
 
-up_file_url = 'http://localhost:8106/up?'
-down_wx_media_file_url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={0}&media_id={1}'
-wechat_userinfo_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token={0}&openid={1}&lang=zh_CN'
+BEIQI_FILE_UP_URL = 'http://localhost:8106/up?'
+WX_MEDIA_DOWN_URL = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token={0}&media_id={1}'
+WX_USERINFO_URL = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token={0}&openid={1}&lang=zh_CN'
 
-
+WX_GET_ACCESS_TOKEN_URL = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}'.format(APPID, APPSECRET)
+WX_GET_TICKER_URL = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={access_token}'
 
 
 WECHAT_SERACH_DEVICE="http://wechatapi.beiqicloud.com:8108/wechat/pages/search_device"

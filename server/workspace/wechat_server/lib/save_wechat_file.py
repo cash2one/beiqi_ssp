@@ -7,7 +7,7 @@ from util.filetoken import gen_file_tk
 from util.redis_cmds.wechat import get_wechat_access_token
 from util.convert import bs2utf8
 from config import GAccRdsInts
-from setting import up_file_url, down_wx_media_file_url
+from setting import BEIQI_FILE_UP_URL, WX_MEDIA_DOWN_URL
 
 
 def save_wechat_file(pic_url, from_user_name, msg_id, file_type, create_time, media_id=''):
@@ -17,7 +17,7 @@ def save_wechat_file(pic_url, from_user_name, msg_id, file_type, create_time, me
     elif file_type == '2' or file_type == '3':
         token = GAccRdsInts.send_cmd(*get_wechat_access_token())
 
-        url = down_wx_media_file_url.format(token, media_id)
+        url = WX_MEDIA_DOWN_URL.format(token, media_id)
 
     logger.debug('url = %s'%url)
     img = None
@@ -45,8 +45,8 @@ def save_wechat_file(pic_url, from_user_name, msg_id, file_type, create_time, me
     logger.debug(u'save wechat file. tk = %r' % tk)
     up_args = {'tk': tk, 'src': file_type, 'by': from_user_name, 'usage': 'share'}
     for _ in xrange(3):
-        logger.debug(u'save wechat file. up_url = %s' %(up_file_url + urllib.urlencode(up_args)))
-        resp = HttpRpcClient().fetch_async(url=up_file_url + urllib.urlencode(up_args), body=img.body)
+        logger.debug(u'save wechat file. up_url = %s' % (BEIQI_FILE_UP_URL + urllib.urlencode(up_args)))
+        resp = HttpRpcClient().fetch_async(url=BEIQI_FILE_UP_URL + urllib.urlencode(up_args), body=img.body)
         if resp.code == 200:
             break
     if resp.code != 200:

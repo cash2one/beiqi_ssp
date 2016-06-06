@@ -1,41 +1,34 @@
 #coding: utf8
 import site, os; site.addsitedir(os.path.dirname(os.path.realpath(__file__))); site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))); site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
 import ujson
-from tornado.httpclient import HTTPClient
-from tornado.httpclient import HTTPRequest
-from utils import logger
-from util.redis_cmds.wechat import set_wechat_access_token,set_wechat_ticket
 import time
-from util.configx import conf_file
-from util.redis.redis_client import Redis
+from utils import logger
+from utils.network.http import HttpRpcClient
+from util.redis_cmds.wechat import set_wechat_access_token,set_wechat_ticket
+from config import GAccRdsInts
+from setting import WX_GET_ACCESS_TOKEN_URL, WX_GET_TICKER_URL
 
-redis_conf = conf_file('../configs/redis.ini')
 
-_account_cache = Redis(redis_conf.get('oauth', 'url'))
+def get_access_token():
+    get_token_result = ujson.loads(HttpRpcClient().fetch_async(url=WX_GET_ACCESS_TOKEN_URL))
+    access_token = get_token_result.get('access_token')
+    assert access_token, 'get wechat access token failed. errcode: %r, errmsg: %r' % (get_token_result.get('errcode'), get_token_result.get('errmsg'))
+    expires = get_token_result.get('expires_in')
+    GAccRdsInts.send_cmd(*set_wechat_access_token(access_token, expires))
+    logger.debug('get_access_token:%s, access_token=%s, expires_in=%s', time.strftime('%Y-%d-%m %H:%M:%S', time.localtime()), access_token, expires)
+    return access_token, expires
 
-http_client = HTTPClient()
 
-APPID = 'wxd0334fe5bbc270d2'
-APPSECRET = '6d2f605d568f6a66f2acd6736befa8e3'
-url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}'.format(APPID, APPSECRET)
+def get_ticker(access_token):
+    get_ticket_result = ujson.loads(HttpRpcClient().fetch_async(url=WX_GET_TICKER_URL % access_token))
+    ticker = get_ticket_result.get("ticker")
+    ticker_exp = get_ticket_result.get('expires_in')
+    GAccRdsInts.send_cmd(*set_wechat_ticket(ticker, ticker_exp))
+    logger.debug('get_ticker:%s, ticker=%s, expires_in=%s', time.strftime('%Y-%d-%m %H:%M:%S', time.localtime()), ticker, ticker_exp)
+    return ticker
 
-WEIXIN_GET_TICKER_URL = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=%s'
 
 while True:
-    resp = http_client.fetch(HTTPRequest(url, method='POST', body=''))
-    print resp.body
-    j = ujson.loads(resp.body)
-    if 'access_token' not in j:
-        logger.error('get wechat access token failed. errcode: %r, errmsg: %r', j.get('errcode'), j.get('errmsg'))
-    else:
-        token = j.get('access_token')
-        expires = j.get('expires_in')
-        _account_cache.send_cmd(*set_wechat_access_token(token,expires))
-
-        get_ticket_result = http_client.fetch(HTTPRequest(WEIXIN_GET_TICKER_URL%token, method='GET'))
-        ticket = get_ticket_result.get("ticker")
-        ticker_exp = j.get('expires_in')
-        _account_cache.send_cmd(*set_wechat_ticket(ticket, ticker_exp))
-
-        logger.debug('%s, access_token=%s, expires_in=%s', time.strftime('%Y-%d-%m %H:%M:%S', time.localtime()), token, expires)
-        time.sleep(int(expires) - 10)
+    access_token, expires = get_access_token()
+    get_ticker(access_token)
+    time.sleep(int(expires) - 10)
