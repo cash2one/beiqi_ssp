@@ -1,4 +1,5 @@
 #coding: utf8
+import site, os; site.addsitedir(os.path.dirname(os.path.realpath(__file__))); site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))); site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
 import ujson
 from tornado.httpclient import HTTPClient
 from tornado.httpclient import HTTPRequest
@@ -21,7 +22,7 @@ url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appi
 WEIXIN_GET_TICKER_URL = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=%s'
 
 while True:
-    resp =  http_client.fetch(HTTPRequest(url, method='POST', body=''))
+    resp = http_client.fetch(HTTPRequest(url, method='POST', body=''))
     print resp.body
     j = ujson.loads(resp.body)
     if 'access_token' not in j:
