@@ -10,11 +10,11 @@ SERVICE_TYPE = "service_mgr"
 VERSION = "0.0.1"
 
 # MYSQL配置
-DB_HOST = "beiqissp.cv38u3dpqyx2.ap-southeast-1.rds.amazonaws.com"
+DB_HOST = "192.168.2.192"
 DB_PORT = 3306
 DB_NAME = "service_mgr" + get_cur_ip().replace(".", "_")
 DB_USER = "system"
-DB_PWD = "MySystem"
+DB_PWD = "System"
 
 USED_SERVICES = [
     US_DEVICE_END,

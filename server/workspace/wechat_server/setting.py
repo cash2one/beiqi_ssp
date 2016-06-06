@@ -9,9 +9,9 @@ SERVICE_TYPE = "s_wechat_server"
 VERSION = "0.0.1"
 
 # REDIS配置
-ACC_RDS_URI = "redis://54.169.67.124:6379/0?pwd=123456"
-DEV_RDS_URI = "redis://54.169.67.124:6379/2?pwd=123456"
-MQ_DISP_RDS_URI = "redis://54.169.67.124:6379/3?pwd=123456"
+ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
+DEV_RDS_URI = "redis://192.168.2.192:6379/2?pwd=123456"
+MQ_DISP_RDS_URI = "redis://192.168.2.192:6379/3?pwd=123456"
 
 # MYSQL 表格
 DB_TBL_USER_INFO = 'user_info'
