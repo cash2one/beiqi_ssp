@@ -7,6 +7,11 @@ from utils.network.http import HttpRpcClient
 from util.redis_cmds.wechat import set_wechat_access_token,set_wechat_ticket
 from config import GAccRdsInts
 from setting import WX_GET_ACCESS_TOKEN_URL, WX_GET_TICKER_URL
+from setproctitle import setproctitle
+
+
+logger.init_log("get_access_token", "get_access_token")
+setproctitle("s_get_access_token")
 
 
 def get_access_token():
@@ -20,7 +25,7 @@ def get_access_token():
 
 
 def get_ticker(access_token):
-    get_ticket_result = ujson.loads(HttpRpcClient().fetch_async(url=WX_GET_TICKER_URL % access_token))
+    get_ticket_result = ujson.loads(HttpRpcClient().fetch_async(url=WX_GET_TICKER_URL.format(access_token=access_token)))
     ticker = get_ticket_result.get("ticker")
     ticker_exp = get_ticket_result.get('expires_in')
     GAccRdsInts.send_cmd(*set_wechat_ticket(ticker, ticker_exp))

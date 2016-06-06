@@ -3,7 +3,7 @@
 
 import socket
 from configx import conf_file
-from log_util import logger
+from utils import logger
 from os import path
 
 
