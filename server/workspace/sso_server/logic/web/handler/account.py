@@ -24,11 +24,10 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/valid_acc_new')
 class AccountStateHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self):
+    def post(self, account):
         """
     帐号状态，是否已存在
         """
-        account = bs2utf8(self.get_argument('account'))
         if not is_email(account):
             return {'status': 1}
 
@@ -37,8 +36,8 @@ class AccountStateHandler(HttpRpcHandler):
         if account_exist:
             return {'status': 2}
 
-        sql = 'select * from {0} where username=%s'.format(DB_TBL_SSP_USR_LOGIN)
-        res = DBBeiqiSspInst.query(sql, account)
+        sql = "select * from %s where username='%s'"%(DB_TBL_SSP_USR_LOGIN, account)
+        res = DBBeiqiSspInst.query(sql)
         if len(res) != 0:
             # exist in mysql, so we cache it
             pwd = res[0].get('password').encode('utf8')

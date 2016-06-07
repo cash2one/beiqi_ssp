@@ -96,6 +96,7 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
     def web_func_adaptor(fun):
         @gevent_adaptor(True)
         def web_param_adaptor(self, *args, **kwargs):
+            self.result = ""
             try:
                 before_access_process(self, args, kwargs)
                 self.result = fun(self, *args, **kwargs)
