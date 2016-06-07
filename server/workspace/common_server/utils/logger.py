@@ -146,7 +146,7 @@ def init_log(server_name, tag):
     
     d_fommater = formatter_dct.get('simple')
     
-    logger = logging.getLogger('INFO')
+    logger = logging.getLogger('DEBUG')
     fatal_logger = logging.getLogger('FATAL')
      
     fatal_log_handler = get_fatal_log_handler(logfile_dir, tag)
