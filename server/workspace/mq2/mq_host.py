@@ -78,7 +78,8 @@ def run_process(redis_url, process_ratio, run_or_not):
     :return:
     """
     host, port, db, pwd, channel = resolve_redis_url(redis_url, True)
-    logger.init_log(channel, channel)
+    logger_flag = "mq_%s"%channel
+    logger.init_log(logger_flag, logger_flag)
 
     if not (redis_url and isinstance(redis_url, str) and '|' not in redis_url):
         logger.fatal('redis_url invalid: %s' % redis_url)

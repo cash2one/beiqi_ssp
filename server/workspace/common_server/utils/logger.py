@@ -172,7 +172,7 @@ def get_day_log_handler(logfile_dir, tag):
     
     handler = TimedRotatingFileHandler(os.path.join(logfile_dir, "%s.log" % tag), when="midnight")
     handler.setFormatter(formatter_dct.get('simple'))
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
     return handler
 
 

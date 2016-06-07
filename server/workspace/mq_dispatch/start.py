@@ -51,8 +51,9 @@ def watch_dispatch():
                 logger.warn('mis_spell channel: %s' % dst_ch)
                 continue
             randin = randint(0, len(redis_list) - 1)
-            logger.warn('randin: %s,dst_ch:%s, unpacked_msg:%s' % (randin,dst_ch, unpacked_msg))
-            redis_list[randin].rpush(dst_ch, unpacked_msg.get('p'))
+            selected_redis = redis_list[randin]
+            logger.warn('selected_redis:%s,dst_ch:%s, unpacked_msg:%s' % (selected_redis,dst_ch, unpacked_msg))
+            selected_redis.rpush(dst_ch, unpacked_msg.get('p'))
         except Exception, ex:
             logger.error('blpop fail: {0}'.format(ex), exc_info=True)
 
