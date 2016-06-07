@@ -155,7 +155,7 @@ def init_log(server_name, tag):
      
     f_handler = get_day_log_handler(logfile_dir, tag)
     logger.addHandler(f_handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     stream_handler = logging.StreamHandler(back_up_out)
     stream_handler.setFormatter(d_fommater)
