@@ -94,11 +94,10 @@ class CheckRegValCodeHandler(HttpRpcHandler):
 @route(r'/req_reg_val_code')
 class GenRegCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self):
+    def post(self, account):
         """
     请求发送注册验证短信
         """
-        account = bs2utf8(self.get_argument('account'))
         if not is_email(account):
             logger.warn('account:%s illegal' % account)
             return {'status': 1}

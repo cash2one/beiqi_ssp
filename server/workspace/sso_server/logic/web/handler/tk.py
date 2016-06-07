@@ -53,8 +53,8 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 self.send_error(400)
 
             sn, ts = decrypt_username(username, rc4_key)
-            sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
-            ret_list = DBBeiqiSspInst.query(sql, sn)
+            sql = "SELECT 1 FROM %s WHERE sn = '%s'"%(DB_TBL_DEVICE_INFO, sn)
+            ret_list = DBBeiqiSspInst.query(sql)
             if len(ret_list) == 0:
                 logger.debug('ret_list={0}, sn={1}'.format(ret_list, sn))
                 self.send_error(400)

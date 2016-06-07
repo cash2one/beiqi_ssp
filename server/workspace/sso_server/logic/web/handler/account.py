@@ -36,8 +36,8 @@ class AccountStateHandler(HttpRpcHandler):
         if account_exist:
             return {'status': 2}
 
-        sql = 'select * from {0} where username=%s'.format(DB_TBL_SSP_USR_LOGIN)
-        res = DBBeiqiSspInst.query(sql, account)
+        sql = "select * from %s where username='%s'"%(DB_TBL_SSP_USR_LOGIN, account)
+        res = DBBeiqiSspInst.query(sql)
         if len(res) != 0:
             # exist in mysql, so we cache it
             pwd = res[0].get('password').encode('utf8')
