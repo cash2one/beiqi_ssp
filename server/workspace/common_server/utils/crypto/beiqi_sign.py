@@ -60,8 +60,9 @@ def beiqi_tk_sign_wapper():
                 self.set_status(401)
                 return
 
-            kwargs['user_name'] = account
-            return fun(self, *args, **kwargs)
+	    # 注意这里需要使用处理过的参数params，不要使用原始参数kwargs
+            params['user_name'] = account
+            return fun(self, *args, **params)
         return beiqi_tk_sign_param_wapper
     return beiqi_tk_sign_fun_wapper
 
