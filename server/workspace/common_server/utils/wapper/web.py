@@ -14,6 +14,10 @@ from utils.service_control.parser import ArgumentParser
 from utils.wapper.stackless import gevent_adaptor
 
 
+# 最大body日志长度
+MAX_BODY_LOG_LEN = 200
+MAX_BODY_LOG_DES = "not print body, which length big then:%s!!!" % MAX_BODY_LOG_LEN
+
 def enc_utf8(v):
     return v.encode('utf-8') if isinstance(v, unicode) else v
 
@@ -43,8 +47,8 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
         http_req_log += "method:" + self.request.method + '\n'
         http_req_log += "uri:" + self.request.uri + '\n'
         http_req_log += "headers:" + str(self.request.headers) + '\n'
-        http_req_log += "body_arguments:" + ujson.dumps(self.request.body_arguments) + '\n'
-        http_req_log += "body:" + self.request.body + '\n'
+        http_req_log += "body_arguments:%r" % self.request.body_arguments + '\n'
+        http_req_log += "body:%s" % (self.request.body if len(self.request.body) < MAX_BODY_LOG_LEN else MAX_BODY_LOG_DES) +  '\n'
         if self.request.path != "/ping":
             logger.info(http_req_log)
 
@@ -66,7 +70,6 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
             self.write(self.result)
 
     def except_process(self, args, kwargs):
-        exec_info = sys.exc_info()
         tracl_back_data = "Please check its parameters or may be server meet some issue!!!!!!!!!!!!!\n"
         tracl_back_data += "req ip:%s"%(str(self.request.remote_ip)) + '\n'
         tracl_back_data += "req url:%s"%(str(self.request.path)) + '\n'
@@ -74,7 +77,6 @@ def web_adaptor(use_json_dumps=True, use_http_render=True, http_sign=None, body_
         tracl_back_data += "req params:%s"%(str(args)) + '\n'
         tracl_back_data += "req kwargs:%s"%(str(kwargs)) + '\n'
         tracl_back_data += "req request.arguments:%s"%(str(self.request.arguments)) + '\n'
-        tracl_back_data += str(exec_info[0]) + ":" + str(exec_info[1]) + '\n'
         tracl_back_data += traceback.format_exc()
 
         logger.error(tracl_back_data)

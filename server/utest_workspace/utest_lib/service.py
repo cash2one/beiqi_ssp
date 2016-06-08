@@ -6,6 +6,7 @@ Created on 2015-6-4
 @author: Jay
 """
 from utils.network.http import HttpRpcClient
-from beiqissp_test.setting import SERVER_IP
+from utest_lib.setting import SERVER_IP
 
 SSOHttpRpcClt = HttpRpcClient(SERVER_IP, 8104)
+FileSvrHttpRpcClt = HttpRpcClient(SERVER_IP, 8106)
