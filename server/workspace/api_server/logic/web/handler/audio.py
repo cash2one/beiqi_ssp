@@ -61,9 +61,10 @@ class AudioPub2DevHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
     def get(self, user_name, dev_sn, name, ref):
+        version = "1"
         logic = "play"
         type = "audio"
-        payload = ':'.join([bs2utf8(urllib.quote_plus(v)) for v in (logic, type, name, ref)])
+        payload = ':'.join([bs2utf8(urllib.quote_plus(v)) for v in (version, logic, type, name, ref)])
 
         GMQDispRdsInts.send_cmd(*
             shortcut_mq('dev_msg',
