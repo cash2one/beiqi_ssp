@@ -54,14 +54,15 @@ def beiqi_tk_sign_wapper():
                 self.set_status(401)
                 return
 
-            cal_sign = sign(method, url, params, api_key)
+            cal_sign = gen_url_sign(url, api_key, method)
             if cal_sign != expect_sign:
                 logger.error("%s cal_sign:%s != expect_sign:%s"%(fun.__name__, cal_sign, expect_sign))
                 self.set_status(401)
                 return
 
-            kwargs['user_name'] = account
-            return fun(self, *args, **kwargs)
+	    # 注意这里需要使用处理过的参数params，不要使用原始参数kwargs
+            params['user_name'] = account
+            return fun(self, *args, **params)
         return beiqi_tk_sign_param_wapper
     return beiqi_tk_sign_fun_wapper
 
@@ -77,6 +78,9 @@ def gen_url_sign(url, api_secret, method='GET'):
     up = urlparse.urlparse(url)
     url = "http://{host}{path}".format(host=up.netloc, path=up.path)
     params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
+    # sigin, tk 不参与服务器再次计算
+    params.pop('_sign', None)
+    params.pop('_tk', None)
     return sign(method, url, params, api_secret)
 
 def append_url_sign(url, api_secret, method='GET'):

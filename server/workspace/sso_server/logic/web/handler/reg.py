@@ -30,21 +30,20 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/check_reg_val_code')
 class CheckRegValCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, user_name ,pwd):
+    def post(self, account ,pwd, val):
         """
         检查注册验证码
         """
         user_agent = urllib.unquote(bs2utf8(self.request.headers['user-agent']))
 
         reg_ip = bs2utf8(self.request.remote_ip)
-        if not is_email(user_name):
+        if not is_email(account):
             return {'status': 1}
 
-        mobile = user_name.partition('@')[0]
+        mobile = account.partition('@')[0]
         if not is_mobile(mobile):
             return {'status': 2}
 
-        val = bs2utf8(self.get_argument('val'))
         if not is_reg_val_code(val):
             return {'status': 3}
 
@@ -56,7 +55,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
             return {'status': 4}
 
         pwd_mask = cipher_pwd(pwd)
-        ok = GAccRdsInts.send_cmd(*set_account_pwd(user_name, pwd_mask))
+        ok = GAccRdsInts.send_cmd(*set_account_pwd(account, pwd_mask))
         if not ok:
             return {'status': 5}
 
@@ -67,7 +66,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
                 mysql_pack(
                     DB_TBL_SSP_USR_LOGIN,
                     {
-                        'username': user_name,
+                        'username': account,
                         'password': pwd_mask,
                         'mobile': mobile,
                     },
@@ -79,7 +78,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
                 mysql_pack(
                     DB_TBL_SSP_USR_LOGIN,
                     {
-                        'username': user_name,
+                        'username': account,
                         'reg_agent': user_agent,
                         'reg_ts': reg_ts,
                         'reg_ip': reg_ip,
