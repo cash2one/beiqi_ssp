@@ -5,10 +5,7 @@ Created on 2015-6-4
 
 @author: Jay
 """
-from utils.service_control.cacher import ServiceMgrCacher
-from lib.common import ST_PANDORA
-from utils.service_control.setting import PT_HTTP
+from utils.network.http import HttpRpcClient
+from beiqissp_test.setting import SERVER_IP
 
-
-# pandora
-PandoraHttpClt = ServiceMgrCacher().get_connection(ST_PANDORA, protocol=PT_HTTP)
+SSOHttpRpcClt = HttpRpcClient(SERVER_IP, 8104)
