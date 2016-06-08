@@ -130,7 +130,8 @@ def getlogger():
     """
     获得Logger 如果没初始化 先初始化
     """
-    assert _logger is not None, "please init logger!"
+    if not _logger:
+        print "please init logger!!!"
     return _logger
 
 
@@ -275,25 +276,33 @@ def logger_help(*args):
 
 
 def debug(msg, *args, **kwargs):
-    getlogger().debug(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
+    log = getlogger()
+    if log:
+        log.debug(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
     if AFTER_DEBUG_LOG_OPER:
         AFTER_DEBUG_LOG_OPER("%s\n%s" % (AFTER_OPER_TAG, msg), *args)
 
 
 def info(msg, *args, **kwargs):
-    getlogger().info(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
+    log = getlogger()
+    if log:
+        log.info(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
     if AFTER_INFO_LOG_OPER:
         AFTER_INFO_LOG_OPER("%s\n%s" % (AFTER_OPER_TAG, msg), *args)
 
 
 def warn(msg, *args, **kwargs):
-    getlogger().warn(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
+    log = getlogger()
+    if log:
+        log.warn(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
     if AFTER_WARN_LOG_OPER:
         AFTER_WARN_LOG_OPER("%s\n%s" % (AFTER_OPER_TAG, msg), *args)
 
 
 def error(msg, *args, **kwargs):
-    getlogger().error(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
+    log = getlogger()
+    if log:
+        log.error(msg, *args, **kwargs)                        # 服务器出现严重错误用这个
     if AFTER_ERROR_LOG_OPER:
         AFTER_ERROR_LOG_OPER("%s\n%s" % (AFTER_OPER_TAG, msg), *args)
 
