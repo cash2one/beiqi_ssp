@@ -34,8 +34,7 @@ class AudioClsHandler(HttpRpcHandler):
 class AudioAlbumHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
-    def get(self, user_name):
-        cls_id = bs2utf8(self.get_argument('cls_id'))
+    def get(self, user_name, cls_id):
         sql = "SELECT * FROM {tbl} WHERE cls_id = '{cls_id}'".format(tbl=DB_TBL_RES_ALBUM, cls_id=cls_id)
         logger.debug('AudioAlbumHandler::user=%r, sql=%r' % (user_name, sql))
         ret_list = DBBeiqiSspInst.query(sql)
