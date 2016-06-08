@@ -1,26 +1,51 @@
-#!/usr/bin/python2.7
-# coding=utf-8
-"""
-Created on 2015-4-25
+#coding:utf-8
+from __future__ import absolute_import
+import platform
+from setproctitle import setproctitle
+import tornado.options
+from tornado import httpserver
+from tornado.ioloop import IOLoop
+from tornado.options import define, options
+from tornado.web import Application
+from logic.write import WriteHandler
+from logic.down_multi import MultiDownHandler
+from logic.read import ReadHandler
+from setting import SERVICE_TYPE
+from utils import logger
 
-@author: Jay
-"""
-import site, os; site.addsitedir(os.path.dirname(os.path.realpath(__file__))); site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))); site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
-from gevent import monkey; monkey.patch_all()
-from utils.service_control.controller import MainService
-import setting
+define("port", help="run on the given port", type=int, default=8106)
+setproctitle(SERVICE_TYPE)
+
+logger.init_log(SERVICE_TYPE, SERVICE_TYPE)
 
 
-class Service(MainService):
-    """
-    服务类
-    """
-    def __init__(self):
-        MainService.__init__(self, setting.SERVICE_TYPE, setting.VERSION)
+def main():
+    tornado.options.options.logging = 'debug'
+    tornado.options.parse_command_line()
+
+    #主从分离后，读取从库mysql
+    settings = {
+        #最大内存上限100K
+        'max_buffer_size': 102400,
+    }
+
+    app = Application(
+        [
+            ('/up', WriteHandler),
+            ('/down', ReadHandler),
+            ('/down_multi', MultiDownHandler),
+        ],
+        **settings
+    )
+
+    server = httpserver.HTTPServer(app)
+    server.bind(options.port)
+    server.start(0) if platform.system() == 'Linux'else server.start()
+
+    logger.warn("start services for %s" % (SERVICE_TYPE))
+    logger.warn("start listen on HTTP:%s" % (options.port))
+    IOLoop.instance().start()
 
 
-if __name__ == "__main__":
-    import sys
-    reload(sys)
-    sys.setdefaultencoding('utf8')
-    Service().start_service()
+if __name__ == '__main__':
+    main()
