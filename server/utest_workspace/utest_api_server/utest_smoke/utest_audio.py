@@ -10,12 +10,10 @@ import random
 import sys
 import threading
 import unittest
-import urllib2
 from util.mqtt import MQTTClient
 from tornado.testing import AsyncTestCase
-from utils.crypto.beiqi_sign import append_url_sign_tk
 from beiqissp_test.setting import SERVER_IP, API_SECRET
-from interfaces.api_server.http_rpc import get_cls, get_list, get_album, get_rdm_list, pub_2_dev
+from interfaces.api_server.http_rpc import get_cls, get_album, get_rdm_list, pub_2_dev
 from utest_lib import gen_test_tk
 
 
