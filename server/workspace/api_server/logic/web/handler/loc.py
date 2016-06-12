@@ -26,11 +26,11 @@ class GetLocHandler(HttpRpcHandler):
         expect_pa, sub_ok = GDevRdsInts.send_multi_cmd(*combine_redis_cmds(get_dev_primary(sn), test_user_follow_group(user_name, sn)))
         if not expect_pa:
             logger.warn('{0} not bound'.format(sn))
-            self.send_error(400)
+            self.set_status(400)
             return
         if not (expect_pa.split(':')[-1] == user_name or sub_ok):
             logger.warn('{0} not bound, not sa'.format(sn))
-            self.send_error(400)
+            self.set_status(400)
             return
 
         sql = "select longitude, latitude, altitude, accuracy, address, ad_code," \

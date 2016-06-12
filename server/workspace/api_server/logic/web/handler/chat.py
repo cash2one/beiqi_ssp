@@ -20,7 +20,7 @@ from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 class ChatBCastHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
-    def get(self, user_name, file_type, fn, ref, thumb_fn, thumb_ref, text):
+    def get(self, user_name, file_type, fn, ref, thumb_fn="", thumb_ref="", text=""):
         des = bs2utf8(':'.join([urllib2.quote(bs2utf8(v)) for v in (user_name,  file_type, fn, ref, thumb_fn, thumb_ref,text)]))
 
         GMQDispRdsInts.send_cmd(*

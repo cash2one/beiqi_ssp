@@ -33,7 +33,7 @@ class FileTokenHandler(HttpRpcHandler):
         logger.debug('file tk resp={0}'.format(resp))
 
         if not resp:
-            self.send_error(400)
+            self.set_status(400)
             return
 
         return resp

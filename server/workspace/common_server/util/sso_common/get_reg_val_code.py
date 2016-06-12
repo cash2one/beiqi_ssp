@@ -17,7 +17,7 @@ class GetRegValCodeHandler(RequestHandler):
         val_code = val_code.split(':')[0]
 
         if not val_code:
-            self.send_error(400)
+            self.set_status(400)
             return
 
         self.finish(json.dumps({'val_code': int(val_code)}))

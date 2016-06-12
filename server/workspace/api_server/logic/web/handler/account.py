@@ -48,14 +48,14 @@ class AccountBindPushHandler(HttpRpcHandler):
         logger.debug('bind push ensure_func: {0}'.format(ensure_func))
         if not ensure_func:
             logger.debug('bind push ensure_func: {0}'.format(ensure_func))
-            self.send_error(400)
+            self.set_status(400)
             return
 
         args = ensure_func(args)
         logger.debug('bind push args: {0}'.format(args))
         if not args:
             logger.debug('bind push args: {0}'.format(args))
-            self.send_error(400)
+            self.set_status(400)
             return
 
         _ = [os, ver]

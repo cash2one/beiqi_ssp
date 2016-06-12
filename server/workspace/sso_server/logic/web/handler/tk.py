@@ -36,13 +36,13 @@ class BeiqiSSOHandler(HttpRpcHandler):
         api_ob = beiqi_keys.get(api_key)
         if not api_ob:
             logger.warn("gen_tk api_ob:%s, api_key:%s" % (api_ob, api_key))
-            self.send_error(401)
+            self.set_status(401)
             return
 
         remote_ip = bs2utf8(self.request.remote_ip)
         if len(username) < 66 and not is_email(username):
             logger.warn('username invalid: {0}'.format(username))
-            self.send_error(400)
+            self.set_status(400)
             return
 
         if len(username) == 66:
@@ -50,20 +50,21 @@ class BeiqiSSOHandler(HttpRpcHandler):
             rc4_key = api_ob.get('rc4_key')
             if rc4_key is None:
                 logger.debug('api_key={0}, username={1} rc4_key not exists'.format(api_key, username))
-                self.send_error(400)
+                self.set_status(400)
+                return
 
             sn, ts = decrypt_username(username, rc4_key)
             sql = "SELECT 1 FROM %s WHERE sn = '%s'"%(DB_TBL_DEVICE_INFO, sn)
             ret_list = DBBeiqiSspInst.query(sql)
             if len(ret_list) == 0:
                 logger.debug('ret_list={0}, sn={1}'.format(ret_list, sn))
-                self.send_error(400)
+                self.set_status(400)
                 return
 
             saved_ts = GDevRdsInts.send_cmd(*get_tk_time(sn))
             if saved_ts == ts:
                 logger.debug('ts={0} the same with saved_ts'.format(ts))
-                self.send_error(400)
+                self.set_status(400)
                 return
 
             GDevRdsInts.send_cmd(*set_tk_time(sn, ts))
@@ -101,7 +102,7 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 return gen_token(api_ob.get('s'), username, 1, account_rds=GAccRdsInts)
             else:
                 logger.debug('gid={0} invalid no sn'.format(gid))
-                self.send_error(403)
+                self.set_status(403)
                 return
 
         # device no pwd, so must put after device loginin code.
@@ -112,7 +113,7 @@ class BeiqiSSOHandler(HttpRpcHandler):
         if expect_pwd is not None:
             if expect_pwd != cipher_pwd(pwd):
                 logger.warn('pwd incorrect: username = {0}, pwd={1}, expect_pwd={2}'.format(username, cipher_pwd(pwd), expect_pwd))
-                self.send_error(401)
+                self.set_status(401)
                 return
         else:
             # not in redis, check mysql
@@ -120,14 +121,14 @@ class BeiqiSSOHandler(HttpRpcHandler):
             expect_pwd = DBBeiqiSspInst.query(sql)
             if len(expect_pwd) == 0:
                 logger.debug('account={0} not exist'.format(username))
-                self.send_error(401)
+                self.set_status(401)
                 return
             else:
                 pwd_inmysql = expect_pwd[0].get('password')
                 pwd_inmysql = pwd_inmysql.encode('utf8') if pwd_inmysql is not None else pwd_inmysql
                 if pwd_inmysql != cipher_pwd(pwd):
                     logger.debug('pwd incorrect: username = {0}, pwd={1}, expect_pwd={2}'.format(username, cipher_pwd(pwd), expect_pwd))
-                    self.send_error(401)
+                    self.set_status(401)
                     return
 
         login_ts = time.strftime(fmt, time.gmtime())

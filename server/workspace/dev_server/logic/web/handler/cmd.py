@@ -28,19 +28,19 @@ class CmdRptHandler(HttpRpcHandler):
         logger.debug('cmd rpt primary: {0}'.format(primary))
         if not primary:
             logger.debug('cmd rpt sn={0} no primary'.format(sn))
-            self.send_error(400)
+            self.set_status(400)
             return
 
         if f != primary:
             followers = GDevRdsInts.send_cmd(*get_dev_followers(sn))
             if f not in followers:
                 logger.debug('cmd rpt primary = {0}, f = {1}, sn = {2}, followers = {3]'.format(primary, f, sn, followers))
-                self.send_error(400)
+                self.set_status(400)
                 return
 
         m = FEEDBACK_PATTERN.search(d)
         if not m:
-            self.send_error(400)
+            self.set_status(400)
             return
 
         user_cmd, cmd_ord, error_state = [m.groupdict().get(k) for k in REPORT_KEYS]

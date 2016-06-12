@@ -53,3 +53,14 @@ def get_rdm_list(server_ip, tk, app_secret, port=8300):
     url = append_url_sign_tk(url, tk, app_secret)
     print url
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def chat_bcast(server_ip, tk, app_secret, file_type, fn, ref,  port=8300):
+    url = 'http://{ip}:8300/chat/bcast?file_type={ftype}&fn={fn}&ref={ref}'.format(
+        ip=server_ip,
+        ftype=urllib2.quote(file_type),
+        fn=urllib2.quote(fn),
+        ref=urllib2.quote(ref))
+    url = append_url_sign_tk(url, tk, app_secret)
+    print url
+    return urllib2.urlopen(urllib2.Request(url)).read()

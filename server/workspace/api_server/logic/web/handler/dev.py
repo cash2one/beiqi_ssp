@@ -58,7 +58,7 @@ class ChangeDevArgsHandler(HttpRpcHandler):
     def post(self, user_name, sn, payload):
         logger.debug('change dev args: sn: {0}, payload: {1}, acc: {2}'.format(sn, payload, user_name))
         if not user_name or not sn or not payload:
-            self.send_error(400)
+            self.set_status(400)
             return
 
         sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)

@@ -30,7 +30,7 @@ class WeChatHandler(HttpRpcHandler):
             return echostr
         else:
             logger.debug('cal_sig = {0}, signature={1}, echostr = {2}'.format(cal_sig, signature, echostr))
-            self.send_error(400)
+            self.set_status(400)
             return
 
     @web_adaptor(use_json_dumps=False)
@@ -49,7 +49,7 @@ class WeChatHandler(HttpRpcHandler):
 
             if cal_sig != signature:
                 logger.debug('cal_sig = {0}, signature={1}, echostr = {2}'.format(cal_sig, signature, echostr))
-                self.send_error(400)
+                self.set_status(400)
                 return
 
         body = self.request.body

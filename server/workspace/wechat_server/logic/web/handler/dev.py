@@ -44,7 +44,7 @@ class AddDeviceHandler(HttpRpcHandler):
             self.render('wechat_add_device.html', payload=user_resp)
             return
         else:
-            self.send_error(400)
+            self.set_status(400)
             return
 
     @web_adaptor()
@@ -52,11 +52,11 @@ class AddDeviceHandler(HttpRpcHandler):
         logger.debug(u'add_device post, username={0}, user_info={1}, code={2}'.format(username, payload, code))
         user_info = ujson.loads(payload)
         if code == '' or username == '' or user_info == '':
-            self.send_error(400)
+            self.set_status(400)
             return
 
         if len(code) == 9:
-            self.send_error(400)
+            self.set_status(400)
             return
 
         if len(code) == 6:
