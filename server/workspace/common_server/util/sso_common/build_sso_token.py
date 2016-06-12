@@ -70,3 +70,8 @@ def decrypt_username(username, key):
 
     return sn, ts
 
+
+def encrypt_username(username, dev_secret):
+    plain = '|'.join([username, "%0.2f"% time.time(), "bq"])
+    return rc4_encrypt(plain, dev_secret)
+

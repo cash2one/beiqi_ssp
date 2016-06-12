@@ -11,5 +11,5 @@ from utest_lib.service import SSOHttpRpcClt
 from util.oem_account_key import APP_KEY, DEV_RC4
 
 
-def gen_test_tk(user_name=TEST_USER_NAME, app_key=APP_KEY, dev_rc4=DEV_RC4):
-    return gen_tk(SSOHttpRpcClt, user_name , user_name, app_key, dev_rc4)
+def gen_test_tk(user_name=TEST_USER_NAME, pwd=TEST_PASSWD, app_key=APP_KEY, dev_rc4=DEV_RC4):
+    return gen_tk(SSOHttpRpcClt, user_name , pwd, app_key, dev_rc4)

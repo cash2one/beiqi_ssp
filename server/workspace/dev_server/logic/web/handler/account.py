@@ -24,9 +24,9 @@ from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 class SignInHandler(HttpRpcHandler):
     @web_adaptor()
     @beiqi_tk_sign_wapper()
-    def get(self, sn):
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
-        ret_list = DBBeiqiSspInst.query(sql, sn)
+    def get(self, user_name, sn):
+        sql = "SELECT 1 FROM {db_name} WHERE sn = '{sn}'".format(db_name=DB_TBL_DEVICE_INFO, sn=sn)
+        ret_list = DBBeiqiSspInst.query(sql)
         if len(ret_list) == 0:
             return {'status': 1}
 
@@ -43,9 +43,9 @@ class SignInHandler(HttpRpcHandler):
                     sn_of_gid = GDevRdsInts.send_cmd(*get_sn_of_gid(tmp_gid))
                     if sn_of_gid is None:
                         # tmp_pid is not used.
-                        sql = 'select * from {0} WHERE gid = %s'.format(DB_TBL_GID_INFO)
-                        query_result = DBBeiqiSspInst.query(sql, tmp_gid)
-                        if query_result[0].get('gid_kind') == 1:
+                        sql = 'select * from {db} WHERE gid = {gid}'.format(db=DB_TBL_GID_INFO, gid=tmp_gid)
+                        query_result = DBBeiqiSspInst.query(sql)
+                        if query_result and query_result[0].get('gid_kind') == 1:
                             # tmp_pid is a nice number
                             continue
                         gid = tmp_gid
