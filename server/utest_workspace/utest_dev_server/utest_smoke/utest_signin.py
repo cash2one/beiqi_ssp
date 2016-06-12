@@ -16,7 +16,7 @@ from util.oem_account_key import DEV_KEY, DEV_RC4, DEV_SECRET
 
 class DEVSigninTest(unittest.TestCase):
     def test_dev_signin(self):
-        dev_tk = gen_test_tk(encrypt_username(TEST_SN, DEV_RC4), DEV_KEY, DEV_RC4)
+        dev_tk = gen_test_tk(encrypt_username(TEST_SN, DEV_RC4), app_key=DEV_KEY, dev_rc4=DEV_RC4)
         sign_in_res = sign_in(SERVER_IP, dev_tk, DEV_SECRET, TEST_SN, DEV_SERVER_PORT)
         self.assertTrue(sign_in_res['status'] == 0)
         self.assertTrue(sign_in_res['gid'])
