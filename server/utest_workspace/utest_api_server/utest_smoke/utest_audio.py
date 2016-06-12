@@ -5,7 +5,6 @@ Created on 2016/5/10
 
 @author: Jay
 """
-import json
 import random
 import sys
 import threading

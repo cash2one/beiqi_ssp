@@ -64,3 +64,12 @@ def chat_bcast(server_ip, tk, app_secret, file_type, fn, ref,  port=8300):
     url = append_url_sign_tk(url, tk, app_secret)
     print url
     return urllib2.urlopen(urllib2.Request(url)).read()
+
+
+def add_device(server_ip, tk, app_secret, code,  port=8300):
+    url = 'http://{ip}:{port}/add_device?code={code}'.format(
+        ip=server_ip,
+        port=port,
+        code=code)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return urllib2.urlopen(urllib2.Request(url)).read()

@@ -5,7 +5,6 @@ Created on 2016/6/12
 
 @author: Jay
 """
-import threading
 import unittest
 from interfaces.dev_server.http_rpc import sign_in
 from utest_lib import gen_test_tk
