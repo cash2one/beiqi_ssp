@@ -9,6 +9,7 @@ import ujson
 import urllib
 import json
 import time
+import urllib2
 from utils.network.http import HttpRpcClient
 from utils import logger
 from utils.route import route
@@ -23,14 +24,13 @@ from util.redis_cmds.circles import get_user_nickname
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.sso.moments import get_comment_file, del_comment_info, del_comment, del_share_info, del_share
-from util.internal_forward.leveldb_encode import encode as level_encode
 from util.sso.moments import add_like, cancel_like
 from util.sso.moments import get_share_by_time, get_share_by_quantity, get_like, get_comment, retrieve_share_info, retrieve_comment_info
 from util.redis_cmds.circles import get_dev_primary, get_group_primary, get_group_followers, get_sn_of_gid
 from util.sso.moments import add_share, save_share_info, add_self_share
 from util.sso.moments import del_one_comment
-from setting import ssp_down_file_url, wechat_comment_page_url, DB_TBL_DEVICE_INFO
-from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts, GLevelDBClient
+from setting import BEIQI_FILE_DOWN_URL, WECHAT_COMMENT_PAGE_URL, DB_TBL_DEVICE_INFO, BEIQI_FILE_DELETE_URL
+from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 
 
 @route(r'/comment')
@@ -68,11 +68,11 @@ class CommentHandler(HttpRpcHandler):
 
                 tk = gen_file_tk(acc, fn, 0, 0)
                 if fn[-4:] == '.jpg':
-                    pic_url =  ssp_down_file_url + urllib.urlencode({'tk': tk, 'r': ref})
+                    pic_url =  BEIQI_FILE_DOWN_URL + urllib.urlencode({'tk': tk, 'r': ref})
 
                 url = ""
                 if not file:
-                    url = wechat_comment_page_url + urllib.urlencode({'text': text})
+                    url = WECHAT_COMMENT_PAGE_URL + urllib.urlencode({'text': text})
 
                 token = GAccRdsInts.send_cmd(*get_wechat_access_token())
                 customerServiceUrl = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=' + token
@@ -118,7 +118,9 @@ class DeleteCommentHandler(HttpRpcHandler):
 
         fn = GDevRdsInts.send_cmd(*get_comment_file(share_id, comment_id))
         if fn is not None:
-            GLevelDBClient.forward(level_encode('delete', 0, fn))
+            urllib2.urlopen(BEIQI_FILE_DELETE_URL.format(file=fn))
+
+
 
         GDevRdsInts.send_multi_cmd(*combine_redis_cmds(del_one_comment(share_id, comment_id), del_comment_info(share_id, comment_id)))
         return {'status': 0}
@@ -151,13 +153,13 @@ class DeleteShareHandler(HttpRpcHandler):
             fns = json.loads(files)
             logger.debug(u'delete share, share_id={0}, gid={1}, fns={2}'.format(share_id, gid, fns))
             for k, v in fns.items():
-                GLevelDBClient.forward(level_encode('delete', 0, bs2utf8(v)))
+                urllib2.urlopen(BEIQI_FILE_DELETE_URL.format(file=bs2utf8(v)))
 
         comment_id_list = GDevRdsInts.send_cmd(*get_comment(share_id))
         if comment_id_list is not None:
             for comment_id in comment_id_list:
                 fn = GDevRdsInts.send_cmd(*get_comment_file(share_id, comment_id))
-                GLevelDBClient.forward(level_encode('delete', 0, fn))
+                urllib2.urlopen(BEIQI_FILE_DELETE_URL.format(file=fn))
                 GDevRdsInts.send_cmd(*del_comment_info(share_id, comment_id))
 
         GDevRdsInts.send_multi_cmd(*combine_redis_cmds(del_share(user_name, share_id), del_comment(share_id), del_share_info(share_id)))

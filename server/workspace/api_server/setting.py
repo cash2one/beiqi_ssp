@@ -37,5 +37,6 @@ MQ_DISP_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
 LEVEL_DB_HOST = "127.0.0.1:25698"
 
 
-ssp_down_file_url = 'http://localhost:8106/down?'
-wechat_comment_page_url = "http://localhost:8108/wechat/pages/comment?"
+BEIQI_FILE_DOWN_URL = 'http://localhost:8106/down?'
+BEIQI_FILE_DELETE_URL = 'http://localhost:8106/delete_file?{file}'
+WECHAT_COMMENT_PAGE_URL = "http://localhost:8108/wechat/pages/comment?"
