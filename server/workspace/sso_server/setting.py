@@ -25,6 +25,3 @@ DB_TBL_SSP_USR_LOGIN = 'beiqi_sso.ssp_user_login'
 ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
 DEV_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
 MQ_DISP_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
-
-# LEVEL_DB 设置
-LEVEL_DB_HOST = "127.0.0.1:25698"

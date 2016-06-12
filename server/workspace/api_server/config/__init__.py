@@ -6,7 +6,7 @@ Created on 2016/5/3
 @author: Jay
 """
 from util.redis.redis_client import Redis
-from setting import ACC_RDS_URI, CALC_RDS_URI, DEV_RDS_URI, MQ_DISP_RDS_URI, LEVEL_DB_HOST
+from setting import ACC_RDS_URI, CALC_RDS_URI, DEV_RDS_URI, MQ_DISP_RDS_URI
 
 
 GAccRdsInts = Redis(ACC_RDS_URI)
