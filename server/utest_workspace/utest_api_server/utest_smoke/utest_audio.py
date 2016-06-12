@@ -12,9 +12,9 @@ import threading
 import unittest
 from util.mqtt import MQTTClient
 from tornado.testing import AsyncTestCase
-from beiqissp_test.setting import SERVER_IP, API_SECRET
 from interfaces.api_server.http_rpc import get_cls, get_album, get_rdm_list, pub_2_dev
 from utest_lib import gen_test_tk
+from utest_lib.setting import SERVER_IP, API_SECRET, MQTT_HOST
 
 
 reload(sys)
@@ -32,7 +32,7 @@ class MqttInst(MQTTClient):
             APIAudioSend2DevTestHdl.stop()
 
 GMqttClient = MqttInst()
-GMqttClient.init(SERVER_IP, 1883)
+GMqttClient.init(MQTT_HOST, 1883)
 GMqttClient.subscribe(SUB_BEIQI_MSG_P2P)
 
 # 启动mqtt线程
