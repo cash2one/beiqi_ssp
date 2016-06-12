@@ -15,7 +15,7 @@ from lib import gaode_loc
 @route(r'/location')
 class LocationHandler(HttpRpcHandler):
     @web_adaptor(use_json_dumps=False)
-    def get(self, *args):
+    def get(self, *args, **kwargs):
         # 高德定位
-        loc_result = gaode_loc(*args)
+        loc_result = gaode_loc(**kwargs)
         return loc_result
