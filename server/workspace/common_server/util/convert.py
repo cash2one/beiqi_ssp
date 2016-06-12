@@ -217,6 +217,8 @@ def is_float(v):
 
 
 def is_num(v):
+    if isinstance(v,int):
+        return True
     if not v or not isinstance(v, str):
         return False
     return _num_pat.search(v)

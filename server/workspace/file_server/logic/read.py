@@ -25,21 +25,14 @@ class ReadHandler(RequestHandler):
             if not _:
                 continue
 
-            print "1111111111111111111"
-
             logger.debug(u'_ = %r', *_)
-            print "_",_
-            print "222222222222222222"
             resp = yield GLevelDBClient.forward(level_encode('snapshot', *_))
-            print "33333333333333333"
             if resp:
                 break
 
         if not resp:
             self.send_error(400)
             return
-        print "4444444444"
         logger.debug(u'file down len(resp) = %r', len(resp))
-        print "5555555555555555"
         self.set_header('Content-Type', 'application/octet-stream')
         self.finish(resp)

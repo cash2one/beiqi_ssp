@@ -13,10 +13,9 @@ from poster.streaminghttp import register_openers
 from util.filetoken import gen_file_tk
 from util.wechat import gen_wechat_access_token
 from interfaces.file_server.http_rpc import up_file
-from utest_lib.service import FileSvrHttpRpcClt, FILE_SERVER_PORT
-from utest_lib.setting import ACC_RDS_URI, TEST_USER_NAME, SERVER_IP
+from utest_lib.service import FileSvrHttpRpcClt, FILE_SERVER_PORT, GCalcRdsInts
+from utest_lib.setting import TEST_USER_NAME, SERVER_IP
 from interfaces.wechat_server import wechat_customer_service
-from util.redis.redis_client import Redis
 from interfaces.wechat_server import wechat_file_up
 
 # 在 urllib2 上注册 http 流处理句柄
@@ -25,7 +24,7 @@ register_openers()
 
 class WechatFile2WechatTest(unittest.TestCase):
     def test_send_customer_voice(self):
-        access_token = gen_wechat_access_token(Redis(ACC_RDS_URI))
+        access_token = gen_wechat_access_token(GCalcRdsInts)
         self.assertTrue(access_token)
 
         mp3_path = "test.mp3"
@@ -53,7 +52,7 @@ class WechatFile2WechatTest(unittest.TestCase):
         print wechat_customer_service(access_token, payload)
 
     def test_send_customer_image(self):
-        access_token = gen_wechat_access_token(Redis(ACC_RDS_URI))
+        access_token = gen_wechat_access_token(GCalcRdsInts)
         self.assertTrue(access_token)
 
         file_path = "test.jpg"

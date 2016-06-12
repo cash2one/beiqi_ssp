@@ -10,6 +10,7 @@ from tornado.web import Application
 from logic.write import WriteHandler
 from logic.down_multi import MultiDownHandler
 from logic.read import ReadHandler
+from logic.delete import DeleteFileHandler
 from setting import SERVICE_TYPE
 from utils import logger
 
@@ -33,6 +34,7 @@ def main():
         [
             ('/up', WriteHandler),
             ('/down', ReadHandler),
+            ('/delete_file', DeleteFileHandler),
             ('/down_multi', MultiDownHandler),
         ],
         **settings
