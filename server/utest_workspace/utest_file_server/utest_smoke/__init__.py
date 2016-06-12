@@ -15,6 +15,10 @@ class FileServerTest(unittest.TestCase):
     @unittest_adaptor()
     def test_file_up_down_normal(self):
         wav_file = "test.wav"
+        if platform.system() != 'Linux':
+            wav_file = r"C:\Users\151117a\Desktop\res\%s" % wav_file.decode('utf8')
+
+        print wav_file
 
         up_fn = wav_file.split('\\')[-1]
         file_data = open(wav_file, 'rb').read()

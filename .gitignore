@@ -1,3 +1,16 @@
 *.pyc
 *.pyo
 *.out
+/server/workspace/.idea/workspace.xml
+/server/utest_workspace/.idea/workspace.xml
+/server/utest_workspace/.idea/*.xml
+/server/utest_workspace/.idea/*.iml
+/server/workspace/.idea/encodings.xml
+/server/workspace/.idea/misc.xml
+/server/workspace/.idea/modules.xml
+/server/workspace/.idea/workspace.iml
+/server/workspace/common_server/interfaces/.idea/encodings.xml
+/server/workspace/common_server/interfaces/.idea/interfaces.iml
+/server/workspace/common_server/interfaces/.idea/misc.xml
+/server/workspace/common_server/interfaces/.idea/modules.xml
+/server/workspace/common_server/interfaces/.idea/workspace.xml

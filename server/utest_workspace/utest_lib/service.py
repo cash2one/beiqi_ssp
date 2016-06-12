@@ -8,5 +8,7 @@ Created on 2015-6-4
 from utils.network.http import HttpRpcClient
 from utest_lib.setting import SERVER_IP
 
-SSOHttpRpcClt = HttpRpcClient(SERVER_IP, 8104)
-FileSvrHttpRpcClt = HttpRpcClient(SERVER_IP, 8106)
+SSO_SERVER_PORT = 8104
+FILE_SERVER_PORT = 8106
+SSOHttpRpcClt = HttpRpcClient(SERVER_IP, SSO_SERVER_PORT)
+FileSvrHttpRpcClt = HttpRpcClient(SERVER_IP, FILE_SERVER_PORT)
