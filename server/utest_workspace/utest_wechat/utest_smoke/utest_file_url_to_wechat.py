@@ -24,7 +24,7 @@ register_openers()
 
 class WechatFile2WechatTest(unittest.TestCase):
     def test_upload_file_to_wechat(self):
-        access_token=gen_wechat_access_token(Redis(ACC_RDS_URI))
+        access_token = gen_wechat_access_token(Redis(ACC_RDS_URI))
         self.assertTrue(access_token)
 
         mp3_path = "test.mp3"
