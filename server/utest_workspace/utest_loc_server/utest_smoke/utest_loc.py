@@ -8,9 +8,6 @@ Created on 2016/6/12
 import unittest
 from interfaces.loc_server.http_rpc import location
 from utest_lib.service import LocSvrHttpRpcClt
-import sys
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 
 class APILocationTest(unittest.TestCase):
