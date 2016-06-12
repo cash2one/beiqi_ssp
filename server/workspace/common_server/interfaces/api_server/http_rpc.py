@@ -73,3 +73,16 @@ def add_device(server_ip, tk, app_secret, code,  port=8300):
         code=code)
     url = append_url_sign_tk(url, tk, app_secret)
     return urllib2.urlopen(urllib2.Request(url)).read()
+
+
+def add_code(server_ip, tk, app_secret, code,  port=8300):
+    url = 'http://{ip}:{port}/eticket/add?code={code}'.format(ip=server_ip, port=port, code=code)
+    url = append_url_sign_tk(url, tk, app_secret)
+    print url
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def check_code(server_ip, tk, app_secret, code,  port=8300):
+    url = 'http://{ip}:{port}/eticket/check?code={code}'.format(ip=server_ip, port=port, code=code)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())

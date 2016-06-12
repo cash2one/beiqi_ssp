@@ -41,7 +41,7 @@ class ETicketCheckHandler(HttpRpcHandler):
 
         sql = "UPDATE {tbl} SET stat={stat} WHERE code='{code}'".format(tbl=DB_TBL_ETICKET, stat=ETS_CHECKED, code=code)
         logger.debug('ETicketCheckHandler update::user=%r, code=%r, sql=%r' % (user_name, code, sql))
-        DBBeiqiSspInst.update(sql)
+        DBBeiqiSspInst.query(sql)
         return {"status": 0}
 
 
@@ -58,5 +58,5 @@ class ETicketAddHandler(HttpRpcHandler):
 
         sql = "insert into {tbl} (code, stat) values ('{code}', {stat})".format(tbl=DB_TBL_ETICKET, code=code, stat=1)
         logger.debug('ETicketAddHandler insert::user=%r, code=%r, sql=%r' % (user_name, code, sql))
-        DBBeiqiSspInst.insert(sql)
+        DBBeiqiSspInst.query(sql)
         return {"status": 0}
