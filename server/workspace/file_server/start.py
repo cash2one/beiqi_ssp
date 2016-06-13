@@ -1,5 +1,5 @@
 #coding:utf-8
-from __future__ import absolute_import
+import site, os; site.addsitedir(os.path.dirname(os.path.realpath(__file__))); site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))); site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
 import platform
 from setproctitle import setproctitle
 import tornado.options

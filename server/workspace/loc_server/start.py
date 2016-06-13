@@ -5,11 +5,8 @@ Created on 2015-4-27
 
 @author: Jay
 """
-import site
-import os
-site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
-from gevent import monkey
+import site, os; site.addsitedir(os.path.dirname(os.path.realpath(__file__))); site.addsitedir(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))); site.addsitedir(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "common_server"))
+from gevent import monkey; monkey.patch_all()
 monkey.patch_all()
 from utils.service_control.controller import MainService
 import setting
