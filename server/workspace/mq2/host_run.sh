@@ -9,6 +9,10 @@
 #0. kill -9 [父进程id]
 #1. killall -9 [子进程名]
 
+
+# 进入sh文件所在目录
+cd `dirname $0`
+
 for x in `python load_conf.py`
 do
     nohup python -O mq_host.py $x &

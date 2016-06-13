@@ -4,7 +4,7 @@ from tornado.gen import coroutine
 from util.convert import bs2utf8
 from util.internal_forward.leveldb_encode import encode as level_encode
 from common import down_parse
-from lib_common.file_down import cat_files
+from util.lib_common.file_down import cat_files
 from config import GLevelDBClient
 
 

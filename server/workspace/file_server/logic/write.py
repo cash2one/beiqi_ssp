@@ -6,7 +6,7 @@ from util.torn_resp import json
 from util.filetoken import gen_lvl_fn, gen_ref
 from util.internal_forward.leveldb_encode import encode as level_encode, resolve_expire
 from utils import logger
-from lib_common.file_ul import ul_args_ok, bi_directional_dispatch
+from util.lib_common.file_ul import ul_args_ok, bi_directional_dispatch
 from config import GMQDispRdsInts, GCalcRdsInts, GLevelDBClient
 
 
