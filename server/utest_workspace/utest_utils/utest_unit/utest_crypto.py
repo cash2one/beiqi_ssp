@@ -5,7 +5,7 @@ Created on 2015-5-18
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.crypto import XXTEACrypto, UrlCrypto
 from utils.crypto import xxtea
 

@@ -5,9 +5,10 @@ Created on 2015-7-25
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.network.mqtt import MQTTClient
 import time
+
 
 class MqttPublishSubscribeTest(unittest.TestCase):
     publish_client = MQTTClient()
@@ -28,12 +29,13 @@ class MqttPublishSubscribeTest(unittest.TestCase):
         time.sleep(SYNC_WAIT_TIME)
 
     def handle_topic(self, mqttc, userdata, topic, payload):
-        print "MqttPublishSubscribeTest::handle_topic,",topic, payload
+        print "MqttPublishSubscribeTest::handle_topic,", topic, payload
         self.assertTrue(mqttc == self.subscribe_client)
         self.assertTrue(userdata is None)
         self.assertTrue(payload == self.msg)
 
-class MqttPublishSubscribeSelf(unittest.TestCase):
+
+class MqttPublishSubscribeSelfTest(unittest.TestCase):
     client = MQTTClient()
     client.init(MQTT_IP, MQTT_PORT)
     client.start()

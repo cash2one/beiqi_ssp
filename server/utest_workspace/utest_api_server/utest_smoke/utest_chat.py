@@ -5,12 +5,11 @@ Created on 2016/5/14
 
 @author: Jay
 """
-import threading
+from utest_lib.common import *
 from tornado.testing import AsyncTestCase
-from util.mqtt import MQTTClient
+from utils.network.mqtt import MQTTClient
 from interfaces.api_server.http_rpc import chat_bcast
 from utest_lib import gen_test_tk
-from utest_lib.setting import MQTT_HOST, SERVER_IP
 from util.oem_account_key import APP_SECRET
 
 
@@ -26,13 +25,9 @@ class MqttInst(MQTTClient):
             APIChatMsgBcastTestHdl.stop()
 
 GMqttClient = MqttInst()
-GMqttClient.init(MQTT_HOST, 1883)
-GMqttClient.subscribe(SUB_BEIQI_MSG_BCAST)
-
-# 启动mqtt线程
-mqtt_thread = threading.Thread(target=GMqttClient.start)
-mqtt_thread.setDaemon(True)
-mqtt_thread.start()
+GMqttClient.init(MQTT_IP, 1883)
+GMqttClient.subscribe(SUB_BEIQI_MSG_BCAST, None)
+GMqttClient.start()
 
 class APIChatMsgBcastTest(AsyncTestCase):
     def test_chat_msg_bcast(self):

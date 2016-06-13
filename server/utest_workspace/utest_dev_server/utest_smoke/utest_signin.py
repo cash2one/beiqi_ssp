@@ -5,10 +5,9 @@ Created on 2016/6/12
 
 @author: Jay
 """
-import unittest
+from utest_lib.common import *
 from interfaces.dev_server.http_rpc import sign_in
 from utest_lib import gen_test_tk
-from utest_lib.setting import TEST_SN, SERVER_IP, DEV_SERVER_PORT
 from util.sso_common.build_sso_token import encrypt_username
 from util.oem_account_key import DEV_KEY, DEV_RC4, DEV_SECRET
 

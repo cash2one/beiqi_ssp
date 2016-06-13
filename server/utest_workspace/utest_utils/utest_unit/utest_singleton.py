@@ -5,7 +5,7 @@ Created on 2015-4-22
 @author: Jay
 """
 
-from lib.common import *
+from utest_lib.common import *
 
 
 class Test():

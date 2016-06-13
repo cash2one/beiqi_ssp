@@ -9,9 +9,9 @@ from utest_lib.common import *
 from util.oem_account_key import APP_KEY, beiqi_keys
 from util.sso_common.build_sso_token import parser_token
 from interfaces.sso_server.http_rpc import req_reg_val_code, check_reg_val_code
-from utest_lib.setting import TEST_USER_NAME
 from utest_lib.service import SSOHttpRpcClt
 from utest_lib import gen_test_tk
+
 
 
 class SSOServerGenTKTest(unittest.TestCase):

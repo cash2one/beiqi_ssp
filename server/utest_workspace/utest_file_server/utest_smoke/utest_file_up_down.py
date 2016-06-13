@@ -7,7 +7,6 @@ Created on 2016/6/12
 """
 from utest_lib.common import *
 from interfaces.file_server.http_rpc import up_file, down_file, delete_file, gen_leveldb_file
-from utest_lib.setting import TEST_USER_NAME
 from utest_lib.service import FileSvrHttpRpcClt, GCalcRdsInts
 
 
@@ -15,8 +14,7 @@ class FileServerTest(unittest.TestCase):
     @unittest_adaptor()
     def test_file_up_down_normal(self):
         wav_file = "test.wav"
-        if platform.system() != 'Linux':
-            wav_file = r"C:\Users\151117a\Desktop\res\%s" % wav_file.decode('utf8')
+        wav_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), wav_file)
 
         up_fn = wav_file.split('\\')[-1]
         file_data = open(wav_file, 'rb').read()
@@ -30,8 +28,7 @@ class FileServerTest(unittest.TestCase):
     @unittest_adaptor()
     def test_file_up_del_normal(self):
         wav_file = "test.wav"
-        if platform.system() != 'Linux':
-            wav_file = r"C:\Users\151117a\Desktop\res\%s" % wav_file.decode('utf8')
+        wav_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), wav_file)
 
         up_fn = wav_file.split('\\')[-1]
         file_data = open(wav_file, 'rb').read()

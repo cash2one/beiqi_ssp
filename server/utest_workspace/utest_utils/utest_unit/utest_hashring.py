@@ -5,7 +5,7 @@ Created on 2015-7-14
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.hash_ring import HashRing
 from utils.comm_func import random_str
 

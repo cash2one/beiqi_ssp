@@ -5,7 +5,7 @@ Created on 2015-8-20
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 import unittest
 from interfaces.service_mgr.tcp_rpc import get_wc_clt_access_token, get_wc_openid
 

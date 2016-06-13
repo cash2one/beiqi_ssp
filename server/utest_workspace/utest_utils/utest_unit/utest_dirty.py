@@ -5,7 +5,7 @@ Created on 2015-6-1
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.data.cache.dirty import DirtyFlag, DirtyDictProcess, DirtyFlagProcess, DB_OPER_TYPE_INSERT, DB_OPER_TYPE_DELETE, DB_OPER_TYPE_UPDATE
 
 

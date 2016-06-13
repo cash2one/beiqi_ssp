@@ -5,8 +5,8 @@ Created on 2015-7-24
 
 @author: Jay
 """
-from lib.common import *
-from lib.service import *
+from utest_lib.common import *
+from utest_lib.service import *
 from utils.service_control.cacher import PandoraCacher
 
 

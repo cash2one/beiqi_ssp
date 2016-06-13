@@ -5,8 +5,8 @@ Created on 2015-7-21
 
 @author: Jay
 """
-from lib.common import *
-from lib.service import *
+from utest_lib.common import *
+from utest_lib.service import *
 from interfaces.pandora.http_rpc import doc, root, services, locate, get_public_key, service_doc
 
 SERVICE_FOR_PANDORA = [

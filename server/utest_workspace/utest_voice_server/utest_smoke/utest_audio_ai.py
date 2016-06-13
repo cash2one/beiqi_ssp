@@ -5,8 +5,7 @@ Created on 2016/5/20
 
 @author: Jay
 """
-import time
-import unittest
+from utest_lib.common import *
 from interfaces.voice_server.http_rpc import audio_ai
 from utest_lib.service import VoiceSvrHttpRpcClt
 
@@ -14,7 +13,8 @@ from utest_lib.service import VoiceSvrHttpRpcClt
 class VoiceAudioAITest(unittest.TestCase):
     def test_audio_ai(self):
         wav_file= "iflytek02.wav"
-        fn = "%s.wav"%int(time.time())
+        wav_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), wav_file)
+
         file_object = open(wav_file, 'rb')
         file_data = file_object.read()
 

@@ -5,11 +5,9 @@ Created on 2016/6/12
 
 @author: Jay
 """
-import random
-import unittest
+from utest_lib.common import *
 from interfaces.api_server.http_rpc import add_device
 from utest_lib import gen_test_tk
-from utest_lib.setting import SERVER_IP
 from util.oem_account_key import APP_SECRET
 from utest_lib import GDevIC
 

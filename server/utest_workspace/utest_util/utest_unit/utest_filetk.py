@@ -6,7 +6,6 @@ Created on 2016/5/18
 @author: Jay
 """
 from utest_lib.common import *
-from utils.comm_func import make_unique_id
 from util.filetoken import *
 
 

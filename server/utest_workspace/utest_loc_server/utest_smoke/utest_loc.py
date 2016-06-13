@@ -5,7 +5,7 @@ Created on 2016/6/12
 
 @author: Jay
 """
-import unittest
+from utest_lib.common import *
 from interfaces.loc_server.http_rpc import location
 from utest_lib.service import LocSvrHttpRpcClt
 

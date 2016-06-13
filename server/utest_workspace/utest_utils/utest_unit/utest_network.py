@@ -5,7 +5,7 @@ Created on 2015-4-29
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.service_control.finder import IpFinder, get_random_port
 
 
@@ -52,13 +52,13 @@ class TestHttpRpcApp(HttpRpcServer):
 
     def __init__(self, port,):
         # register handlers
-        super(TestHttpRpcApp, self).__init__(port, True)
+        super(TestHttpRpcApp, self).__init__(port, False)
 
 
 class HTTPRPCTest(unittest.TestCase):
     TEST_HTTP_PORT = get_random_port()
     TestHttpRpcApp(TEST_HTTP_PORT).start()
-    http_rpc_client = HttpRpcClient(IpFinder().get_cache_inter_net_ip(), TEST_HTTP_PORT, True)
+    http_rpc_client = HttpRpcClient(IpFinder().get_cache_inter_net_ip(), TEST_HTTP_PORT)
 
     # 初始化工作
     def setUp(self):
@@ -78,51 +78,6 @@ class HTTPRPCTest(unittest.TestCase):
         para2 = 2
         url = "add?para1=%s&para2=%s" % (para1, para2)
         self.assertTrue(self.http_rpc_client.fetch_async(url), para1 + para2)
-
-JID1 = None
-JID2 = None
-
-test_network_xmpp_app1 = XMPPClient()
-test_network_xmpp_app2 = XMPPClient()
-TEST_SUBJECT = "hi"
-TEST_BODY = "hi body"
-
-RECV_STANZA = {}
-@xmpp_handler(test_network_xmpp_app2, "hi")
-def receive_hi(xmpp_client, from_jid, body):
-    global RECV_STANZA
-    RECV_STANZA["from_jid"] = from_jid
-    RECV_STANZA['body'] = body
-
-class XmppClientTest(unittest.TestCase):
-
-    # 初始化工作
-    def setUp(self):
-        global JID1, JID2
-        JID1, password1 = new_jid(OPENFIRE_IP,OPENFIRE_PORT)
-        JID2, password2 = new_jid(OPENFIRE_IP,OPENFIRE_PORT)
-        test_network_xmpp_app1.init(JID1, password1)
-        test_network_xmpp_app1.start()
-        time.sleep(SYNC_WAIT_TIME)
-        test_network_xmpp_app2.init(JID2, password2)
-        test_network_xmpp_app2.start()
-        time.sleep(SYNC_WAIT_TIME)
-
-    # 退出清理工作
-    def tearDown(self):
-        pass
-
-    @unittest_adaptor()
-    def test_xmpp_send_recv(self):
-        time.sleep(SYNC_WAIT_TIME)
-        test_network_xmpp_app1.send_sync(JID2, TEST_SUBJECT, TEST_BODY)
-        time.sleep(SYNC_WAIT_TIME)
-
-        # 这里失败率比较高,但是问题又不大，所以打日志就好了,不要影响unittest。
-        if not RECV_STANZA:
-            logger.error("XmppClientTest::test_xmpp_send_recv Failed!!!, not recv xmpp msg:%s" % RECV_STANZA)
-            return
-        self.assertTrue(RECV_STANZA['body'] == TEST_BODY)
 
 class UdpClientTest(unittest.TestCase):
     udp_port = get_random_port()

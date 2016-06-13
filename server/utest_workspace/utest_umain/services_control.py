@@ -5,10 +5,11 @@ Created on 2015-5-7
 
 @author: Jay
 """
+from utest_lib.common import *
 from utils.service_control.processer import start_process, stop_process
 from utils.service_control.caster import BEAT_INTERVAL
 from utils.service_control.checker import HEARTBEAT_EXPIRE_TIME
-from lib.common import *
+
 
 cur_file_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 service_mgr_path = os.path.join(cur_file_path, "workspace", "common_server", "service_mgr", "start.py")

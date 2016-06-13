@@ -5,7 +5,7 @@ Created on 2015-5-15
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 
 
 rc = redis_client.RedisClient(REDIS_IP, REDIS_PORT, pwd=REDIS_PASSWD)

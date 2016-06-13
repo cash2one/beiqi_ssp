@@ -5,7 +5,7 @@ Created on 2015-8-17
 
 @author: Jay
 """
-from lib.common import *
+from utest_lib.common import *
 from utils.wechat.signature import SignatureChecker
 from utils.setting.wechat import TOKEN
 

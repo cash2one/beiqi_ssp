@@ -6,7 +6,7 @@ Created on 2015-7-16
 @author: Jay
 """
 
-from lib.common import *
+from utest_lib.common import *
 import unittest
 
 
