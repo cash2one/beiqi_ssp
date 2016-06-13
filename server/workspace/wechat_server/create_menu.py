@@ -3,10 +3,10 @@ import urllib
 import ujson
 from tornado.httpclient import HTTPClient
 from tornado.httpclient import HTTPRequest
-from util.redis_cmds.wechat import get_wechat_access_token
 from utils import logger
 from util.configx import conf_file
 from util.redis.redis_client import Redis
+from util.wechat import gen_wechat_access_token
 
 redis_conf = conf_file('../configs/redis.ini')
 _account_cache = Redis(redis_conf.get('oauth', 'url'))
@@ -14,7 +14,7 @@ _account_cache = Redis(redis_conf.get('oauth', 'url'))
 
 http_client = HTTPClient()
 
-token = _account_cache.send_cmd(*get_wechat_access_token())
+token = gen_wechat_access_token(_account_cache)
 url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token={0}'.format(token)
 
 menu = {

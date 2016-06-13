@@ -12,11 +12,12 @@ from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.network.http import HttpRpcClient
 from util.redis_cmds.circles import getall_wechat_devs
-from util.redis_cmds.wechat import get_wechat_access_token, get_wechat_ticket
+from util.redis_cmds.wechat import get_wechat_ticket
 from lib.add_device import add_device
 from lib.sign import Sign
 from config import GDevRdsInts, GAccRdsInts
 from setting import WECHAT_SERACH_DEVICE, APPID, APPSECRET
+from util.wechat import gen_wechat_access_token
 
 
 @route(r'/wechat/pages/add_device')
@@ -99,7 +100,7 @@ class ManageDevHandler(HttpRpcHandler):
 class SearchDeviceHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)
     def get(self):
-        access_token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+        access_token = gen_wechat_access_token(GAccRdsInts)
         ticket = GAccRdsInts.send_cmd(*get_wechat_ticket())
         sign_data = Sign(ticket, WECHAT_SERACH_DEVICE).sign()
         logger.debug('access_token:%s ticket:%s sign_data:%s'%(access_token, ticket, sign_data))

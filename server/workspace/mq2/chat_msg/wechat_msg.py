@@ -8,10 +8,10 @@ from tornado.httpclient import HTTPClient
 from tornado.httpclient import HTTPRequest
 from utils import logger
 from util.redis_cmds.circles import get_group_followers
-from util.redis_cmds.wechat import get_wechat_access_token
 from util.filetoken import gen_file_tk
 from util.user import get_user_gids
 from setting import *
+from util.wechat import gen_wechat_access_token
 
 http_client = HTTPClient()
 
@@ -70,7 +70,7 @@ def wechat_image_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = account_cache.send_cmd(*get_wechat_access_token())
+    access_token = gen_wechat_access_token(account_cache)
 
     upload_result = wechat_file_upload(access_token, file_url, "image.jpg", "image/jpg")
 
@@ -92,7 +92,7 @@ def wechat_video_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = account_cache.send_cmd(*get_wechat_access_token())
+    access_token = gen_wechat_access_token(account_cache)
 
     upload_result = wechat_file_upload(access_token, file_url, "video.amr", "video/amr")
 
@@ -117,7 +117,7 @@ def wechat_voice_sender(wc_openid, file_url):
     :return:
     """
     assert file_url
-    access_token = account_cache.send_cmd(*get_wechat_access_token())
+    access_token = gen_wechat_access_token(account_cache)
 
     upload_result = wechat_file_upload(access_token, file_url, "voice.amr", "voice/amr")
 

@@ -10,9 +10,9 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.redis_cmds.user_info import set_user_group_msglist, set_user_info
 from util.redis_cmds.circles import set_user_nickname
-from util.redis_cmds.wechat import get_wechat_access_token
 from config import GDevRdsInts, GMQDispRdsInts
 from setting import WX_USERINFO_URL, DB_TBL_USER_INFO
+from util.wechat import gen_wechat_access_token
 
 
 wechat_reply_template = \
@@ -28,7 +28,7 @@ wechat_reply_template = \
 def get_userinfo(username):
     # remove wx# prefix
     username = username[3:]
-    token = GDevRdsInts.send_cmd(*get_wechat_access_token())
+    token = gen_wechat_access_token(GDevRdsInts)
     url = WX_USERINFO_URL.format(token, username)
     user_info = HttpRpcClient().fetch_async(url=url)
     return ujson.loads(user_info.body)

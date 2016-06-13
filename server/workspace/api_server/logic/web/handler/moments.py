@@ -19,7 +19,7 @@ from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.convert import bs2utf8, combine_redis_cmds
 from util.sso.moments import add_comment, save_comment_info
 from util.filetoken import gen_file_tk
-from util.redis_cmds.wechat import get_wechat_access_token
+from util.wechat import gen_wechat_access_token
 from util.redis_cmds.circles import get_user_nickname
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
@@ -74,7 +74,7 @@ class CommentHandler(HttpRpcHandler):
                 if not file:
                     url = WECHAT_COMMENT_PAGE_URL + urllib.urlencode({'text': text})
 
-                token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+                token = gen_wechat_access_token(GAccRdsInts)
                 customerServiceUrl = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=' + token
                 nickname = GDevRdsInts.send_cmd(*get_user_nickname(user_name))
                 payload = {

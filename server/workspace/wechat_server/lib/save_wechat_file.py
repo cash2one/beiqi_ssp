@@ -4,10 +4,10 @@ import urllib
 from utils import logger
 from utils.network.http import HttpRpcClient
 from util.filetoken import gen_file_tk
-from util.redis_cmds.wechat import get_wechat_access_token
 from util.convert import bs2utf8
 from config import GAccRdsInts
 from setting import BEIQI_FILE_UP_URL, WX_MEDIA_DOWN_URL
+from util.wechat import gen_wechat_access_token
 
 
 def save_wechat_file(pic_url, from_user_name, msg_id, file_type, create_time, media_id=''):
@@ -15,7 +15,7 @@ def save_wechat_file(pic_url, from_user_name, msg_id, file_type, create_time, me
         url = pic_url
         fn = msg_id + '.jpg'
     elif file_type == '2' or file_type == '3':
-        token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+        token = gen_wechat_access_token(GAccRdsInts)
 
         url = WX_MEDIA_DOWN_URL.format(token, media_id)
 

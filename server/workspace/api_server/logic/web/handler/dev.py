@@ -25,6 +25,7 @@ from util.convert import combine_redis_cmds
 from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 from db.db_oper import DBBeiqiSspInst
 from setting import DB_TBL_DEVICE_INFO
+from util.wechat import gen_wechat_access_token
 
 
 @route(r'/dev/check_dev_args', name='/dev/check_dev_args')
@@ -132,7 +133,7 @@ class FollowReviewHandler(HttpRpcHandler):
                 # applicant from wechat
                 logger.debug(u'wechat user follow: ', applicant)
                 GDevRdsInts.send_cmd(*hset_wechat_gid(applicant, gid))
-                token = GAccRdsInts.send_cmd(*get_wechat_access_token())
+                token = gen_wechat_access_token(GAccRdsInts)
                 customerServiceUrl = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=' + token
                 payload = \
                 {

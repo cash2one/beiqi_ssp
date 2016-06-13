@@ -35,7 +35,7 @@ def wechat_file_up(access_token, file_url, fn, file_type="voice"):
     datagen, headers = multipart_encode({"media": param})
 
     # 创建请求对象
-    request = urllib2.Request(WECHAT_FILE_UP_URL.format(access_token=access_token, type=file_type), datagen, headers)
+    request = urllib2.Request(WECHAT_FILE_UP_URL.format(access_token=urllib2.quote(access_token), type=file_type), datagen, headers)
     return ujson.loads(urllib2.urlopen(request).read())
 
 def wechat_file_down(access_token, media_id):
@@ -45,7 +45,7 @@ def wechat_file_down(access_token, media_id):
     :param media_id:  微信文件id
     :return:
     """
-    wechat_down_url = WECHAT_FILE_DOWN_URL.format(access_token=access_token, media_id=media_id)
+    wechat_down_url = WECHAT_FILE_DOWN_URL.format(access_token=urllib2.quote(access_token), media_id=media_id)
     return urllib.urlopen(wechat_down_url).read()
 
 
