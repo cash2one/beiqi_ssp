@@ -24,7 +24,8 @@ class SSOServerGenTKTest(unittest.TestCase):
 
     @unittest_adaptor()
     def test_req_reg_val_code(self):
-        resp = req_reg_val_code(SSOHttpRpcClt, account=TEST_USER_NAME)
+        # 发送短信验证码，不要使用真实账号，不然经常发送，很烦人
+        resp = req_reg_val_code(SSOHttpRpcClt, account="12345369874@jiashu.com")
         print resp
         self.assertTrue(resp['status'] in [0, 4])
 
