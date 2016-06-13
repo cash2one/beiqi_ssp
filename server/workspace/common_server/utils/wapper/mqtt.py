@@ -18,7 +18,7 @@ def mqtt_subscribe_decorator(mqtt_client_obj, topic):
 
 
 
-def mqtt_publish_decorator(use_json_dumps=True, xxtea_key=None, mqtt_sign=None):
+def mqtt_publish_decorator(use_json_dumps=False, xxtea_key=None, mqtt_sign=None):
     def mqtt_publish_func_decorator(fun):
         def mqtt_publish_param_decorator(self, topic, payload=None, *args, **kwargs):
             logger.info("MQTT:publish topic:%s, payload:%s" % (topic, payload))
@@ -35,7 +35,7 @@ def mqtt_publish_decorator(use_json_dumps=True, xxtea_key=None, mqtt_sign=None):
 
 
 
-def mqtt_onmessage_decorator(use_json_loads=True, xxtea_key=None):
+def mqtt_onmessage_decorator(use_json_loads=False, xxtea_key=None):
     def mqtt_onmessage_func_decorator(fun):
         def mqtt_onmessage_param_decorator(self, mqttc, userdata, msg):
             try:

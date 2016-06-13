@@ -23,3 +23,35 @@ def get_status(server_ip, tk, app_secret, user_list, port=8203):
     url = 'http://{ip}:{port}/get_status?user_list={user_list}'.format(ip=server_ip, port=port, user_list=ujson.dumps(user_list))
     url = append_url_sign_tk(url, tk, app_secret)
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def beiqi_msg_bcast(server_ip, tk, app_secret, gid, payload, port=8203):
+    """
+    贝启消息广播
+    :param server_ip: 服务器ip
+    :param tk:  tk
+    :param app_secret:
+    :param gid:  gid
+    :param payload: mqtt:pyalod
+    :param port:
+    :return:
+    """
+    url = 'http://{ip}:{port}/beiqi_msg_bacst?gid={gid}&payload={payload}'.format(ip=server_ip, port=port, gid=gid, payload=payload)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return urllib2.urlopen(urllib2.Request(url)).read()
+
+
+def beiqi_msg_p2p(server_ip, tk, app_secret, sn, payload, port=8203):
+    """
+    贝启消息广播
+    :param server_ip: 服务器ip
+    :param tk:  tk
+    :param app_secret:
+    :param sn:  设备sn
+    :param payload: mqtt:pyalod
+    :param port:
+    :return:
+    """
+    url = 'http://{ip}:{port}/beiqi_msg_p2p?sn={sn}&payload={payload}'.format(ip=server_ip, port=port, sn=sn, payload=payload)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return urllib2.urlopen(urllib2.Request(url)).read()

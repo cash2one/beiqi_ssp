@@ -13,6 +13,8 @@ from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
 from util.redis_cmds.mqtt import get_mqtt_status
 from mqtt_server.config import GDevRdsInts
+from mqtt_server.apps.mqtt_app import MQTT_APP
+from mqtt_server.common.opcode import *
 
 
 @route(r'/get_status')
@@ -28,3 +30,19 @@ class GetStatusHandler(HttpRpcHandler):
             status = GDevRdsInts.send_cmd(*get_mqtt_status(user))
             ret[user] = status
         return ret
+
+
+@route(r'/beiqi_msg_bacst')
+class BeiqiMsgBCastHandler(HttpRpcHandler):
+    @web_adaptor()
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, gid, payload):
+        MQTT_APP().publish(S_PUB_BEIQI_MSG_BCAST.format(gid=gid), payload)
+
+
+@route(r'/beiqi_msg_p2p')
+class BeiqiMsgBCastHandler(HttpRpcHandler):
+    @web_adaptor()
+    @beiqi_tk_sign_wapper()
+    def get(self, user_name, sn, payload):
+        MQTT_APP().publish(S_PUB_BEIQI_MSG_P2P.format(sn=sn), payload)
