@@ -7,6 +7,7 @@ Created on 2016/5/5
 """
 import time
 import urllib
+import urllib2
 import urlparse
 from hashlib import md5
 from utils import logger
@@ -138,7 +139,7 @@ def append_server_sign(url):
     :param url:  访问的url
     """
     up = urlparse.urlparse(url)
-    params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
+    params = dict([(item.split("=")[0], urllib2.unquote(item.split("=")[1])) for item in up.query.split("&")]) if up.query else {}
     _sign = Signer().gen_sign(*params.values())
     splitor = "&" if "?" in url else "?"
     return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
