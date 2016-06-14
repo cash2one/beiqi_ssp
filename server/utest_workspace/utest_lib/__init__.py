@@ -5,6 +5,13 @@ Created on 2015-5-7
 
 @author: Jay
 """
+import os, site
+cur_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+site.addsitedir(cur_path)
+site.addsitedir(os.path.join(cur_path, "utest_workspace"))
+site.addsitedir(os.path.join(os.path.dirname(cur_path), "workspace"))
+site.addsitedir(os.path.join(os.path.dirname(cur_path), "workspace", "common_server"))
+
 from interfaces.sso_server.http_rpc import gen_tk
 from utest_lib.service import SSOHttpRpcClt
 from util.oem_account_key import APP_KEY

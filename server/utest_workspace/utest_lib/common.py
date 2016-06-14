@@ -26,12 +26,6 @@ if len(sys.argv) >= 3:
     if "utrunner.py" in sys.argv[0]:
         sys.argv = sys.argv[1:-1]
 
-cur_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-site.addsitedir(cur_path)
-site.addsitedir(os.path.join(cur_path, "utest_workspace"))
-site.addsitedir(os.path.join(os.path.dirname(cur_path), "workspace"))
-site.addsitedir(os.path.join(os.path.dirname(cur_path), "workspace", "common_server"))
-
 from utils import error_code, logger, crypto
 logger.init_log("unittest", "unittest")
 
