@@ -1,23 +1,7 @@
 #coding:utf8
-import threading
 from setting import *
-from util.mqtt import MQTTClient
 from utils import logger
 from interfaces.mqtt_server.http_rpc import beiqi_msg_p2p
-
-
-
-class MqttInst(MQTTClient):
-    def on_message(self, mqttc, userdata, msg):
-        pass
-
-GMqttClient = MqttInst()
-GMqttClient.init(MQTT_HOST, MQTT_PORT)
-
-# 启动mqtt线程
-mqtt_thread = threading.Thread(target=GMqttClient.start)
-mqtt_thread.setDaemon(True)
-mqtt_thread.start()
 
 
 def handle_msg(packet):
@@ -35,5 +19,5 @@ def handle_msg(packet):
 
     topic = PUB_BEIQI_MSG_P2P.format(sn=to_dev_sn)
     logger.debug('dev_msg handle_msg mqtt: topic={0}, payload={1}'.format(topic, payload))
-    GMqttClient.publish(topic, payload)
+    beiqi_msg_p2p(MQTT_SERVER_IP, to_dev_sn, payload, port=MQTT_SERVER_PORT)
 
