@@ -140,6 +140,7 @@ def append_server_sign(url):
     """
     up = urlparse.urlparse(url)
     params = dict([(item.split("=")[0], urllib2.unquote(item.split("=")[1])) for item in up.query.split("&")]) if up.query else {}
+    logger.debug("append_server_sign: params.values:%s"%(params.values()))
     _sign = Signer().gen_sign(*params.values())
     splitor = "&" if "?" in url else "?"
     return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
