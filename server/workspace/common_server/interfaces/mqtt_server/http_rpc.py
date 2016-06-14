@@ -32,7 +32,7 @@ def beiqi_msg_bcast(server_ip, gid, payload, port=8203):
     :param port:
     :return:
     """
-    url = 'http://{ip}:{port}/beiqi_msg_bacst?gid={gid}&payload={payload}'.format(ip=server_ip, port=port, gid=gid, payload=payload)
+    url = 'http://{ip}:{port}/beiqi_msg_bacst?gid={gid}&payload={payload}'.format(ip=server_ip, port=port, gid=gid, payload=urllib2.quote(payload))
     url = append_server_sign(url)
     return urllib2.urlopen(urllib2.Request(url)).read()
 

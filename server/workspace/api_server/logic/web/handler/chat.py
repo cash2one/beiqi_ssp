@@ -25,6 +25,6 @@ class ChatBCastHandler(HttpRpcHandler):
 
         GMQDispRdsInts.send_cmd(*
             shortcut_mq('chat_msg',
-                        push_pack(user_name, 'msg', 2, '', des)
+                        push_pack(user_name, 'msg', 2, desc=des)
                         )
         )
