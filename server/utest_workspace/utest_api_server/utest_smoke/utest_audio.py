@@ -11,23 +11,10 @@ from tornado.testing import AsyncTestCase
 from interfaces.api_server.http_rpc import get_cls, get_album, get_rdm_list, pub_2_dev
 from utest_lib import gen_test_tk
 from util.oem_account_key import APP_SECRET
-
-
-PUB_BEIQI_MSG_P2P = "BEIQI_MSG_P2P/{sn}"
-SUB_BEIQI_MSG_P2P = "BEIQI_MSG_P2P/#"
+from mqtt_server.common.opcode import C_SUB_BEIQI_MSG_P2P
 
 
 APIAudioSend2DevTestHdl = None
-
-class MqttInst(MQTTClient):
-    def on_message(self, mqttc, userdata, msg):
-        if APIAudioSend2DevTestHdl:
-            APIAudioSend2DevTestHdl.stop()
-
-GMqttClient = MqttInst()
-GMqttClient.init(MQTT_IP, 1883)
-GMqttClient.subscribe(SUB_BEIQI_MSG_P2P, None)
-GMqttClient.start()
 
 
 class APIAudioAudioClsTest(unittest.TestCase):
@@ -49,15 +36,33 @@ class APIAudioAudioListTest(unittest.TestCase):
 
 
 class APIAudioSend2DevTest(AsyncTestCase):
+    GMqttClient = MQTTClient()
+    GMqttClient.init(MQTT_IP, 1883)
+    GMqttClient.start()
+
+    test_pub_2_dev_hdl = None
+
     def test_pub_2_dev(self):
+        self.test_pub_2_dev_hdl = self
+
         audio_ls = get_rdm_list(SERVER_IP, gen_test_tk(), APP_SECRET)
         print audio_ls
         select_audio = random.choice(audio_ls)
-
         sn ="PNZHANCHENJIN"
-        pub_2_dev(SERVER_IP, gen_test_tk(), APP_SECRET, sn, select_audio['name'], select_audio['ref'])
 
-        global APIAudioSend2DevTestHdl
-        APIAudioSend2DevTestHdl = self
+        self.p2d_topic = C_SUB_BEIQI_MSG_P2P.format(sn = sn)
+        self.GMqttClient.subscribe(self.p2d_topic, self.pub_2_dev_res)
+        time.sleep(SYNC_WAIT_TIME)
+
+        pub_2_dev(SERVER_IP, gen_test_tk(), APP_SECRET, sn, select_audio['name'], select_audio['ref'])
         self.wait(timeout=5)
+
+    def pub_2_dev_res(self, mqttc, userdata, topic, payload):
+        print "pub_2_dev_res,",payload
+        self.assertTrue(topic == self.p2d_topic)
+
+        self.test_pub_2_dev_hdl.stop()
+
+
+
 
