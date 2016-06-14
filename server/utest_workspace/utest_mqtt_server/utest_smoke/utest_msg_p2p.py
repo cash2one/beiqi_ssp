@@ -8,8 +8,6 @@ Created on 2016/6/13
 from tornado.testing import AsyncTestCase
 from utest_lib.common import *
 from utils.network.mqtt import MQTTClient
-from utest_lib import gen_test_tk
-from util.oem_account_key import APP_SECRET
 from mqtt_server.common.opcode import *
 from interfaces.mqtt_server.http_rpc import beiqi_msg_p2p
 
@@ -29,7 +27,7 @@ class MqttServerMsgP2PTest(AsyncTestCase):
         self.GMqttClient.subscribe(self.topic, self.beiqi_msg_p2p_res)
         time.sleep(SYNC_WAIT_TIME)
 
-        beiqi_msg_p2p(MQTT_SERVER_IP, gen_test_tk(), APP_SECRET, self.sn, self.payload)
+        beiqi_msg_p2p(MQTT_SERVER_IP, self.sn, self.payload)
         self.wait(timeout=SYNC_WAIT_TIME)
 
     def beiqi_msg_p2p_res(self, mqttc, userdata, topic, payload):

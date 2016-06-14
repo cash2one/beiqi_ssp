@@ -10,12 +10,10 @@ import urllib2
 from utils.crypto.beiqi_sign import append_server_sign
 
 
-def get_status(server_ip, tk, app_secret, user_list, port=8203):
+def get_status(server_ip, user_list, port=8203):
     """
     获取状态
     :param server_ip: 服务器ip
-    :param tk:  tk
-    :param app_secret:
     :param user_list:  用户列表，list形式
     :param port:
     :return:
@@ -25,12 +23,10 @@ def get_status(server_ip, tk, app_secret, user_list, port=8203):
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
 
 
-def beiqi_msg_bcast(server_ip, tk, app_secret, gid, payload, port=8203):
+def beiqi_msg_bcast(server_ip, gid, payload, port=8203):
     """
     贝启消息广播
     :param server_ip: 服务器ip
-    :param tk:  tk
-    :param app_secret:
     :param gid:  gid
     :param payload: mqtt:pyalod
     :param port:
@@ -41,12 +37,10 @@ def beiqi_msg_bcast(server_ip, tk, app_secret, gid, payload, port=8203):
     return urllib2.urlopen(urllib2.Request(url)).read()
 
 
-def beiqi_msg_p2p(server_ip, tk, app_secret, sn, payload, port=8203):
+def beiqi_msg_p2p(server_ip, sn, payload, port=8203):
     """
     贝启消息广播
     :param server_ip: 服务器ip
-    :param tk:  tk
-    :param app_secret:
     :param sn:  设备sn
     :param payload: mqtt:pyalod
     :param port:
