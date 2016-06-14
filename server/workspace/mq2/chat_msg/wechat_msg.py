@@ -4,8 +4,6 @@ import urllib2
 import StringIO
 from poster.encode import multipart_encode, MultipartParam
 from poster.streaminghttp import register_openers
-from tornado.httpclient import HTTPClient
-from tornado.httpclient import HTTPRequest
 from utils import logger
 from util.redis_cmds.circles import get_group_followers
 from util.filetoken import gen_file_tk
@@ -13,7 +11,6 @@ from util.user import get_user_gids
 from setting import *
 from util.wechat import gen_wechat_access_token
 
-http_client = HTTPClient()
 
 SELECTED_SOURCES = (0, 16)
 
@@ -58,7 +55,7 @@ def wechat_customer_response(access_token, payload):
     :return:
     """
     customer_url = WECHAT_CUSTOMER_SERVICE_URL % access_token
-    resp = http_client.fetch(HTTPRequest(customer_url, method='POST', body=json.dumps(payload, ensure_ascii=False)))
+    resp = urllib2.urlopen(urllib2.Request(customer_url, json.dumps(payload, ensure_ascii=False))).read()
     logger.debug('send_wechat_file::customer resp customer_url=%s, payload=%s, code = %r, body = %r', customer_url, payload,  resp.code, resp.body)
 
 
@@ -179,4 +176,5 @@ def msg_2_wechat(cli_user, file_type, fn, ref, thumb_fn, thumb_ref, text):
     tk = gen_file_tk(cli_user, fn, 0, 0)
     file_url = SSP_DOWNLOAD_FILE_URL % (tk, ref)
     [sender(wc_user.split("#")[1], file_url) for wc_user in wechat_followers]
+
 
