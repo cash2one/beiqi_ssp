@@ -8,7 +8,7 @@ Created on 2016/6/8
 import ujson
 import urllib
 from util.filetoken import gen_file_tk
-from lib_common.file_ul import ul_args_ok
+from util.lib_common.file_ul import ul_args_ok
 from util.filetoken import gen_lvl_fn
 from util.convert import bs2utf8
 
