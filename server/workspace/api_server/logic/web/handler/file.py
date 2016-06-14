@@ -10,7 +10,7 @@ from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from util.lib_common.file_ul import common_file_token
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from config import GDevRdsInts
 
 
@@ -20,7 +20,7 @@ class FileTokenHandler(HttpRpcHandler):
     账号token
     """
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, username, fn, m, r=''):
         resp = common_file_token(
             GDevRdsInts,
@@ -47,7 +47,7 @@ def _single(account, x):
 @route(r'/res/filetk_multi', name='/res/filetk_multi')
 class MultiFileTokenHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, params):
         params = params.split('|')
         params = (x.split(',') for x in params)

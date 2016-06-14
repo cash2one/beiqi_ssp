@@ -10,7 +10,7 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
@@ -23,7 +23,7 @@ from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 @route(r'/sign_in')
 class SignInHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, sn):
         sql = "SELECT 1 FROM {db_name} WHERE sn = '{sn}'".format(db_name=DB_TBL_DEVICE_INFO, sn=sn)
         ret_list = DBBeiqiSspInst.query(sql)

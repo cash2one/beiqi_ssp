@@ -4,12 +4,10 @@ from Crypto.Hash import SHA, HMAC
 from binascii import a2b_hex, b2a_hex
 import random
 import struct
-import time
 
-from util.convert import is_cdma_tid, is_imsi, take_offset_chars, is_gsm_tid, is_mobile, redis_encode_batch
+from util.convert import take_offset_chars
 from util.crypto_aes import encrypt, decrypt
 from util.id_conv import rawid_tuple, tuple_rawid, parse_io_options
-from util.oem_account_key import oem_accounts
 
 
 # 所有工厂fid和server_key

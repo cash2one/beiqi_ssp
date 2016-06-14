@@ -14,13 +14,13 @@ from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.cloud_app import *
 from config import GDevRdsInts, GMQDispRdsInts
 from util.redis_cmds.user_info import *
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 
 
 @route(r'/app/set_app_data')
 class SetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, receiver, app, payload):
         now = str(time.time())
         payload = '$'.join((user_name, payload))
@@ -37,7 +37,7 @@ class SetAppDataHandler(HttpRpcHandler):
 @route(r'/app/get_app_data')
 class GetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, receiver, app, ts=''):
         if ts:
             data = GDevRdsInts.send_cmd(*get_app_data_by_ts(receiver, app, ts))
@@ -50,7 +50,7 @@ class GetAppDataHandler(HttpRpcHandler):
 @route(r'/app/del_app_data')
 class DelAppDataHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, receiver, app, ts):
         result = GDevRdsInts.send_cmd(*del_app_data(receiver, app, ts))
         logger.debug(u'result = %r', result)

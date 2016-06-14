@@ -8,7 +8,7 @@ Created on 2016/5/6
 from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from utils.wapper.web import web_adaptor
 from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
@@ -20,7 +20,7 @@ from config import GMQDispRdsInts, GDevRdsInts
 @route(r'/cmd_report')
 class CmdRptHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, sn, f, d, payload):
         logger.debug('cmd_rpt_v1 sn: {0}, d: {1}, f: {2}'.format(sn, d, f))
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))

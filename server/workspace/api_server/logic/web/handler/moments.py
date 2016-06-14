@@ -15,7 +15,7 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from util.convert import bs2utf8, combine_redis_cmds
 from util.sso.moments import add_comment, save_comment_info
 from util.filetoken import gen_file_tk
@@ -36,7 +36,7 @@ from config import GDevRdsInts, GMQDispRdsInts, GAccRdsInts
 @route(r'/comment')
 class CommentHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, share_id, reply_to='', comment_id='', text='', type='', file=''):
         share_info = GDevRdsInts.send_cmd(*retrieve_share_info(share_id))
         if share_info is None:
@@ -110,7 +110,7 @@ class CommentHandler(HttpRpcHandler):
 @route(r'/delete_comment')
 class DeleteCommentHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, share_id, comment_id):
         if user_name != comment_id.split(':')[-1]:
             logger.debug('delete comment, acc=%r, share_id=%r, comment_id=%r' % (user_name, share_id, comment_id))
@@ -129,7 +129,7 @@ class DeleteCommentHandler(HttpRpcHandler):
 @route(r'/delete_share')
 class DeleteShareHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, share_id):
         gid = ''
         sl = share_id.split(':')
@@ -216,7 +216,7 @@ class DeleteShareHandler(HttpRpcHandler):
 @route(r'/like')
 class LikeHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, share_id, action):
         if action == 'add':
             GDevRdsInts.send_cmd(*add_like(share_id, user_name))
@@ -230,7 +230,7 @@ class LikeHandler(HttpRpcHandler):
 @route(r'/refresh_moments')
 class RefreshMomentsHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, start=None, end=None, quantity=None, gids=None, pid='', user=''):
         logger.debug('refresh moments, start={0}, end={1}, acc={2}, quantity={3}'.format(start, end, user_name, quantity))
         if (user_name and (start or quantity)) is None:
@@ -285,7 +285,7 @@ class RefreshMomentsHandler(HttpRpcHandler):
 @route(r'/share')
 class RefreshMomentsHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, gid, share_to, location, text, type, files):
         primary_account = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary_account is None:

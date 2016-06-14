@@ -10,7 +10,9 @@ import urllib
 import urlparse
 from hashlib import md5
 from utils import logger
+from utils.crypto.sign import Signer
 from util.sso_common.build_sso_token import parser_token
+
 
 def sign(http_method, url, params, api_secret):
     """
@@ -32,7 +34,7 @@ def sign(http_method, url, params, api_secret):
     return md5_inst.hexdigest()
 
 
-def beiqi_tk_sign_wapper():
+def client_sign_wapper():
     def parse_request(self, *args, **kwargs):
         method = self.request.method
         url = "http://" + self.request.host + self.request.uri
@@ -40,8 +42,8 @@ def beiqi_tk_sign_wapper():
         token = kwargs.pop('_tk', None)
         return method, url, sign, token, kwargs
 
-    def beiqi_tk_sign_fun_wapper(fun):
-        def beiqi_tk_sign_param_wapper(self, *args, **kwargs):
+    def client_sign_fun_wapper(fun):
+        def client_sign_param_wapper(self, *args, **kwargs):
             method, url, expect_sign, auth_token, params = parse_request(self, *args, **kwargs)
             if not expect_sign or not auth_token:
                 logger.error("%s not expect_sign:%s or not auth_token:%s"%(fun.__name__, expect_sign, auth_token))
@@ -60,11 +62,26 @@ def beiqi_tk_sign_wapper():
                 self.set_status(401)
                 return
 
-	    # 注意这里需要使用处理过的参数params，不要使用原始参数kwargs
+            # 注意这里需要使用处理过的参数params，不要使用原始参数kwargs
             params['user_name'] = account
             return fun(self, *args, **params)
-        return beiqi_tk_sign_param_wapper
-    return beiqi_tk_sign_fun_wapper
+        return client_sign_param_wapper
+    return client_sign_fun_wapper
+
+
+def server_sign_wapper():
+    def server_sign_fun_wapper(fun):
+        def server_sign_param_wapper(self, *args, **kwargs):
+            sign = kwargs.pop('_sign', None)
+            csign = Signer.gen_sign(**kwargs)
+            if sign != csign:
+                logger.error("server_sign_wapper error:kwargs:%r sign:%s csign:%s"%(kwargs, sign, csign))
+                self.set_status(401)
+                return
+            return fun(self, *args, **kwargs)
+        return server_sign_param_wapper
+    return server_sign_fun_wapper
+
 
 
 def gen_url_sign(url, api_secret, method='GET'):

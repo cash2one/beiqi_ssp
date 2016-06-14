@@ -3,6 +3,7 @@ import threading
 from setting import *
 from util.mqtt import MQTTClient
 from utils import logger
+from interfaces.mqtt_server.http_rpc import beiqi_msg_p2p
 
 
 

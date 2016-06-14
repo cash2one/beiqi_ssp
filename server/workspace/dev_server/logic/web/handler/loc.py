@@ -10,7 +10,7 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from util.convert import bs2utf8, combine_redis_cmds
 from config import GMQDispRdsInts
 from common.mq import build_mq_package
@@ -19,7 +19,7 @@ from common.mq import build_mq_package
 @route(r'/loc_v1')
 class LocationV1Handler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, sn, payload, dev_type=''):
         logger.debug(u'loc v1 -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, payload))
 

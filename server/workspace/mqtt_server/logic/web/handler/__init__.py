@@ -10,7 +10,7 @@ from util.convert import bs2utf8
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from util.redis_cmds.mqtt import get_mqtt_status
 from mqtt_server.config import GDevRdsInts
 from mqtt_server.apps.mqtt_app import MQTT_APP
@@ -20,7 +20,7 @@ from mqtt_server.common.opcode import *
 @route(r'/get_status')
 class GetStatusHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, user_list):
         user_list = ujson.loads(user_list)
 
@@ -35,7 +35,7 @@ class GetStatusHandler(HttpRpcHandler):
 @route(r'/beiqi_msg_bacst')
 class BeiqiMsgBCastHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, gid, payload):
         MQTT_APP().publish(S_PUB_BEIQI_MSG_BCAST.format(gid=gid), payload)
 
@@ -43,6 +43,6 @@ class BeiqiMsgBCastHandler(HttpRpcHandler):
 @route(r'/beiqi_msg_p2p')
 class BeiqiMsgBCastHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def get(self, user_name, sn, payload):
         MQTT_APP().publish(S_PUB_BEIQI_MSG_P2P.format(sn=sn), payload)

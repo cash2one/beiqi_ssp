@@ -1,8 +1,5 @@
 #coding:utf-8
-
 import re
-from convert import _cn_mobile_pat
-
 
 COMMON_PATTERN = re.compile(r'^[_a-z\d]{6,16}$')
 

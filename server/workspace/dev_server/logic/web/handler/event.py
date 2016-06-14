@@ -10,7 +10,7 @@ from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
-from utils.crypto.beiqi_sign import beiqi_tk_sign_wapper
+from utils.crypto.beiqi_sign import client_sign_wapper
 from util.convert import bs2unicode, combine_redis_cmds
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
@@ -21,7 +21,7 @@ from config import GMQDispRdsInts, GDevRdsInts
 @route(r'/event_report')
 class EventReportHandler(HttpRpcHandler):
     @web_adaptor()
-    @beiqi_tk_sign_wapper()
+    @client_sign_wapper()
     def post(self, user_name, sn, payload):
         logger.debug(u'event report -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, bs2unicode(payload)))
         payload = ujson.loads(payload)
