@@ -7,7 +7,7 @@ Created on 2016/6/13
 """
 import ujson
 import urllib2
-from utils.crypto.beiqi_sign import append_url_sign_tk
+from utils.crypto.beiqi_sign import append_server_sign
 
 
 def get_status(server_ip, tk, app_secret, user_list, port=8203):
@@ -21,7 +21,7 @@ def get_status(server_ip, tk, app_secret, user_list, port=8203):
     :return:
     """
     url = 'http://{ip}:{port}/get_status?user_list={user_list}'.format(ip=server_ip, port=port, user_list=ujson.dumps(user_list))
-    url = append_url_sign_tk(url, tk, app_secret)
+    url = append_server_sign(url)
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
 
 
@@ -37,7 +37,7 @@ def beiqi_msg_bcast(server_ip, tk, app_secret, gid, payload, port=8203):
     :return:
     """
     url = 'http://{ip}:{port}/beiqi_msg_bacst?gid={gid}&payload={payload}'.format(ip=server_ip, port=port, gid=gid, payload=payload)
-    url = append_url_sign_tk(url, tk, app_secret)
+    url = append_server_sign(url)
     return urllib2.urlopen(urllib2.Request(url)).read()
 
 
@@ -53,5 +53,5 @@ def beiqi_msg_p2p(server_ip, tk, app_secret, sn, payload, port=8203):
     :return:
     """
     url = 'http://{ip}:{port}/beiqi_msg_p2p?sn={sn}&payload={payload}'.format(ip=server_ip, port=port, sn=sn, payload=payload)
-    url = append_url_sign_tk(url, tk, app_secret)
+    url = append_server_sign(url)
     return urllib2.urlopen(urllib2.Request(url)).read()

@@ -5,21 +5,9 @@ Created on 2015-7-24
 
 @author: Jay
 """
-import os
-import base64
 import ujson
-from Crypto.PublicKey import RSA
-from Crypto.Hash import SHA
-from Crypto.Signature import PKCS1_v1_5
-
-
+from hashlib import md5
 from utils.meta.singleton import Singleton
-
-private_key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "CA", "server.key")
-public_key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "CA", "server_public.key")
-
-public_key = RSA.importKey(open(public_key_path, 'r').read())
-private_key = RSA.importKey(open(private_key_path, 'r').read())
 
 
 def sign(data):
@@ -28,11 +16,9 @@ def sign(data):
     :param data: 需要签名的字符串
     :return:签名后的字符串
     """
-    sha_obj = SHA.new(data)
-    signer = PKCS1_v1_5.new(private_key)
-    signed_data = signer.sign(sha_obj)
-    signed_data = base64.b64encode(signed_data)
-    return signed_data
+    md5_inst = md5()
+    md5_inst.update(data)
+    return md5_inst.hexdigest()
 
 
 def checksign(signed_data, data):
@@ -42,10 +28,7 @@ def checksign(signed_data, data):
     :param data: 签名前的字符串
     :return:如果验签通过，则返回True;如果验签不通过，则返回False
     """
-    sha_obj = SHA.new(data)
-    signed_data = base64.b64decode(signed_data)
-    verifier = PKCS1_v1_5.new(public_key)
-    return verifier.verify(sha_obj, signed_data)
+    return signed_data == sign(data)
 
 
 

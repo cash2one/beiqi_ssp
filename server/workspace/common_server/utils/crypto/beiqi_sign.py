@@ -73,9 +73,9 @@ def server_sign_wapper():
     def server_sign_fun_wapper(fun):
         def server_sign_param_wapper(self, *args, **kwargs):
             sign = kwargs.pop('_sign', None)
-            csign = Signer.gen_sign(**kwargs)
+            csign = Signer().gen_sign(*kwargs.values())
             if sign != csign:
-                logger.error("server_sign_wapper error:kwargs:%r sign:%s csign:%s"%(kwargs, sign, csign))
+                logger.error("server_sign_wapper error:values:%r sign:%s csign:%s"%(kwargs.values(), sign, csign))
                 self.set_status(401)
                 return
             return fun(self, *args, **kwargs)
@@ -130,3 +130,15 @@ def append_url_sign_tk(url, tk, api_secret, method='GET'):
     """
     url = append_url_sign(url, api_secret, method)
     return append_url_tk(url, tk)
+
+
+def append_server_sign(url):
+    """
+    服务器间的签名
+    :param url:  访问的url
+    """
+    up = urlparse.urlparse(url)
+    params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
+    _sign = Signer().gen_sign(*params.values())
+    splitor = "&" if "?" in url else "?"
+    return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
