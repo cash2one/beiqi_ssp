@@ -25,17 +25,16 @@ def sign(http_method, url, params, api_secret):
     :param url:  http访问url
     :param params:  去除_tk和_sign之后的所有参数
     :param api_secret: api_secret
-    :return:
+    :return: base_str, sign
     """
     params_keys = params.keys()
     params_keys.sort()
     params_str = "".join(["%s=%s" % (urllib.unquote(str(key)), urllib.unquote(str(params[key]))) for key in params_keys if key not in SIGN_EXC_KEYS])
     base_str = http_method + url + params_str + api_secret
     base_urlenc_str = urllib.quote_plus(base_str, safe=' ')
-    logger.debug("sign::base_urlenc_str:%s"%(base_urlenc_str))
     md5_inst = md5()
     md5_inst.update(base_urlenc_str)
-    return md5_inst.hexdigest()
+    return base_urlenc_str, md5_inst.hexdigest()
 
 
 def client_sign_wapper():
@@ -60,9 +59,9 @@ def client_sign_wapper():
                 self.set_status(401)
                 return
 
-            cal_sign = gen_url_sign(url, api_key, params, method)
+            basestr, cal_sign = gen_url_sign(url, api_key, params, method)
             if cal_sign != expect_sign:
-                logger.error("%s cal_sign:%s != expect_sign:%s"%(fun.__name__, cal_sign, expect_sign))
+                logger.error("%s cal_sign:%s != expect_sign:%s, basestr:%s"%(fun.__name__, cal_sign, expect_sign, basestr))
                 self.set_status(401)
                 return
 
@@ -99,7 +98,7 @@ def gen_url_sign(url, api_secret, params=None, method='GET'):
     :param api_secret: api_secret
     :param params: 参数, 没有带参数的话，从url解析
     :param method: 访问方法
-    :return:  签名
+    :return:  base_str, 签名
     """
     up = urlparse.urlparse(url)
     if not params:
@@ -117,7 +116,7 @@ def append_url_sign(url, api_secret, params=None, method='GET'):
     :param method: 访问方法
     :return:  签名
     """
-    _sign = gen_url_sign(url, api_secret, params, method)
+    _sign = gen_url_sign(url, api_secret, params, method)[-1]
     splitor = "&" if "?" in url else "?"
     return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
 

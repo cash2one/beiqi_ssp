@@ -22,5 +22,5 @@ def loc_v1(server_ip, tk, app_secret, sn, payload,  port=8302):
     params = {"sn": sn, "payload": payload}
 
     params['_tk'] = tk
-    params['_sign'] = gen_url_sign(url, app_secret, params, 'POST')
+    params['_sign'] = gen_url_sign(url, app_secret, params, 'POST')[-1]
     return ujson.loads(urllib2.urlopen(urllib2.Request(url, data=urllib.urlencode(params))).read())

@@ -18,7 +18,7 @@ class UtilSignTest(unittest.TestCase):
         params = {"user": "wx%23oGR4dwFIZ8ctCGB52hWNsFVs_rdE"}
         app_secret = "b97326b0091a11e697ea408d5c5a48ca"
         _sign = "8ffda992b2f8c0bf1cb709644aeb5008"
-        my_sign = sign(http_method, url, params, app_secret)
+        my_sign = sign(http_method, url, params, app_secret)[-1]
         self.assertTrue(my_sign == _sign)
 
     @unittest_adaptor()
@@ -33,7 +33,7 @@ class UtilSignTest(unittest.TestCase):
 
         expire, api_secret, account, api_key_head = parser_token(_tk)
         print expire, api_secret, account, api_key_head
-        my_sign = sign(http_method, url, params, api_secret)
+        my_sign = sign(http_method, url, params, api_secret)[-1]
         self.assertTrue(str(my_sign) == str(_sign))
 
     @unittest_adaptor()
@@ -42,7 +42,7 @@ class UtilSignTest(unittest.TestCase):
         app_secret = "b97326b0091a11e697ea408d5c5a48ca"
         _sign = "8ffda992b2f8c0bf1cb709644aeb5008"
 
-        my_sign = gen_url_sign(url, app_secret)
+        my_sign = gen_url_sign(url, app_secret)[-1]
         self.assertTrue(my_sign == _sign)
 
     @unittest_adaptor()
@@ -50,7 +50,7 @@ class UtilSignTest(unittest.TestCase):
         url = "http://api.beiqicloud.com:8300/get_user_info?user=wx%23oGR4dwFIZ8ctCGB52hWNsFVs_rdE"
         app_secret = "xxxxxxxxxxxxxx"
 
-        my_sign = gen_url_sign(url, app_secret)
+        my_sign = gen_url_sign(url, app_secret)[-1]
         should_sign_url = url + "&_sign=%s" % (my_sign)
         sign_url = append_url_sign(url, app_secret)
         self.assertTrue(should_sign_url == sign_url)
@@ -60,7 +60,7 @@ class UtilSignTest(unittest.TestCase):
         url = "http://api.beiqicloud.com:8302"
         api_secret = "xxxxxxxxxxxxxx"
 
-        my_sign = gen_url_sign(url, api_secret)
+        my_sign = gen_url_sign(url, api_secret)[-1]
         should_sign_url = url + "?_sign=%s" % (my_sign)
         sign_url = append_url_sign(url, api_secret)
         print sign_url
@@ -72,7 +72,7 @@ class UtilSignTest(unittest.TestCase):
         url = "http://124.152.165.189:8302?a=b&c=d"
         api_secret = "adcvdgdvddfdf"
 
-        my_sign = gen_url_sign(url, api_secret)
+        my_sign = gen_url_sign(url, api_secret)[-1]
         should_sign_url = url + "&_sign=%s" % (my_sign)
         sign_url = append_url_sign(url, api_secret)
         print sign_url
@@ -84,7 +84,7 @@ class UtilSignTest(unittest.TestCase):
         api_secret = "adcvdgdvddfdf"
 
         url = "http://124.152.165.189:8302"
-        my_sign = gen_url_sign(url, api_secret)
+        my_sign = gen_url_sign(url, api_secret)[-1]
         tk = "adfadfadfasfsadfasf"
 
         should_sign_tk_url = url + "?_sign=%s&_tk=%s" % (my_sign, tk)
@@ -93,7 +93,7 @@ class UtilSignTest(unittest.TestCase):
 
 
         url = "http://124.152.165.189:8302?a=b&c=d"
-        my_sign = gen_url_sign(url, api_secret)
+        my_sign = gen_url_sign(url, api_secret)[-1]
         tk = "adfadfadfasfsadfasf"
         should_sign_tk_url = url + "&_sign=%s&_tk=%s" % (my_sign, tk)
         sign_tk_url = append_url_sign_tk(url, tk, api_secret)
