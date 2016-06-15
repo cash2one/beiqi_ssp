@@ -15,6 +15,9 @@ from utils.crypto.sign import Signer
 from util.sso_common.build_sso_token import parser_token
 
 
+SIGN_EXC_KEYS = ["_sign", "_tk"]
+
+
 def sign(http_method, url, params, api_secret):
     """
     签名
@@ -26,7 +29,7 @@ def sign(http_method, url, params, api_secret):
     """
     params_keys = params.keys()
     params_keys.sort()
-    params_str = "".join(["%s=%s" % (urllib.unquote(str(key)), urllib.unquote(str(params[key]))) for key in params_keys])
+    params_str = "".join(["%s=%s" % (urllib.unquote(str(key)), urllib.unquote(str(params[key]))) for key in params_keys if key not in SIGN_EXC_KEYS])
     base_str = http_method + url + params_str + api_secret
     base_urlenc_str = urllib.quote_plus(base_str, safe=' ')
     logger.debug("sign::base_urlenc_str:%s"%(base_urlenc_str))
@@ -57,7 +60,7 @@ def client_sign_wapper():
                 self.set_status(401)
                 return
 
-            cal_sign = gen_url_sign(url, api_key, method)
+            cal_sign = gen_url_sign(url, api_key, params, method)
             if cal_sign != expect_sign:
                 logger.error("%s cal_sign:%s != expect_sign:%s"%(fun.__name__, cal_sign, expect_sign))
                 self.set_status(401)
@@ -89,31 +92,32 @@ def server_sign_wapper():
 
 
 
-def gen_url_sign(url, api_secret, method='GET'):
+def gen_url_sign(url, api_secret, params=None, method='GET'):
     """
     根据url和api_key获取对应的签名
     :param url:  访问的url
     :param api_secret: api_secret
+    :param params: 参数, 没有带参数的话，从url解析
     :param method: 访问方法
     :return:  签名
     """
     up = urlparse.urlparse(url)
+    if not params:
+        params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
+
     url = "http://{host}{path}".format(host=up.netloc, path=up.path)
-    params = dict([(item.split("=")[0],item.split("=")[1]) for item in up.query.split("&")]) if up.query else {}
-    # sigin, tk 不参与服务器再次计算
-    params.pop('_sign', None)
-    params.pop('_tk', None)
     return sign(method, url, params, api_secret)
 
-def append_url_sign(url, api_secret, method='GET'):
+def append_url_sign(url, api_secret, params=None, method='GET'):
     """
     往url后面添加sign
     :param url:  访问的url
     :param api_secret: api_secret
+    :param params: 参数, 没有带参数的话，从url解析
     :param method: 访问方法
     :return:  签名
     """
-    _sign = gen_url_sign(url, api_secret, method)
+    _sign = gen_url_sign(url, api_secret, params, method)
     splitor = "&" if "?" in url else "?"
     return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
 
@@ -126,14 +130,16 @@ def append_url_tk(url, tk):
     splitor = "&" if "?" in url else "?"
     return url + "{splitor}_tk={tk}".format(splitor=splitor, tk=tk)
 
-def append_url_sign_tk(url, tk, api_secret, method='GET'):
+def append_url_sign_tk(url, tk, api_secret, params=None, method='GET'):
     """
     往url后面添加tk
     :param url:  访问的url
     :param tk: token
     :param api_key:api_secret
+    :param params: 参数, 没有带参数的话，从url解析
+    :param method: 访问方法
     """
-    url = append_url_sign(url, api_secret, method)
+    url = append_url_sign(url, api_secret, params, method)
     return append_url_tk(url, tk)
 
 
