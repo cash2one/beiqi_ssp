@@ -29,7 +29,7 @@ def sign(http_method, url, params, api_secret):
     params_str = "".join(["%s=%s" % (urllib.unquote(str(key)), urllib.unquote(str(params[key]))) for key in params_keys])
     base_str = http_method + url + params_str + api_secret
     base_urlenc_str = urllib.quote_plus(base_str, safe=' ')
-    print "base_urlenc_str,",base_urlenc_str
+    logger.debug("sign::base_urlenc_str:%s"%(base_urlenc_str))
     md5_inst = md5()
     md5_inst.update(base_urlenc_str)
     return md5_inst.hexdigest()
