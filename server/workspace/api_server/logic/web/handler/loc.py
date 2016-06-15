@@ -20,7 +20,7 @@ from db.db_oper import DBBeiqiSspInst
 class GetLocHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn):
+    def get(self, user_name, sn, *args, **kwargs):
         """
         """
         expect_pa, sub_ok = GDevRdsInts.send_multi_cmd(*combine_redis_cmds(get_dev_primary(sn), test_user_follow_group(user_name, sn)))

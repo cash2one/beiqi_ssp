@@ -13,5 +13,5 @@ from utils.wapper.web import web_adaptor
 @route(r'/wechat/pages/comment')
 class CommentHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)
-    def get(self, text):
+    def get(self, text, *args, **kwargs):
         self.render('wechat_comment.html', text=text)

@@ -23,30 +23,24 @@ from util.wechat import gen_wechat_access_token
 @route(r'/wechat/pages/add_device')
 class AddDeviceHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)
-    def get(self):
-        code = self.get_argument('code')
-        if code:
-            grant_type = 'authorization_code'
-            args = '?appid={0}&secret={1}&code={2}&grant_type={3}'.format(APPID, APPSECRET, code, grant_type)
-            url = 'https://api.weixin.qq.com/sns/oauth2/access_token' + args
-            resp = HttpRpcClient().fetch_async(url=url)
-            resp = resp.body
-            logger.debug('resp = %r', resp)
-            resp = ujson.loads(resp)
-            #get wechat user info
-            token = resp.get('access_token')
-            openid = resp.get('openid')
-            userinfo_args = '?access_token={0}&openid={1}&lang=zh_CN'.format(token, openid)
-            userinfo_url = 'https://api.weixin.qq.com/sns/userinfo' + userinfo_args
-            user_resp = HttpRpcClient().fetch_async(url=userinfo_url)
-            str_user_resp = user_resp.body
-            logger.debug('user_resp = %r', str_user_resp)
-            user_resp = ujson.loads(str_user_resp)
-            self.render('wechat_add_device.html', payload=user_resp)
-            return
-        else:
-            self.set_status(400)
-            return
+    def get(self, code, *args, **kwargs):
+        grant_type = 'authorization_code'
+        args = '?appid={0}&secret={1}&code={2}&grant_type={3}'.format(APPID, APPSECRET, code, grant_type)
+        url = 'https://api.weixin.qq.com/sns/oauth2/access_token' + args
+        resp = HttpRpcClient().fetch_async(url=url)
+        resp = resp.body
+        logger.debug('resp = %r', resp)
+        resp = ujson.loads(resp)
+        #get wechat user info
+        token = resp.get('access_token')
+        openid = resp.get('openid')
+        userinfo_args = '?access_token={0}&openid={1}&lang=zh_CN'.format(token, openid)
+        userinfo_url = 'https://api.weixin.qq.com/sns/userinfo' + userinfo_args
+        user_resp = HttpRpcClient().fetch_async(url=userinfo_url)
+        str_user_resp = user_resp.body
+        logger.debug('user_resp = %r', str_user_resp)
+        user_resp = ujson.loads(str_user_resp)
+        self.render('wechat_add_device.html', payload=user_resp)
 
     @web_adaptor()
     def post(self, username, code, payload):

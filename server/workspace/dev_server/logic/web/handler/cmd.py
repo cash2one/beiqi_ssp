@@ -21,7 +21,7 @@ from config import GMQDispRdsInts, GDevRdsInts
 class CmdRptHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn, f, d, payload):
+    def get(self, user_name, sn, f, d, payload, *args, **kwargs):
         logger.debug('cmd_rpt_v1 sn: {0}, d: {1}, f: {2}'.format(sn, d, f))
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
 

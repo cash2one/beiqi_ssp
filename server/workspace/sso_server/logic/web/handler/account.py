@@ -24,7 +24,7 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/valid_acc_new')
 class AccountStateHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, account):
+    def post(self, account, *args, **kwargs):
         """
     帐号状态，是否已存在
         """

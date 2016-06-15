@@ -24,7 +24,7 @@ from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 class SignInHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn):
+    def get(self, user_name, sn, *args, **kwargs):
         sql = "SELECT 1 FROM {db_name} WHERE sn = '{sn}'".format(db_name=DB_TBL_DEVICE_INFO, sn=sn)
         ret_list = DBBeiqiSspInst.query(sql)
         if len(ret_list) == 0:

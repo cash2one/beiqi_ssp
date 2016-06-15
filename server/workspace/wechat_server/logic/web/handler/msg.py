@@ -20,7 +20,7 @@ from setting import TOKEN
 @route(r'/wechat/')
 class WeChatHandler(HttpRpcHandler):
     @web_adaptor(use_json_dumps=False)
-    def get(self, signature, timestamp, nonce, echostr):
+    def get(self, signature, timestamp, nonce, echostr, *args, **kwargs):
         args = [timestamp, nonce, TOKEN]
         args.sort()
         cal_sig = hashlib.sha1(''.join(args)).hexdigest()
@@ -34,7 +34,7 @@ class WeChatHandler(HttpRpcHandler):
             return
 
     @web_adaptor(use_json_dumps=False)
-    def post(self, signature='', timestamp='', nonce='', echostr=''):
+    def post(self, signature='', timestamp='', nonce='', echostr='', *args, **kwargs):
         """
         :param signature:
         :param timestamp:

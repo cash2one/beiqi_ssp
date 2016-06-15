@@ -30,7 +30,7 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/check_reg_val_code')
 class CheckRegValCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, account ,pwd, val):
+    def post(self, account ,pwd, val, *args, **kwargs):
         """
         检查注册验证码
         """
@@ -93,7 +93,7 @@ class CheckRegValCodeHandler(HttpRpcHandler):
 @route(r'/req_reg_val_code')
 class GenRegCodeHandler(HttpRpcHandler):
     @web_adaptor()
-    def post(self, account):
+    def post(self, account, *args, **kwargs):
         """
     请求发送注册验证短信
         """

@@ -1,9 +1,10 @@
+#conding:utf -8
 from utils.route import route
 from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.mq_packs.uni_pack import shortcut_mq
-from util.convert import bs2utf8, combine_redis_cmds
+from util.convert import combine_redis_cmds
 from util.redis_cmds.circles import get_sn_of_gid, set_sn_of_gid, set_gid_of_sn, get_group_primary, \
     set_group_primary, del_group_primary, del_sn_of_gid, get_group_followers, follow_group, get_user_nickname, set_user_nickname
 from util.redis_cmds.user_info import set_nice_gid, get_user_info, set_user_info, set_old_gid, get_old_gid
@@ -14,10 +15,7 @@ from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 @route(r'/map_nice_gid')
 class MapNiceGidHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self):
-        gid = bs2utf8(self.get_argument('gid'))
-        nice_gid = bs2utf8(self.get_argument('nice_gid'))
-
+    def get(self, gid, nice_gid, *args, **kwargs):
         old_gid = GDevRdsInts.send_cmd(*get_old_gid(nice_gid))
         if old_gid:
             return {'status': 1}

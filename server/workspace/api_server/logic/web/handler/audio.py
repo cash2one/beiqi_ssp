@@ -23,7 +23,7 @@ from setting import DB_TBL_RES_CLS, DB_TBL_RES_ALBUM, DB_TBL_RESOURCE, PAGE_COUN
 class AudioClsHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name):
+    def get(self, user_name, *args, **kwargs):
         sql = "SELECT * FROM {tbl}".format(tbl=DB_TBL_RES_CLS)
         logger.debug('AudioClsHandler::user=%r, sql=%r' % (user_name, sql))
         ret_list = DBBeiqiSspInst.query(sql)
@@ -34,7 +34,7 @@ class AudioClsHandler(HttpRpcHandler):
 class AudioAlbumHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, cls_id):
+    def get(self, user_name, cls_id, *args, **kwargs):
         sql = "SELECT * FROM {tbl} WHERE cls_id = '{cls_id}'".format(tbl=DB_TBL_RES_ALBUM, cls_id=cls_id)
         logger.debug('AudioAlbumHandler::user=%r, sql=%r' % (user_name, sql))
         ret_list = DBBeiqiSspInst.query(sql)
@@ -45,7 +45,7 @@ class AudioAlbumHandler(HttpRpcHandler):
 class AudioListHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, album_id, page_idx=1):
+    def get(self, user_name, album_id, page_idx=1, *args, **kwargs):
         sql = "SELECT * FROM {tbl} WHERE album_id = '{album_id}' limit {start},{end}"\
             .format(tbl=DB_TBL_RESOURCE,
                     album_id=album_id,
@@ -60,7 +60,7 @@ class AudioListHandler(HttpRpcHandler):
 class AudioPub2DevHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, dev_sn, name, ref):
+    def get(self, user_name, dev_sn, name, ref, *args, **kwargs):
         version = "1"
         logic = "play"
         type = "audio"

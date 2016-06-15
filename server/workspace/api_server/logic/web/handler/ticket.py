@@ -25,7 +25,7 @@ ETICKET_STAT = [
 class ETicketCheckHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, code):
+    def get(self, user_name, code, *args, **kwargs):
         sql = "SELECT * FROM {tbl} where code='{code}' limit 1".format(tbl=DB_TBL_ETICKET, code=code)
         logger.debug('ETicketCheckHandler select::user=%r, code=%r, sql=%r' % (user_name, code, sql))
         ret_list = DBBeiqiSspInst.query(sql)
@@ -49,7 +49,7 @@ class ETicketCheckHandler(HttpRpcHandler):
 class ETicketAddHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, code):
+    def get(self, user_name, code, *args, **kwargs):
         sql = "SELECT * FROM {tbl} where code='{code}' limit 1".format(tbl=DB_TBL_ETICKET, code=code)
         logger.debug('ETicketAddHandler select::user=%r, code=%r, sql=%r' % (user_name, code, sql))
         ret_list = DBBeiqiSspInst.query(sql)

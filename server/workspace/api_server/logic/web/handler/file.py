@@ -21,7 +21,7 @@ class FileTokenHandler(HttpRpcHandler):
     """
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, username, fn, m, r=''):
+    def get(self, username, fn, m, r='', *args, **kwargs):
         resp = common_file_token(
             GDevRdsInts,
             username,
@@ -48,7 +48,7 @@ def _single(account, x):
 class MultiFileTokenHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, params):
+    def get(self, user_name, params, *args, **kwargs):
         params = params.split('|')
         params = (x.split(',') for x in params)
         params = (x for x in params if 3 == len(x))

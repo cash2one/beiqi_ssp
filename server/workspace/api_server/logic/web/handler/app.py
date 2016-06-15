@@ -21,7 +21,7 @@ from utils.crypto.beiqi_sign import client_sign_wapper
 class SetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, receiver, app, payload):
+    def get(self, user_name, receiver, app, payload, *args, **kwargs):
         now = str(time.time())
         payload = '$'.join((user_name, payload))
         result = GDevRdsInts.send_cmd(*set_app_data(receiver, app, now, payload))
@@ -38,7 +38,7 @@ class SetAppDataHandler(HttpRpcHandler):
 class GetAppDataHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, receiver, app, ts=''):
+    def get(self, user_name, receiver, app, ts='', *args, **kwargs):
         if ts:
             data = GDevRdsInts.send_cmd(*get_app_data_by_ts(receiver, app, ts))
         else:
@@ -51,7 +51,7 @@ class GetAppDataHandler(HttpRpcHandler):
 class DelAppDataHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, receiver, app, ts):
+    def get(self, user_name, receiver, app, ts, *args, **kwargs):
         result = GDevRdsInts.send_cmd(*del_app_data(receiver, app, ts))
         logger.debug(u'result = %r', result)
         return {'status': 0}

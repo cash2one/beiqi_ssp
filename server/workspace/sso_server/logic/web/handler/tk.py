@@ -28,10 +28,17 @@ fmt = '%Y-%m-%d %H:%M:%S'
 @route(r'/gen_tk')
 class BeiqiSSOHandler(HttpRpcHandler):
     @web_adaptor(use_json_dumps=False)
-    def get(self, username, api_key, *args, **kwargs):
+    def get(self, username, api_key, pwd="", *args, **kwargs):
         """
-    生成SSO认证token
+        生成SSO认证token
+        :param username:
+        :param api_key:
+        :param pwd: device no pwd, app account has pwd
+        :param args:
+        :param kwargs:
+        :return:
         """
+
         user_agent = urllib.unquote(bs2utf8(self.request.headers['user-agent']))
         api_ob = beiqi_keys.get(api_key)
         if not api_ob:
@@ -104,9 +111,6 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 logger.debug('gid={0} invalid no sn'.format(gid))
                 self.set_status(403)
                 return
-
-        # device no pwd, so must put after device loginin code.
-        pwd = bs2utf8(self.get_argument('pwd'))
 
         expect_pwd = GAccRdsInts.send_cmd(*get_pwd(username))
 

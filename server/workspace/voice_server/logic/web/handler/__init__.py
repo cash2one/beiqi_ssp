@@ -17,7 +17,7 @@ from setting import AI_DEFAULT_ANSWER
 @route(r'/audio_ai')
 class AudioAIHandler(HttpRpcHandler):
     @web_adaptor(use_json_dumps=False)
-    def post(self):
+    def post(self, *args, **kwargs):
         # 语音识别
         s_vop_voice2text_time = time.time()
         logger.debug('AudioAIHandler::AudioAIHandler body_len:%s' % (len(self.request.body)))

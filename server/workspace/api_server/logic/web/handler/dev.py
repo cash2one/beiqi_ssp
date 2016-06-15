@@ -32,7 +32,7 @@ from util.wechat import gen_wechat_access_token
 class CheckDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn):
+    def get(self, user_name, sn, *args, **kwargs):
         sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
         ret_list = DBBeiqiSspInst.query(sql, sn)
         if len(ret_list) == 0:
@@ -56,7 +56,7 @@ class CheckDevArgsHandler(HttpRpcHandler):
 class ChangeDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, sn, payload):
+    def post(self, user_name, sn, payload, *args, **kwargs):
         logger.debug('change dev args: sn: {0}, payload: {1}, acc: {2}'.format(sn, payload, user_name))
         if not user_name or not sn or not payload:
             self.set_status(400)
@@ -86,7 +86,7 @@ class ChangeDevArgsHandler(HttpRpcHandler):
 class DevCtrlHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn, action):
+    def get(self, user_name, sn, action, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if not primary:
             return {'state': 1}
@@ -105,7 +105,7 @@ class DevCtrlHandler(HttpRpcHandler):
 class DispatchConfHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, sn, saved_time):
+    def get(self, sn, saved_time, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if not primary:
             return {'state': 1}
@@ -118,7 +118,7 @@ class DispatchConfHandler(HttpRpcHandler):
 class FollowReviewHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, applicant, gid, allowed, msg=''):
+    def get(self, user_name, applicant, gid, allowed, msg='', *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
             return {'status': 1}
@@ -166,7 +166,7 @@ class FollowReviewHandler(HttpRpcHandler):
 class AddDeviceHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, code, msg='', file=''):
+    def post(self, user_name, code, msg='', file='', *args, **kwargs):
         if len(code) == 6:
             primary = GDevRdsInts.send_cmd(*get_group_primary(code))
             if not primary:
@@ -228,7 +228,7 @@ class AddDeviceHandler(HttpRpcHandler):
 class DelDeviceHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, gid):
+    def post(self, user_name, gid, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
             return {'status': 3}
@@ -304,7 +304,7 @@ class DelDeviceHandler(HttpRpcHandler):
 class InviteFollowHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, guest, gid, msg, file):
+    def get(self, user_name, guest, gid, msg, file, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary != user_name:
             return {'status': 1}
@@ -340,7 +340,7 @@ class InviteFollowHandler(HttpRpcHandler):
 class ReplyFollowInviteHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, master, gid, reply):
+    def get(self, user_name, master, gid, reply, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary != master:
             return {'status': 1}
@@ -363,7 +363,7 @@ class ReplyFollowInviteHandler(HttpRpcHandler):
 class ListFollowersHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, gid):
+    def post(self, user_name, gid, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
             return {'status': 1}
@@ -395,7 +395,7 @@ class ListFollowersHandler(HttpRpcHandler):
 class ListDevsHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name):
+    def post(self, user_name, *args, **kwargs):
         devs = GDevRdsInts.send_cmd(*get_user_devs(user_name))
 
         if devs is None or len(devs) == 0:
@@ -413,7 +413,7 @@ class ListDevsHandler(HttpRpcHandler):
 class SetGeoFenceHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, sn, lon, lat, radius, name, action):
+    def get(self, user_name, sn, lon, lat, radius, name, action, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if user_name != primary:
             return {'status': 1}
@@ -441,7 +441,7 @@ class SetGeoFenceHandler(HttpRpcHandler):
 class GetGeoFencesHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def get(self, user_name, pid):
+    def get(self, user_name, pid, *args, **kwargs):
         primary, followers = GDevRdsInts.send_multi_cmd(*combine_redis_cmds(get_dev_primary(pid), get_dev_followers(pid)))
         if user_name != primary and user_name not in followers:
             return {'status': 1}

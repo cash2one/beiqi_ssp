@@ -20,7 +20,7 @@ from common.mq import build_mq_package
 class LocationV1Handler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, sn, payload, dev_type=''):
+    def post(self, user_name, sn, payload, dev_type='', *args, **kwargs):
         logger.debug(u'loc v1 -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, payload))
 
         payload = ujson.loads(payload)

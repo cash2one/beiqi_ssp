@@ -22,7 +22,7 @@ from setting import DB_TBL_USER_INFO
 @route(r'/wechat/pages/user_guide')
 class UserGuideHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)
-    def get(self):
+    def get(self, *args, **kwargs):
         self.render('wechat_user_guide.html')
         return
 
@@ -30,7 +30,7 @@ class UserGuideHandler(HttpRpcHandler):
 @route(r'/wechat/change_nickname')
 class ChangeNicknameHandler(HttpRpcHandler):
     @web_adaptor()
-    def get(self, new_nick, username, gid):
+    def get(self, new_nick, username, gid, *args, **kwargs):
         GDevRdsInts.send_cmd(*hset_wechat_gid(username, gid, new_nick))
         GMQDispRdsInts.send_cmd(
         *shortcut_mq('gen_mysql',
@@ -47,7 +47,7 @@ class ChangeNicknameHandler(HttpRpcHandler):
 @route(r'/wechat/unbind')
 class UnbindHandler(HttpRpcHandler):
     @web_adaptor(use_json_dumps=False)
-    def get(self, username, gid, userinfo=''):
+    def get(self, username, gid, userinfo='', *args, **kwargs):
         sn = GDevRdsInts.send_cmd(*get_sn_of_gid(gid))
 
         logger.debug('username = %r, gid = %r, sn = %r, userinfo = %r', username, gid, sn, userinfo)

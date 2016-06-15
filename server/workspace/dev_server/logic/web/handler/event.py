@@ -22,7 +22,7 @@ from config import GMQDispRdsInts, GDevRdsInts
 class EventReportHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper()
-    def post(self, user_name, sn, payload):
+    def post(self, user_name, sn, payload, *args, **kwargs):
         logger.debug(u'event report -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, bs2unicode(payload)))
         payload = ujson.loads(payload)
         reason = payload.get('reason')

@@ -64,7 +64,11 @@ def client_sign_wapper():
                 return
 
             # 注意这里需要使用处理过的参数params，不要使用原始参数kwargs
+            params['account'] = account
+            
+            # 兼容老版本的代码
             params['user_name'] = account
+            params['user'] = account
             return fun(self, *args, **params)
         return client_sign_param_wapper
     return client_sign_fun_wapper

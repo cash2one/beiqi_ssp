@@ -21,7 +21,7 @@ from mqtt_server.common.opcode import *
 class GetStatusHandler(HttpRpcHandler):
     @web_adaptor()
     @server_sign_wapper()
-    def get(self, user_list):
+    def get(self, user_list, *args, **kwargs):
         user_list = ujson.loads(user_list)
 
         ret = {}
@@ -36,7 +36,7 @@ class GetStatusHandler(HttpRpcHandler):
 class BeiqiMsgBCastHandler(HttpRpcHandler):
     @web_adaptor()
     @server_sign_wapper()
-    def get(self, gid, payload):
+    def get(self, gid, payload, *args, **kwargs):
         MQTT_APP().publish(S_PUB_BEIQI_MSG_BCAST.format(gid=gid), payload)
 
 
@@ -44,5 +44,5 @@ class BeiqiMsgBCastHandler(HttpRpcHandler):
 class BeiqiMsgBCastHandler(HttpRpcHandler):
     @web_adaptor()
     @server_sign_wapper()
-    def get(self, sn, payload):
+    def get(self, sn, payload, *args, **kwargs):
         MQTT_APP().publish(S_PUB_BEIQI_MSG_P2P.format(sn=sn), payload)
