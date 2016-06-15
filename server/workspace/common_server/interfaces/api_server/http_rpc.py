@@ -86,3 +86,9 @@ def check_code(server_ip, tk, app_secret, code,  port=8300):
     url = 'http://{ip}:{port}/eticket/check?code={code}'.format(ip=server_ip, port=port, code=code)
     url = append_url_sign_tk(url, tk, app_secret)
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def bind_push(server_ip, tk, app_secret, account, ver, os, args,  port=8300):
+    url = 'http://{ip}:{port}/account/bind_push?account={account}&ver={ver}&os={os}&args={args}'.format(ip=server_ip, port=port, account=account, ver=ver, os=os, args=args)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return urllib2.urlopen(urllib2.Request(url)).read()

@@ -6,6 +6,7 @@ Created on 2016/5/4
 @author: Jay
 """
 import ujson
+import re
 from utils import logger
 from utils.route import route
 from utils.network.http import HttpRpcHandler
@@ -20,6 +21,53 @@ from util.redis_cmds.mqtt import get_mqtt_status
 from utils.crypto.beiqi_sign import client_sign_wapper
 from config import GAccRdsInts, GCalcRdsInts, GDevRdsInts, GMQDispRdsInts
 from setting import DB_TBL_USER_INFO
+
+ios_bundle_id_pattern = re.compile('^[_A-Za-z.\d]+$')
+ios_device_token_pattern = re.compile(r'^[a-f\d]{64}$')
+android_args_pattern = re.compile(r'^[a-f\d]+$')
+gcm_regid_pattern = re.compile(r'^[-_A-Za-z\d]+$')
+
+
+android_map = {
+    'baidu': 4,
+    'jpush': 3,
+}
+
+
+def ios_ok(args):
+    if not args:
+        return
+    args = args.split(',')
+    if not 3 == len(args):
+        return
+    if args[0] not in ('dev', 'store', 'inhouse'):
+        return
+    if not (ios_bundle_id_pattern.search(args[1]) and ios_device_token_pattern.search(args[2])):
+        return
+    return args
+
+
+def and_ok(args):
+    if not args:
+        return
+    _ = args.split(',')
+    expect_len = android_map.get(_[0])
+    if expect_len is None:
+        return
+    if len(_) != expect_len:
+        return
+    for i, x in enumerate(_):
+        if 0 == i:
+            continue
+        if not android_args_pattern.search(x):
+            return
+    return _
+
+
+def gcm_ok(args):
+    if not (args and isinstance(args, str) and gcm_regid_pattern.search(args)):
+        return
+    return args,
 
 
 @route(r'/account/token')
