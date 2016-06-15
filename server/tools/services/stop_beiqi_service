@@ -1,15 +1,5 @@
-sudo killall -w s_api_server
-sudo killall -w s_dev_server 
-sudo killall -w s_sso_server
-sudo killall -w s_file_server 
-sudo killall -w s_wechat_server 
+sudo killall -rw 's_(.*)_server'
+sudo killall -rw 'mq(.*)'
 sudo killall -w lvl:core 
 sudo killall -w apns:agent 
-sudo killall -w mclient 
-sudo killall -w s_voice_server 
-sudo killall -w s_loc_server 
-sudo killall -w s_get_access_token
-sudo killall -w mqd_host mqd_job
-ps ax | grep "mq:host" | awk '{print $5}' | xargs sudo killall -w
-ps ax | grep "mq:" | awk '{print $1}' | xargs sudo kill
 

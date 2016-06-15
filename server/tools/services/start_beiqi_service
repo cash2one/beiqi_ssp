@@ -1,18 +1,16 @@
 sudo cp -rf ../../workspace/common_server/util/msc_voice/*.so /usr/lib/
 
-
 nohup sudo python ../../workspace/api_server/start.py --http_port 8300 &
 nohup sudo python ../../workspace/dev_server/start.py --http_port 8302 &
 nohup sudo python ../../workspace/sso_server/start.py --http_port 8104 &
-nohup sudo python ../../workspace/file_server/start.py --http_port 8106 &
+nohup sudo python ../../workspace/file_server/start.py --port=8106 &
 nohup sudo python ../../workspace/wechat_server/start.py --http_port 8108 &
-nohup sudo python ../../workspace/wechat_server/access_token.py &
 nohup sudo python ../../workspace/mq_dispatch/start.py &
 nohup sudo python ../../workspace/lightfile_repo/start.py &
 nohup sudo python ../../workspace/apple_push/start.py &
-nohup sudo python ../../workspace/mqtt/start.py &
 nohup sudo python ../../workspace/voice_server/start.py --http_port 8200 &
 nohup sudo python ../../workspace/loc_server/start.py --http_port 8202 &
+nohup sudo python ../../workspace/mqtt_server/start.py --http_port 8203 &
 
-cd ~/beiqi_ssp/server/workspace/mq2
-sudo sh host_run.sh
+sudo sh ../../workspace/mq2/host_run.sh
+
