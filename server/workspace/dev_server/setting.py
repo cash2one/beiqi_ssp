@@ -16,10 +16,10 @@ DB_USER = "system"
 DB_PWD = "System"
 
 # MYSQL 表格
-DB_TBL_DEVICE_INFO = 'device_info'
-DB_TBL_GID_INFO = 'gid_info'
-DB_TBL_LOCATION = 'location'
-DB_TBL_DEV_STATE = 'dev_state'
+DB_TBL_DEVICE_INFO = 'beiqi_dev.device_info'
+DB_TBL_GID_INFO = 'beiqi_dev.gid_info'
+DB_TBL_LOCATION = 'beiqi_dev.location'
+DB_TBL_DEV_STATE = 'beiqi_dev.dev_state'
 
 # REDIS配置
 ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"

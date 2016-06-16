@@ -16,12 +16,12 @@ DB_USER = "system"
 DB_PWD = "System"
 
 # MYSQL 表格
-DB_TBL_USER_INFO = 'user_info'
-DB_TBL_DEVICE_INFO = 'device_info'
-DB_TBL_ETICKET = "eticket"
-DB_TBL_RES_CLS = "res_cls"
-DB_TBL_RES_ALBUM = "res_album"
-DB_TBL_RESOURCE = "resource"
+DB_TBL_USER_INFO = 'beiqi_api.user_info'
+DB_TBL_DEVICE_INFO = 'beiqi_dev.device_info'
+DB_TBL_ETICKET = "beiqi_api.eticket"
+DB_TBL_RES_CLS = "beiqi_api.res_cls"
+DB_TBL_RES_ALBUM = "beiqi_api.res_album"
+DB_TBL_RESOURCE = "beiqi_api.resource"
 
 
 # 每页显示的数量
