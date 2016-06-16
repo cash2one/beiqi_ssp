@@ -13,7 +13,7 @@ from utils.wapper.web import web_adaptor
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.convert import bs2utf8
-from config import GMQDispRdsInts
+from config import GMQDispRdsInts, GAccRdsInts
 from utils.crypto.beiqi_sign import client_sign_wapper
 from db.db_oper import DBBeiqiSspInst
 from setting import DB_TBL_RES_CLS, DB_TBL_RES_ALBUM, DB_TBL_RESOURCE, PAGE_COUNT
@@ -22,7 +22,7 @@ from setting import DB_TBL_RES_CLS, DB_TBL_RES_ALBUM, DB_TBL_RESOURCE, PAGE_COUN
 @route(r'/audio/cls')
 class AudioClsHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, *args, **kwargs):
         sql = "SELECT * FROM {tbl}".format(tbl=DB_TBL_RES_CLS)
         logger.debug('AudioClsHandler::user=%r, sql=%r' % (user_name, sql))
@@ -33,7 +33,7 @@ class AudioClsHandler(HttpRpcHandler):
 @route(r'/audio/album')
 class AudioAlbumHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, cls_id, *args, **kwargs):
         sql = "SELECT * FROM {tbl} WHERE cls_id = '{cls_id}'".format(tbl=DB_TBL_RES_ALBUM, cls_id=cls_id)
         logger.debug('AudioAlbumHandler::user=%r, sql=%r' % (user_name, sql))
@@ -44,7 +44,7 @@ class AudioAlbumHandler(HttpRpcHandler):
 @route(r'/audio/list')
 class AudioListHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, album_id, page_idx=1, *args, **kwargs):
         sql = "SELECT * FROM {tbl} WHERE album_id = '{album_id}' limit {start},{end}"\
             .format(tbl=DB_TBL_RESOURCE,
@@ -59,7 +59,7 @@ class AudioListHandler(HttpRpcHandler):
 @route(r'/audio/pub_2_dev')
 class AudioPub2DevHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, dev_sn, name, ref, *args, **kwargs):
         version = "1"
         logic = "play"

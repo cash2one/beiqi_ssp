@@ -13,6 +13,7 @@ from hashlib import md5
 from utils import logger
 from utils.crypto.sign import Signer
 from util.sso_common.build_sso_token import parser_token
+from util.sso.account import get_login_expire
 
 
 SIGN_EXC_KEYS = ["_sign", "_tk"]
@@ -37,7 +38,7 @@ def sign(http_method, url, params, api_secret):
     return base_urlenc_str, md5_inst.hexdigest()
 
 
-def client_sign_wapper():
+def client_sign_wapper(ExpireRedis):
     def parse_request(self, *args, **kwargs):
         method = self.request.method
         url = "http://" + self.request.host + self.request.uri
@@ -54,11 +55,24 @@ def client_sign_wapper():
                 return
 
             expire, api_key, account, apikey_head4 = parser_token(auth_token)
+            # 检测过期时间
             if expire <= time.time():
                 logger.error("%s expire:%s invalid"%(fun.__name__, expire))
                 self.set_status(401)
                 return
 
+            # 检测异地登录
+            should_expire = ExpireRedis.send_cmd(*get_login_expire(account))
+            if not should_expire:
+                logger.error("failed to get should_expire!!! account:^%s"%(account))
+                self.set_status(401)
+                return
+
+            if int(should_expire) != int(expire):
+                self.set_status(409)
+                return
+
+            # 检测签名
             basestr, cal_sign = gen_url_sign(url, api_key, params, method)
             if cal_sign != expect_sign:
                 logger.error("%s cal_sign:%s != expect_sign:%s, basestr:%s"%(fun.__name__, cal_sign, expect_sign, basestr))

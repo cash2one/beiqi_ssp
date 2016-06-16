@@ -16,14 +16,14 @@ from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.mysql_pack import pack as mysql_pack
 from util.convert import combine_redis_cmds
 from db.db_oper import DBBeiqiSspInst
-from config import GMQDispRdsInts, GDevRdsInts
+from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
 from setting import DB_TBL_DEVICE_INFO, DB_TBL_GID_INFO
 
 
 @route(r'/sign_in')
 class SignInHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, *args, **kwargs):
         sql = "SELECT 1 FROM {db_name} WHERE sn = '{sn}'".format(db_name=DB_TBL_DEVICE_INFO, sn=sn)
         ret_list = DBBeiqiSspInst.query(sql)

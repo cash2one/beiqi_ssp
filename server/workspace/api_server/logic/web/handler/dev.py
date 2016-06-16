@@ -31,7 +31,7 @@ from util.wechat import gen_wechat_access_token
 @route(r'/dev/check_dev_args', name='/dev/check_dev_args')
 class CheckDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, *args, **kwargs):
         sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
         ret_list = DBBeiqiSspInst.query(sql, sn)
@@ -55,7 +55,7 @@ class CheckDevArgsHandler(HttpRpcHandler):
 @route(r'/dev/change_dev_args')
 class ChangeDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, sn, payload, *args, **kwargs):
         logger.debug('change dev args: sn: {0}, payload: {1}, acc: {2}'.format(sn, payload, user_name))
         if not user_name or not sn or not payload:
@@ -85,7 +85,7 @@ class ChangeDevArgsHandler(HttpRpcHandler):
 @route(r'/dev/dev_ctrl')
 class DevCtrlHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, action, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if not primary:
@@ -104,7 +104,7 @@ class DevCtrlHandler(HttpRpcHandler):
 @route(r'/dev/dispatch_conf')
 class DispatchConfHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, sn, saved_time, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if not primary:
@@ -117,7 +117,7 @@ class DispatchConfHandler(HttpRpcHandler):
 @route(r'/follow_review')
 class FollowReviewHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, applicant, gid, allowed, msg='', *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
@@ -165,7 +165,7 @@ class FollowReviewHandler(HttpRpcHandler):
 @route(r'/add_device')
 class AddDeviceHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, code, msg='', file='', *args, **kwargs):
         if len(code) == 6:
             primary = GDevRdsInts.send_cmd(*get_group_primary(code))
@@ -227,7 +227,7 @@ class AddDeviceHandler(HttpRpcHandler):
 @route(r'/del_device')
 class DelDeviceHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, gid, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
@@ -303,7 +303,7 @@ class DelDeviceHandler(HttpRpcHandler):
 @route(r'/invite_follow')
 class InviteFollowHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, guest, gid, msg, file, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary != user_name:
@@ -339,7 +339,7 @@ class InviteFollowHandler(HttpRpcHandler):
 @route(r'/reply_follow_invite')
 class ReplyFollowInviteHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, master, gid, reply, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if primary != master:
@@ -362,7 +362,7 @@ class ReplyFollowInviteHandler(HttpRpcHandler):
 @route(r'/list_followers')
 class ListFollowersHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, gid, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_group_primary(gid))
         if not primary:
@@ -394,7 +394,7 @@ class ListFollowersHandler(HttpRpcHandler):
 @route(r'/list_devs')
 class ListDevsHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, *args, **kwargs):
         devs = GDevRdsInts.send_cmd(*get_user_devs(user_name))
 
@@ -412,7 +412,7 @@ class ListDevsHandler(HttpRpcHandler):
 @route(r'/set_geo_fence')
 class SetGeoFenceHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, lon, lat, radius, name, action, *args, **kwargs):
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))
         if user_name != primary:
@@ -440,7 +440,7 @@ class SetGeoFenceHandler(HttpRpcHandler):
 @route(r'/get_geo_fences')
 class GetGeoFencesHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, pid, *args, **kwargs):
         primary, followers = GDevRdsInts.send_multi_cmd(*combine_redis_cmds(get_dev_primary(pid), get_dev_followers(pid)))
         if user_name != primary and user_name not in followers:

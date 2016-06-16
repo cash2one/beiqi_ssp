@@ -12,6 +12,7 @@ from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import client_sign_wapper
 from db.db_oper import DBBeiqiSspInst
 from setting import DB_TBL_ETICKET
+from config import GAccRdsInts
 
 
 ETICKET_STAT = [
@@ -24,7 +25,7 @@ ETICKET_STAT = [
 @route(r'/eticket/check')
 class ETicketCheckHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, code, *args, **kwargs):
         sql = "SELECT * FROM {tbl} where code='{code}' limit 1".format(tbl=DB_TBL_ETICKET, code=code)
         logger.debug('ETicketCheckHandler select::user=%r, code=%r, sql=%r' % (user_name, code, sql))
@@ -48,7 +49,7 @@ class ETicketCheckHandler(HttpRpcHandler):
 @route(r'/eticket/add')
 class ETicketAddHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, code, *args, **kwargs):
         sql = "SELECT * FROM {tbl} where code='{code}' limit 1".format(tbl=DB_TBL_ETICKET, code=code)
         logger.debug('ETicketAddHandler select::user=%r, code=%r, sql=%r' % (user_name, code, sql))

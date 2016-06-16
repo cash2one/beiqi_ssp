@@ -12,14 +12,14 @@ from utils.wapper.web import web_adaptor
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.convert import bs2utf8
-from config import GMQDispRdsInts
+from config import GMQDispRdsInts, GAccRdsInts
 from utils.crypto.beiqi_sign import client_sign_wapper
 
 
 @route(r'/chat/bcast')
 class ChatBCastHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, file_type, fn, ref, thumb_fn="", thumb_ref="", text="", *args, **kwargs):
         des = bs2utf8(':'.join([urllib2.quote(bs2utf8(v)) for v in (user_name,  file_type, fn, ref, thumb_fn, thumb_ref,text)]))
 

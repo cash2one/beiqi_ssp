@@ -15,13 +15,13 @@ from util.convert import bs2unicode, combine_redis_cmds
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from util.redis_cmds.user_info import get_geo_fence
-from config import GMQDispRdsInts, GDevRdsInts
+from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
 
 
 @route(r'/event_report')
 class EventReportHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, sn, payload, *args, **kwargs):
         logger.debug(u'event report -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, bs2unicode(payload)))
         payload = ujson.loads(payload)

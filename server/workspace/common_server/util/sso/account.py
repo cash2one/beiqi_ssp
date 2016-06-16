@@ -204,3 +204,7 @@ def get_mobile(sync_account_redis, api_key, accounts):
 
 def set_login_expire(username, expire):
     return 'hset', EXPECTED_EXPIRE_TIME, username, expire
+
+
+def get_login_expire(username):
+    return 'hget', EXPECTED_EXPIRE_TIME, username

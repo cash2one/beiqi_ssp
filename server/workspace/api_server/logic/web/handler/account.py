@@ -76,7 +76,7 @@ class AccountTokenHandle(HttpRpcHandler):
     账号token
     """
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, *args, **kwargs):
         """
         绑定用户和设备的关系
@@ -88,7 +88,7 @@ class AccountTokenHandle(HttpRpcHandler):
 @route(r'/account/bind_push')
 class AccountBindPushHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, account, os, ver, args, *args1, **kwargs):
         logger.debug('bind push platform: {0}, ver: {1}, args: {2}, cur_account: {3}'.format(os, ver, args, account))
 
@@ -115,7 +115,7 @@ class AccountBindPushHandler(HttpRpcHandler):
 @route(r'/account/unbind_push')
 class AccountUnbindPushHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, account, *args, **kwargs):
         GCalcRdsInts.send_cmd('delete', 'account:{0}'.format(account))
 
@@ -123,7 +123,7 @@ class AccountUnbindPushHandler(HttpRpcHandler):
 @route(r'/get_user_info')
 class GetUserInfoHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user , *args, **kwargs):
         payload = GDevRdsInts.send_cmd(*get_user_info(user))
         if payload is None:
@@ -134,7 +134,7 @@ class GetUserInfoHandler(HttpRpcHandler):
 @route(r'/set_user_info')
 class GetUserInfoHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, payload, sn='', gid='',*args, **kwargs):
         logger.debug('user_name=%r, sn=%r, gid=%r, payload=%r' % (user_name, sn, gid, payload))
         nickname = bs2utf8(ujson.loads(payload).get('nickname'))
@@ -176,7 +176,7 @@ class GetUserInfoHandler(HttpRpcHandler):
 @route(r'/get_msglist')
 class GetMsglistHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, *args, **kwargs):
         sns = GDevRdsInts.send_cmd(*get_user_devs(user_name))
         if sns is None:
@@ -200,7 +200,7 @@ class GetMsglistHandler(HttpRpcHandler):
 @route(r'/get_status')
 class GetStatusHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, user_list, *args, **kwargs):
         user_list = ujson.loads(user_list)
 

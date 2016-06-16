@@ -25,7 +25,7 @@ from db.db_oper import DBBeiqiSspInst
 @route(r'/delete_letter')
 class DelLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, letter_id, *args, **kwargs):
         GDevRdsInts.send_multi_cmd(*combine_redis_cmds(del_letter_info(letter_id), del_letter_inbox(user_name, letter_id)))
         return {'status': 0}
@@ -34,7 +34,7 @@ class DelLetterHandler(HttpRpcHandler):
 @route(r'/receive_letter')
 class ReceiveLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, start=None, end=None, *args, **kwargs):
         if (start and end) is None:
             return {'status': 1}
@@ -53,7 +53,7 @@ class ReceiveLetterHandler(HttpRpcHandler):
 @route(r'/send_letter')
 class SendLetterHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, receivers, duplicate_to, topic, text, type, files, *args, **kwargs):
         ts = float('%0.2f' % time.time())
         letter_id = ':'.join(('letter', str(ts), user_name, receivers))

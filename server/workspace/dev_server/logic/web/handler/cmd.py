@@ -14,13 +14,13 @@ from util.redis_cmds.circles import *
 from util.mq_packs.uni_pack import shortcut_mq
 from util.mq_packs.cloud_push_pack import pack as push_pack
 from common import FEEDBACK_PATTERN, REPORT_KEYS, errno_map
-from config import GMQDispRdsInts, GDevRdsInts
+from config import GMQDispRdsInts, GDevRdsInts, GAccRdsInts
 
 
 @route(r'/cmd_report')
 class CmdRptHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, f, d, payload, *args, **kwargs):
         logger.debug('cmd_rpt_v1 sn: {0}, d: {1}, f: {2}'.format(sn, d, f))
         primary = GDevRdsInts.send_cmd(*get_dev_primary(sn))

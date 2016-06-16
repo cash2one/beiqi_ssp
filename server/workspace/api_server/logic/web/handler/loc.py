@@ -12,14 +12,14 @@ from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import client_sign_wapper
 from util.redis_cmds.circles import *
 from util.convert import mongo2utf8, combine_redis_cmds
-from config import GDevRdsInts
+from config import GDevRdsInts, GAccRdsInts
 from db.db_oper import DBBeiqiSspInst
 
 
 @route(r'/get_loc')
 class GetLocHandler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, *args, **kwargs):
         """
         """

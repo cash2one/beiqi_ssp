@@ -12,14 +12,14 @@ from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.crypto.beiqi_sign import client_sign_wapper
 from util.convert import bs2utf8, combine_redis_cmds
-from config import GMQDispRdsInts
+from config import GMQDispRdsInts, GAccRdsInts
 from common.mq import build_mq_package
 
 
 @route(r'/loc_v1')
 class LocationV1Handler(HttpRpcHandler):
     @web_adaptor()
-    @client_sign_wapper()
+    @client_sign_wapper(GAccRdsInts)
     def post(self, user_name, sn, payload, dev_type='', *args, **kwargs):
         logger.debug(u'loc v1 -- acc={0}, sn={1}, payload={2}'.format(user_name, sn, payload))
 
