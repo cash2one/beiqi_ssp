@@ -69,6 +69,7 @@ def client_sign_wapper(ExpireRedis):
                 return
 
             if int(should_expire) != int(expire):
+                logger.error("login otherside, account:%s expire:%s should_expire:%s"%(account, expire, should_expire))
                 self.set_status(409)
                 return
 
