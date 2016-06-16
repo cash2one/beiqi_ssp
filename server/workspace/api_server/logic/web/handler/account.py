@@ -122,7 +122,7 @@ class AccountUnbindPushHandler(HttpRpcHandler):
 
 @route(r'/get_user_info')
 class GetUserInfoHandler(HttpRpcHandler):
-    @web_adaptor()
+    @web_adaptor(use_json_dumps=False)
     @client_sign_wapper(GAccRdsInts)
     def get(self, user , *args, **kwargs):
         payload = GDevRdsInts.send_cmd(*get_user_info(user))
