@@ -101,3 +101,9 @@ def list_devs(server_ip, tk, app_secret, port=8300):
     params['_tk'] = tk
     params['_sign'] = gen_url_sign(url, app_secret, params, 'POST')[-1]
     return ujson.loads(urllib2.urlopen(urllib2.Request(url, data=urllib.urlencode(params))).read())
+
+
+def get_user_info(server_ip, tk, app_secret, port=8300):
+    url = 'http://{ip}:{port}/get_user_info'.format(ip=server_ip, port=port)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
