@@ -6,9 +6,10 @@ Created on 2016/6/7
 @author: Jay
 """
 import ujson
+import urllib
 import urllib2
 import random
-from utils.crypto.beiqi_sign import append_url_sign_tk
+from utils.crypto.beiqi_sign import append_url_sign_tk, gen_url_sign
 
 
 def get_cls(server_ip, tk, app_secret, port=8300):
@@ -92,3 +93,11 @@ def bind_push(server_ip, tk, app_secret, account, ver, os, args,  port=8300):
     url = 'http://{ip}:{port}/account/bind_push?account={account}&ver={ver}&os={os}&args={args}'.format(ip=server_ip, port=port, account=account, ver=ver, os=os, args=args)
     url = append_url_sign_tk(url, tk, app_secret)
     return urllib2.urlopen(urllib2.Request(url)).read()
+
+
+def list_devs(server_ip, tk, app_secret, port=8300):
+    url = 'http://{ip}:{port}/list_devs'.format(ip=server_ip, port=port)
+    params = {}
+    params['_tk'] = tk
+    params['_sign'] = gen_url_sign(url, app_secret, params, 'POST')[-1]
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url, data=urllib.urlencode(params))).read())
