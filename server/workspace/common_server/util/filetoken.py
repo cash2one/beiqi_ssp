@@ -6,7 +6,7 @@ Created on 2016/5/18
 @author: Jay
 """
 import base64
-from binascii import b2a_hex, a2b_hex
+from binascii import b2a_hex, a2b_hex, b2a_base64
 import struct
 import time
 from convert import pad, unpad, bs2utf8
@@ -14,6 +14,7 @@ from bit import span_bits
 from crypto_rc4 import encrypt as rc4_encrypt, decrypt as rc4_decrypt
 import random
 from utils import logger
+from hashlib import md5
 
 
 MAX_FILENAME_LEN = 68
@@ -234,12 +235,12 @@ def check_tk_ref(tk, ul, ref):
     logger.debug('check_tk_ref tk={0}, ref={1}'.format(tk, ref))
     if len(tk) != len(ref):
         return None
-    #api/file_tk返回的unique_token为pid
-    #英语单词构造的为其他
-    # 以下逻辑暂时不处理，不知道干什么，jay
-    #for index in (0, 1, 3):
-    #    if tk[index] != ref[index]:
-    #        return None
+
+    # (1, 0, '18610060484@jiashu.com', 'Recorder036.wav')
+    # 只检测文件名是否相等
+    for index in (3,):
+       if tk[index] != ref[index]:
+           return None
     return ref
 
 
@@ -254,7 +255,11 @@ def gen_lvl_fn(share, by_app, acc, fn):
         return None
 
     first = struct.pack('>BB', ((int(share) << 7) | (int(by_app) << 6)), len(acc))
-    return rc4_encrypt(''.join((first, acc, pad(fn, MAX_FILENAME_LEN))), fn_pwd, b2a_hex)
+    lvl_fn = ''.join((first, acc, pad(fn, MAX_FILENAME_LEN)))
+
+    md5_inst = md5()
+    md5_inst.update(lvl_fn)
+    return md5_inst.hexdigest()
 
 
 def is_fn_ok(fn):

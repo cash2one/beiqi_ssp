@@ -46,3 +46,11 @@ class UtilFileTokenTest(unittest.TestCase):
         print extract_tk(tk, True)
 
         print "1"
+
+    @unittest_adaptor()
+    def test_gen_lvl_fn(self):
+        share = "1"
+        by_app = "0"
+        acc = "acc"
+        fn = "test.fn"
+        print gen_lvl_fn(share, by_app, acc, fn)
