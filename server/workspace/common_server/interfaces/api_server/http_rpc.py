@@ -107,3 +107,9 @@ def get_user_info(server_ip, tk, app_secret, port=8300):
     url = 'http://{ip}:{port}/get_user_info'.format(ip=server_ip, port=port)
     url = append_url_sign_tk(url, tk, app_secret)
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def get_status(server_ip, tk, app_secret, user_list, port=8300):
+    url = 'http://{ip}:{port}/get_status?user_list={user_list}'.format(ip=server_ip, port=port, user_list=ujson.dumps(user_list))
+    url = append_url_sign_tk(url, tk, app_secret)
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())

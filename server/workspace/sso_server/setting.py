@@ -23,5 +23,5 @@ DB_TBL_SSP_USR_LOGIN = 'beiqi_sso.ssp_user_login'
 
 # REDIS配置
 ACC_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
-DEV_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
+DEV_RDS_URI = "redis://192.168.2.192:6379/2?pwd=123456"
 MQ_DISP_RDS_URI = "redis://192.168.2.192:6379/0?pwd=123456"
