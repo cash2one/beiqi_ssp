@@ -109,7 +109,7 @@ class AccountBindPushHandler(HttpRpcHandler):
         _ = [os, ver]
         _.extend(args)
 
-        GAccRdsInts.send_cmd('set', 'account:{0}'.format(account), ':'.join(_))
+        GCalcRdsInts.send_cmd('set', 'account:{0}'.format(account), ':'.join(_))
 
 
 @route(r'/account/unbind_push')
