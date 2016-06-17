@@ -14,6 +14,7 @@ from util.redis_cmds.circles import *
 from util.convert import mongo2utf8, combine_redis_cmds
 from config import GDevRdsInts, GAccRdsInts
 from db.db_oper import DBBeiqiSspInst
+from setting import DB_TBL_LOCATION
 
 
 @route(r'/get_loc')
@@ -38,6 +39,6 @@ class GetLocHandler(HttpRpcHandler):
               "from {db} where sn = '{sn}'" \
               "order by src_ts desc " \
               "limit 1"
-        sql = sql.format(db='location', sn=sn)
+        sql = sql.format(db=DB_TBL_LOCATION, sn=sn)
         rec = DBBeiqiSspInst.query(sql)
         return mongo2utf8(rec[0]) if rec else {}

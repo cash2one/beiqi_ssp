@@ -22,6 +22,7 @@ DB_TBL_ETICKET = "beiqi_api.eticket"
 DB_TBL_RES_CLS = "beiqi_api.res_cls"
 DB_TBL_RES_ALBUM = "beiqi_api.res_album"
 DB_TBL_RESOURCE = "beiqi_api.resource"
+DB_TBL_LOCATION = 'beiqi_dev.location'
 
 
 # 每页显示的数量
