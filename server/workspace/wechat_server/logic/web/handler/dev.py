@@ -12,12 +12,11 @@ from utils.network.http import HttpRpcHandler
 from utils.wapper.web import web_adaptor
 from utils.network.http import HttpRpcClient
 from util.redis_cmds.circles import getall_wechat_devs
-from util.redis_cmds.wechat import get_wechat_ticket
 from lib.add_device import add_device
 from lib.sign import Sign
 from config import GDevRdsInts, GAccRdsInts
 from setting import WECHAT_SERACH_DEVICE, APPID, APPSECRET
-from util.wechat import gen_wechat_access_token
+from util.wechat import gen_wechat_access_token, gen_wechat_ticker
 
 
 @route(r'/wechat/pages/add_device')
@@ -79,12 +78,7 @@ class ManageDevHandler(HttpRpcHandler):
         if openid:
             username = 'wx#' + openid
             dev_set = GDevRdsInts.send_cmd(*getall_wechat_devs(username))
-            dev_list = []
-            for dev in dev_set.iteritems():
-                dev_obj = {}
-                dev_obj['gid'] = dev[0]
-                dev_obj['nickname'] = dev[1]
-                dev_list.append(dev_obj)
+            dev_list = [{'gid':dev[0], 'nickname':dev[1]} for dev in dev_set.iteritems()]
             logger.debug('dev_list = %r, username = %r', dev_list, username)
             self.render('wechat_manage_dev.html', dev_list=dev_list, username=username)
         return
@@ -95,9 +89,9 @@ class SearchDeviceHandler(HttpRpcHandler):
     @web_adaptor(use_http_render=False)
     def get(self):
         access_token = gen_wechat_access_token(GAccRdsInts)
-        ticket = GAccRdsInts.send_cmd(*get_wechat_ticket())
+        ticket = gen_wechat_ticker(GAccRdsInts, access_token)
         sign_data = Sign(ticket, WECHAT_SERACH_DEVICE).sign()
-        logger.debug('access_token:%s ticket:%s sign_data:%s'%(access_token, ticket, sign_data))
+        logger.debug('access_token:%s ticket:%s sign_data:%s' % (access_token, ticket, sign_data))
         self.render('wechat_search_dev.html',
                     appid=APPID,
                     timestamp=sign_data.get('timestamp'),
