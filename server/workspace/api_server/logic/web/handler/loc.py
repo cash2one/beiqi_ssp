@@ -35,9 +35,9 @@ class GetLocHandler(HttpRpcHandler):
 
         sql = "select longitude, latitude, altitude, accuracy, address, ad_code," \
               "src_ts as timestamp " \
-              "from {0} where sn = %s" \
+              "from {db} where sn = '{sn}'" \
               "order by src_ts desc " \
               "limit 1"
-        sql = sql.format('location')
-        rec = DBBeiqiSspInst.query(sql, sn)
+        sql = sql.format(db='location', sn=sn)
+        rec = DBBeiqiSspInst.query(sql)
         return mongo2utf8(rec[0]) if rec else {}

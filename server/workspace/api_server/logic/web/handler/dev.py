@@ -28,13 +28,13 @@ from setting import DB_TBL_DEVICE_INFO
 from util.wechat import gen_wechat_access_token
 
 
-@route(r'/dev/check_dev_args', name='/dev/check_dev_args')
+@route(r'/dev/check_dev_args')
 class CheckDevArgsHandler(HttpRpcHandler):
     @web_adaptor()
     @client_sign_wapper(GAccRdsInts)
     def get(self, user_name, sn, *args, **kwargs):
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
-        ret_list = DBBeiqiSspInst.query(sql, sn)
+        sql = "SELECT 1 FROM {db} WHERE sn = '{sn}'".format(db=DB_TBL_DEVICE_INFO, sn=sn)
+        ret_list = DBBeiqiSspInst.query(sql)
         if len(ret_list) == 0:
             return {'status': 1}
 
@@ -62,8 +62,8 @@ class ChangeDevArgsHandler(HttpRpcHandler):
             self.set_status(400)
             return
 
-        sql = 'SELECT 1 FROM {0} WHERE sn = %s'.format(DB_TBL_DEVICE_INFO)
-        ret_list = DBBeiqiSspInst.query(sql, sn)
+        sql = "SELECT 1 FROM {db} WHERE sn = '{sn}'".format(db=DB_TBL_DEVICE_INFO, sn=sn)
+        ret_list = DBBeiqiSspInst.query(sql)
         if len(ret_list) == 0:
             return {'status': 1}
 
@@ -311,8 +311,8 @@ class InviteFollowHandler(HttpRpcHandler):
 
         account_exist = GAccRdsInts.send_cmd(*exist_account(guest))
         if not account_exist:
-            sql = 'select * from {0} where user_name=%s'.format('ssp_user_login')
-            res = self.settings.get('mysql_db').query(sql, guest)
+            sql = "select * from {db} where user_name='{user_name}'".format(db='ssp_user_login', user_name=guest)
+            res = self.settings.get('mysql_db').query(sql)
             if len(res) == 0:
                 return {'status': 2}
             else:

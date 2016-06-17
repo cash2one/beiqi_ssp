@@ -113,3 +113,9 @@ def get_status(server_ip, tk, app_secret, user_list, port=8300):
     url = 'http://{ip}:{port}/get_status?user_list={user_list}'.format(ip=server_ip, port=port, user_list=ujson.dumps(user_list))
     url = append_url_sign_tk(url, tk, app_secret)
     return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())
+
+
+def check_dev_args(server_ip, tk, app_secret, sn, port=8300):
+    url = 'http://{ip}:{port}/dev/check_dev_args?sn={sn}'.format(ip=server_ip, port=port, sn=sn)
+    url = append_url_sign_tk(url, tk, app_secret)
+    return ujson.loads(urllib2.urlopen(urllib2.Request(url)).read())

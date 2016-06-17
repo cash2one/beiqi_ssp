@@ -190,8 +190,8 @@ class DeleteShareHandler(HttpRpcHandler):
         logger.debug(u'DeleteShareHandler::get_dev_primary_by_gid, dev_sn={0}'.format(dev_sn))
         dev_primary = GDevRdsInts.send_cmd(*get_dev_primary(dev_sn))
         if not dev_primary:
-            sql = 'SELECT * FROM {0} WHERE sn = %s limit 1'.format(DB_TBL_DEVICE_INFO)
-            dev_ls = self.settings.get('mysql_db').query(sql, dev_sn)
+            sql = "SELECT * FROM {db} WHERE sn = '{sn}' limit 1".format(db=DB_TBL_DEVICE_INFO, sn=dev_sn)
+            dev_ls = self.settings.get('mysql_db').query(sql)
             dev_primary = dev_ls[0].get('primary')
         logger.debug(u'DeleteShareHandler::get_dev_primary_by_gid, dev_primary={0}'.format(dev_primary))
         return dev_primary

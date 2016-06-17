@@ -61,7 +61,7 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 return
 
             sn, ts = decrypt_username(username, rc4_key)
-            sql = "SELECT 1 FROM %s WHERE sn = '%s'"%(DB_TBL_DEVICE_INFO, sn)
+            sql = "SELECT 1 FROM {db} WHERE sn = '{sn}'".format(db=DB_TBL_DEVICE_INFO, sn=sn)
             ret_list = DBBeiqiSspInst.query(sql)
             if len(ret_list) == 0:
                 logger.debug('ret_list={0}, sn={1}'.format(ret_list, sn))
@@ -121,7 +121,7 @@ class BeiqiSSOHandler(HttpRpcHandler):
                 return
         else:
             # not in redis, check mysql
-            sql = "select password from {0} where username='%s'".format('ssp_user_login') % username
+            sql = "select password from {db} where username='{username}'".format(db='ssp_user_login', username=username)
             expect_pwd = DBBeiqiSspInst.query(sql)
             if len(expect_pwd) == 0:
                 logger.debug('account={0} not exist'.format(username))

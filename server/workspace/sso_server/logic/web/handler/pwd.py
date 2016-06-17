@@ -72,8 +72,8 @@ class LostPwdHandler(HttpRpcHandler):
         """
         cur_account = fix_account_postfix(account)
         if not GAccRdsInts.send_cmd(*exist_account(cur_account)):
-            sql = 'select password from {0} where username=%s'.format(DB_TBL_SSP_USR_LOGIN)
-            expect_pwd = DBBeiqiSspInst.query(sql, cur_account)
+            sql = "select password from {db} where username='{username}'".format(db=DB_TBL_SSP_USR_LOGIN, username=cur_account)
+            expect_pwd = DBBeiqiSspInst.query(sql)
             if len(expect_pwd) == 0:
                 return {'status': 1}
 

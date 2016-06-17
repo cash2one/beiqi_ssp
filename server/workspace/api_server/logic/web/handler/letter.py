@@ -70,8 +70,8 @@ class SendLetterHandler(HttpRpcHandler):
             account_exist = GAccRdsInts.send_cmd(*exist_account(acc))
             if not account_exist:
                 # not in redis, check mysql
-                sql = 'select * from {0} where user_name=%s'.format('ssp_user_login')
-                res = DBBeiqiSspInst.query(sql, acc)
+                sql = "select * from {db} where user_name='{user_name}'".format(db='ssp_user_login', user_name=acc)
+                res = DBBeiqiSspInst.query(sql)
                 if len(res) == 0:
                     # not in mysql, so we check if it's a sn
                     if not is_email(acc):
