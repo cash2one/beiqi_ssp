@@ -14,6 +14,7 @@ from util.internal_forward.leveldb_encode import resolve_expire, DEV_APP
 def down_parse(tk, r, file_source):
     tk_ref_params = check_tk_ref(tk, False, r)
     if not tk_ref_params:
+        logger.warn('down_parse:: not tk_ref_params: {0}'.format(tk_ref_params))
         return
 
     if not is_num(file_source):
