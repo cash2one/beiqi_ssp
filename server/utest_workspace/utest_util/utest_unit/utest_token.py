@@ -19,8 +19,9 @@ class UtilTokenTest(unittest.TestCase):
         expire_days = random.randint(0,100)
 
         token = gen_token(api_secret, username, expire_days)
-        expire, secret, account, api_key = parser_token(token)
-        print expire, secret, account, api_key
+        print "token,",token
+        expire, secret, account = parser_token(token)
+        print expire, secret, account
 
         self.assertTrue(api_secret == secret)
         self.assertTrue(username == account)
@@ -31,11 +32,10 @@ class UtilTokenTest(unittest.TestCase):
         api_secret = make_unique_id()
         username = random_str()
         expire_days = random.randint(0,100)
-        api_key = make_unique_id()
 
-        token = gen_token(api_secret, username, expire_days, api_key)
-        expire, secret, account, api_key = parser_token(token)
-        print expire, secret, account, api_key
+        token = gen_token(api_secret, username, expire_days)
+        expire, secret, account = parser_token(token)
+        print expire, secret, account
 
         self.assertTrue(api_secret == secret)
         self.assertTrue(username == account)

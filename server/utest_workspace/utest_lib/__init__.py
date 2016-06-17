@@ -6,6 +6,7 @@ Created on 2015-5-7
 @author: Jay
 """
 import os, site
+import traceback
 cur_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 site.addsitedir(cur_path)
 site.addsitedir(os.path.join(cur_path, "utest_workspace"))
@@ -26,13 +27,16 @@ def gen_test_tk(user_name=TEST_USER_NAME, pwd=TEST_PASSWD, app_key=APP_KEY, dev_
     return gen_tk(SSOHttpRpcClt, user_name , pwd, app_key, dev_rc4)
 
 # 设备登录绑定流程
-dev_tk = gen_test_tk(encrypt_username(TEST_SN, DEV_RC4), app_key=DEV_KEY, dev_rc4=DEV_RC4)
-sign_in_res = sign_in(SERVER_IP, dev_tk, DEV_SECRET, TEST_SN, DEV_SERVER_PORT)
-print "sign_in_res,",sign_in_res
-GDevGid = sign_in_res['gid']
-GDevIC = sign_in_res.get('ic', None)
-if GDevIC:
-    add_device_res = add_device(SERVER_IP, gen_test_tk(), APP_SECRET, code=GDevIC)
-    print "add_device_res,",add_device_res
+try:
+    dev_tk = gen_test_tk(encrypt_username(TEST_SN, DEV_RC4), app_key=DEV_KEY, dev_rc4=DEV_RC4)
+    sign_in_res = sign_in(SERVER_IP, dev_tk, DEV_SECRET, TEST_SN, DEV_SERVER_PORT)
+    print "sign_in_res,",sign_in_res
+    GDevGid = sign_in_res['gid']
+    GDevIC = sign_in_res.get('ic', None)
+    if GDevIC:
+        add_device_res = add_device(SERVER_IP, gen_test_tk(), APP_SECRET, code=GDevIC)
+        print "add_device_res,",add_device_res
+except:
+    print traceback.format_exc()
 
 
