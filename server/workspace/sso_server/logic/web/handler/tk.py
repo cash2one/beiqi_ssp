@@ -47,12 +47,8 @@ class BeiqiSSOHandler(HttpRpcHandler):
             return
 
         remote_ip = bs2utf8(self.request.remote_ip)
-        if len(username) < 66 and not is_email(username):
-            logger.warn('username invalid: {0}'.format(username))
-            self.set_status(400)
-            return
 
-        if len(username) == 66:
+        if not is_email(username):
             # 设备没有pid时登录
             rc4_key = api_ob.get('rc4_key')
             if rc4_key is None:

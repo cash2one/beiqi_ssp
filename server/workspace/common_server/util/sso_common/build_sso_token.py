@@ -1,6 +1,6 @@
 #coding:utf-8
 
-
+import binascii
 import time
 from util.crypto_rc4 import encrypt as rc4_encrypt
 from util.crypto_rc4 import decrypt as rc4_decrypt
@@ -57,5 +57,5 @@ def decrypt_username(username, key):
 
 def encrypt_username(username, dev_secret):
     plain = '|'.join([username, "%0.2f"% time.time(), "bq"])
-    return rc4_encrypt(plain, dev_secret)
+    return rc4_encrypt(plain, dev_secret, binascii.b2a_base64)
 

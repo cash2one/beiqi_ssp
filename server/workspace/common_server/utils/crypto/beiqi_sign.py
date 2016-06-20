@@ -54,7 +54,7 @@ def client_sign_wapper(ExpireRedis):
                 self.set_status(401)
                 return
 
-            expire, api_key, account, apikey_head4 = parser_token(auth_token)
+            expire, api_key, account = parser_token(auth_token)
             # 检测过期时间
             if expire <= time.time():
                 logger.error("%s expire:%s invalid"%(fun.__name__, expire))
@@ -133,7 +133,7 @@ def append_url_sign(url, api_secret, params=None, method='GET'):
     """
     _sign = gen_url_sign(url, api_secret, params, method)[-1]
     splitor = "&" if "?" in url else "?"
-    return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=_sign)
+    return url + "{splitor}_sign={sign}".format(splitor=splitor, sign=urllib2.quote(_sign))
 
 def append_url_tk(url, tk):
     """
@@ -142,7 +142,7 @@ def append_url_tk(url, tk):
     :param tk: token
     """
     splitor = "&" if "?" in url else "?"
-    return url + "{splitor}_tk={tk}".format(splitor=splitor, tk=tk)
+    return url + "{splitor}_tk={tk}".format(splitor=splitor, tk=urllib2.quote(tk))
 
 def append_url_sign_tk(url, tk, api_secret, params=None, method='GET'):
     """

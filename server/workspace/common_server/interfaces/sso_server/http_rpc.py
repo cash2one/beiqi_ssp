@@ -6,6 +6,7 @@ Created on 2015-7-21
 @author: Jay
 """
 import ujson
+import urllib2
 
 
 def req_reg_val_code(http_rpc_client, account):
@@ -20,7 +21,7 @@ def req_reg_val_code(http_rpc_client, account):
 
 
 def gen_tk(http_rpc_client, user_name, pwd, app_key, rc4_key=""):
-    url = "gen_tk?username={0}&pwd={1}&api_key={2}&rc4_key={3}".format(user_name, pwd, app_key, rc4_key)
+    url = "gen_tk?username={0}&pwd={1}&api_key={2}&rc4_key={3}".format(urllib2.quote(user_name), urllib2.quote(pwd), urllib2.quote(app_key), urllib2.quote(rc4_key))
     return http_rpc_client.fetch_async(url)
 
 
